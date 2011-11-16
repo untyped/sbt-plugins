@@ -14,8 +14,9 @@ $ exists target/scala-2.9.1/resource_managed/main/resources/file6.js
 $ exists target/scala-2.9.1/resource_managed/main/resources/file7.notemplate.js
 $ exists target/scala-2.9.1/resource_managed/main/resources/file8.js
 
-# Check that the temporary downloads exist:
+# Check that the temporary downloads exist but have not been compiled:
 $ exists target/sbt-js/downloads/http___code.jquery.com_jquery-1.7.js
+-$ exists target/scala-2.9.1/resource_managed/http___code.jquery.com_jquery-1.7.js
 
 # Check that the JS files have the correct content:
 > contents target/scala-2.9.1/resource_managed/main/resources/file1.js            fixtures/file1.js

@@ -2,6 +2,12 @@ logLevel := Level.Debug
 
 seq(jsSettings : _*)
 
+JsKeys.templateProperties in Compile := {
+  val props = new java.util.Properties
+  props.setProperty("test.user.name", "Mustache")
+  props
+}
+
 InputKey[Unit]("contents") <<= inputTask { (argsTask: TaskKey[Seq[String]]) =>
   (argsTask, streams) map { (args, out) =>
     args match {

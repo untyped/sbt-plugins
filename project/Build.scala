@@ -10,7 +10,7 @@ object Build extends Build {
   val closure   = "com.google.javascript" % "closure-compiler" % "r706"
   val mustache  = "com.samskivert" % "jmustache" % "1.3"
   val rhino     = "rhino" % "js" % "1.7R2"
-  val scalatest = "org.scalatest" % "scalatest" % "1.1"
+  val scalatest = "org.scalatest" %% "scalatest" % "1.6.1"
   
   // Settings -----------------------------------
   
@@ -47,19 +47,6 @@ object Build extends Build {
   //   )
   // )
   
-  lazy val sbtJs = Project(
-    id = "sbt-js",
-    base = file("sbt-js"),
-    settings = defaultSettings ++ Seq(
-      version := "0.1-SNAPSHOT",
-      libraryDependencies ++= Seq(
-        closure,
-        mustache,
-        scalatest % "test"
-      )
-    )
-  )
-  
   lazy val sbtLess = Project(
     id = "sbt-less",
     base = file("sbt-less"),
@@ -67,6 +54,19 @@ object Build extends Build {
       version := "0.2-SNAPSHOT",
       libraryDependencies ++= Seq(
         rhino,
+        mustache,
+        scalatest % "test"
+      )
+    )
+  )
+  
+  lazy val sbtJs = Project(
+    id = "sbt-js",
+    base = file("sbt-js"),
+    settings = defaultSettings ++ Seq(
+      version := "0.1-SNAPSHOT",
+      libraryDependencies ++= Seq(
+        closure,
         mustache,
         scalatest % "test"
       )

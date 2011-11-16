@@ -3,6 +3,6 @@
 <Configure class="org.mortbay.jetty.webapp.WebAppContext">
   <Call class="java.lang.System" name="setProperty">
     <Arg>run.mode</Arg>
-    <Arg>development</Arg>
+    <Arg>production</Arg>
   </Call>
 </Configure>

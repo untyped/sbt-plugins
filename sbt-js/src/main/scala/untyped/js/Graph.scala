@@ -1,6 +1,7 @@
 package untyped.js
 
 import com.google.javascript.jscomp._
+import java.util.Properties
 import sbt._
 import scala.collection._
 
@@ -8,18 +9,18 @@ case class Graph(
     val log: Logger,
     val sourceDir: File,
     val targetDir: File,
-    val propertiesDir: File,
+    val templateProperties: Properties,
     val downloadDir: File,
     val compilerOptions: CompilerOptions
   ) extends untyped.graph.Graph {
   
   type S = untyped.js.Source
   
-  override def createSource(src: File): Source =
+  override def createSource(src: File, temporaryDownload: Boolean): Source =
     if(src.toString.trim.toLowerCase.endsWith(".jsm")) {
-      JsmSource(this, src.getCanonicalFile, srcToDes(src).getCanonicalFile)
+      JsmSource(this, src.getCanonicalFile, srcToDes(src).getCanonicalFile, temporaryDownload)
     } else {
-      JsSource(this, src.getCanonicalFile, srcToDes(src).getCanonicalFile)
+      JsSource(this, src.getCanonicalFile, srcToDes(src).getCanonicalFile, temporaryDownload)
     }
 
   def srcFilenameToDesFilename(filename: String) =

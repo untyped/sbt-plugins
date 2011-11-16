@@ -7,4 +7,4 @@ resolvers ++= Seq(
 
 libraryDependencies <+= sbtVersion(v => "com.github.siasia" %% "xsbt-web-plugin" % (v+"-0.2.4"))
 
-addSbtPlugin("untyped" % "sbt-runmode" % "0.1-SNAPSHOT")
+addSbtPlugin("untyped" %% "sbt-runmode" % "0.1-SNAPSHOT")

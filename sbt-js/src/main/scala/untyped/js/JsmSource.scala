@@ -4,7 +4,7 @@ import com.google.javascript.jscomp.JSSourceFile
 import sbt._
 import scala.collection._
 
-case class JsmSource(val graph: Graph, val src: File, val des: File) extends Source {
+case class JsmSource(val graph: Graph, val src: File, val des: File, val temporaryDownload: Boolean) extends Source {
   
   lazy val parents: List[Source] =
     for {

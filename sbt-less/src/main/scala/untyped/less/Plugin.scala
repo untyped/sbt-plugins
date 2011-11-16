@@ -1,6 +1,7 @@
 package untyped.less
 
 import java.nio.charset.Charset
+import java.util.Properties
 import sbt._
 import sbt.Keys._
 import sbt.Project.Initialize
@@ -9,10 +10,10 @@ object Plugin extends sbt.Plugin {
 
   object LessKeys {
     val less                = TaskKey[List[File]]("less", "Compile Less CSS sources.")
-    val sourceGraph         = TaskKey[Graph]("source-graph", "List of Less CSS sources.")
-    val propertiesDirectory = SettingKey[File]("properties-directory", "Directory containing properties for use in templated Less CSS sources")
-    val downloadDirectory   = SettingKey[File]("download-directory", "Temporary directory to download Javascript files to")
-    val prettyPrint         = SettingKey[Boolean]("minify-css", "Whether to minify the CSS output from Less")
+    val sourceGraph         = TaskKey[Graph]("less-source-graph", "List of Less CSS sources.")
+    val templateProperties  = SettingKey[Properties]("less-template-properties", "Properties to use in Less CSS templates")
+    val downloadDirectory   = SettingKey[File]("less-download-directory", "Temporary directory to download Less CSS files to")
+    val prettyPrint         = SettingKey[Boolean]("less-pretty-priny", "Whether to pretty print CSS (default false)")
   }
   
   import LessKeys._
@@ -24,15 +25,15 @@ object Plugin extends sbt.Plugin {
     }
   
   def sourceGraphTask: Initialize[Task[Graph]] =
-    (streams, sourceDirectory in less, resourceManaged in less, includeFilter in less, excludeFilter in less, propertiesDirectory in less, downloadDirectory in less, prettyPrint in less) map {
-      (out, sourceDir, targetDir, includeFilter, excludeFilter, propertiesDir, downloadDir, prettyPrint) =>
+    (streams, sourceDirectory in less, resourceManaged in less, includeFilter in less, excludeFilter in less, templateProperties in less, downloadDirectory in less, prettyPrint in less) map {
+      (out, sourceDir, targetDir, includeFilter, excludeFilter, templateProperties, downloadDir, prettyPrint) =>
         val graph = Graph(
-          log            = out.log,
-          sourceDir      = sourceDir, 
-          targetDir      = targetDir,
-          propertiesDir  = propertiesDir,
-          downloadDir    = downloadDir,
-          prettyPrint    = prettyPrint
+          log                = out.log,
+          sourceDir          = sourceDir, 
+          targetDir          = targetDir,
+          templateProperties = templateProperties,
+          downloadDir        = downloadDir,
+          prettyPrint        = prettyPrint
         )
         
         for {
@@ -65,17 +66,17 @@ object Plugin extends sbt.Plugin {
 
   def lessSettingsIn(conf: Configuration): Seq[Setting[_]] =
     inConfig(conf)(Seq(
-      prettyPrint in less            := false,
-      includeFilter in less          :=  "*.less",
-      excludeFilter in less          :=  (".*" - ".") || HiddenFileFilter,
-      sourceDirectory in less        <<= (sourceDirectory in conf),
-      resourceManaged in less        <<= (resourceManaged in conf),
-      propertiesDirectory in less    <<= (resourceDirectory in conf),
-      downloadDirectory in less      <<= (target in conf) { _ / "sbt-less" / "downloads" },
-      sourceGraph in less            <<= sourceGraphTask,
-      unmanagedSources in less       <<= sourcesTask,
-      clean in less                  <<= cleanTask,
-      less                           <<= compileTask
+      prettyPrint                :=  false,
+      includeFilter in less      :=  "*.less",
+      excludeFilter in less      :=  (".*" - ".") || HiddenFileFilter,
+      sourceDirectory in less    <<= (sourceDirectory in conf),
+      resourceManaged in less    <<= (resourceManaged in conf),
+      templateProperties         :=  new Properties,
+      downloadDirectory          <<= (target in conf) { _ / "sbt-less" / "downloads" },
+      sourceGraph                <<= sourceGraphTask,
+      unmanagedSources in less   <<= sourcesTask,
+      clean in less              <<= cleanTask,
+      less                       <<= compileTask
     ))
   
   def lessSettings: Seq[Setting[_]] =

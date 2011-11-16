@@ -19,7 +19,7 @@ Create a `project/plugins.sbt` file and paste the following content into it:
 
     resolvers += "Untyped Public Repo" at "http://repo.untyped.com"
     
-    addSbtPlugin("untyped" % "sbt-less" % "0.2-SNAPSHOT")
+    addSbtPlugin("untyped" %% "sbt-less" % "0.2-SNAPSHOT")
 
 Then, in your build.sbt file, put:
 

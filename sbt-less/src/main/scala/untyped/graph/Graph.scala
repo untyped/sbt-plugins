@@ -1,5 +1,6 @@
 package untyped.graph
 
+import java.util.Properties
 import sbt._
 import scala.collection._
 
@@ -10,7 +11,7 @@ trait Graph {
   val log: Logger
   val sourceDir: File
   val targetDir: File
-  val propertiesDir: File
+  val templateProperties: Properties
   val downloadDir: File
   
   // Adding sources -----------------------------
@@ -18,10 +19,10 @@ trait Graph {
   var sources: List[S] = Nil
   
   def +=(file: File): Unit =
-    this += createSource(file)
+    this += createSource(file, false)
 
   def +=(url: URL): Unit =
-    this += createSource(downloadAndCache(url))
+    this += createSource(downloadAndCache(url), true)
 
   private def +=(source: S): Unit =
     if(!sources.contains(source)) {
@@ -37,12 +38,15 @@ trait Graph {
     }
   
   def getSource(src: URL): S =
-    getSource(downloadAndCache(src))
+    getSource(downloadAndCache(src), true)
 
   def getSource(src: File): S =
-    sources find (_.src == src) getOrElse createSource(src)
+    getSource(src, false)
 
-  def createSource(src: File): S
+  def getSource(src: File, temporaryDownload: Boolean): S =
+    sources find (_.src == src) getOrElse createSource(src, temporaryDownload)
+
+  def createSource(src: File, temporaryDownload: Boolean): S
 
   def srcToDes(file: File): File = {
     val rel =
@@ -54,11 +58,6 @@ trait Graph {
   }
   
   def srcFilenameToDesFilename(filename: String): String
-  
-  // Templating ---------------------------------
-  
-  lazy val props =
-    new Props(propertiesDir)
   
   // Downloading and caching URLs ---------------
   
@@ -108,33 +107,42 @@ trait Graph {
 
   def pluginName: String
   
-  def dump: Unit =
+  def dump: Unit = {
+    log.debug("Graph for " + pluginName + ":")
+
+    log.debug("  templateProperties:")
+    log.debug("    " + templateProperties)
+    
+    log.debug("  downloadDir:")
+    log.debug("    " + downloadDir)
+  
     sources.foreach { source =>
-      log.debug(pluginName + " source:")
+      log.debug("  source:")
       
-      log.debug("  src:")
-      log.debug("    " + source.src)
+      log.debug("    src:")
+      log.debug("      " + source.src)
 
-      log.debug("  des:")
-      log.debug("    " + source.des)
+      log.debug("    des:")
+      log.debug("      " + source.des)
 
-      log.debug("  templated?:")
-      log.debug("    " + source.isTemplated)
+      log.debug("    templated?:")
+      log.debug("      " + source.isTemplated)
       
-      log.debug("  recompile?:")
-      log.debug("    " + source.requiresRecompilation)
+      log.debug("    recompile?:")
+      log.debug("      " + source.requiresRecompilation)
 
-      log.debug("  parents:")
-      parents(source).foreach(src => log.debug("    " + src))
+      log.debug("    parents:")
+      parents(source).foreach(src => log.debug("      " + src))
       
-      log.debug("  children:")
-      children(source).foreach(src => log.debug("    " + src))
+      log.debug("    children:")
+      children(source).foreach(src => log.debug("      " + src))
       
-      log.debug("  ancestors:")
-      ancestors(source).foreach(src => log.debug("    " + src))
+      log.debug("    ancestors:")
+      ancestors(source).foreach(src => log.debug("      " + src))
       
-      log.debug("  descendents:")
-      descendents(source).foreach(src => log.debug("    " + src))
+      log.debug("    descendents:")
+      descendents(source).foreach(src => log.debug("      " + src))
     }
+  }
   
 }
