@@ -12,6 +12,8 @@ object Build extends Build {
   val rhino     = "rhino" % "js" % "1.7R2"
   val scalatest = "org.scalatest" %% "scalatest" % "1.6.1"
   
+  val webPlugin = "com.github.siasia" %% "xsbt-web-plugin" % "0.11.0-0.2.4"
+  
   // Settings -----------------------------------
   
   def defaultSettings =
@@ -79,9 +81,10 @@ object Build extends Build {
     settings = defaultSettings ++ Seq(
       version := "0.1-SNAPSHOT",
       libraryDependencies ++= Seq(
+        webPlugin,
         scalatest % "test"
       )
     )
-  )
+  ) dependsOn(sbtLess, sbtJs)
   
 }

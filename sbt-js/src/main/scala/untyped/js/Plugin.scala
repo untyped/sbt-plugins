@@ -39,7 +39,7 @@ object Plugin extends sbt.Plugin {
   def sourceGraphTask: Initialize[Task[Graph]] =
     (streams, sourceDirectory in js, resourceManaged in js, includeFilter in js, excludeFilter in js, templateProperties, downloadDirectory, compilerOptions) map {
       (out, sourceDir, targetDir, includeFilter, excludeFilter, templateProperties, downloadDir, compilerOptions) =>
-        out.log.info("JS TEMPLATE PROPERTIES " + templateProperties)
+        out.log.debug("sbt-js template properties " + templateProperties)
       
         val graph = Graph(
           log                = out.log,

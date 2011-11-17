@@ -1,10 +1,15 @@
 package untyped.runmode
 
+import com.github.siasia._
+import com.github.siasia.{PluginKeys=>WebKeys}
 import java.nio.charset.Charset
 import java.util.Properties
 import sbt._
 import sbt.Keys._
+import sbt.Keys.{`package` => packageKey}
 import sbt.Project.Initialize
+import untyped.js.Plugin.JsKeys
+import untyped.less.Plugin.LessKeys
 
 object Plugin extends sbt.Plugin {
   
@@ -19,7 +24,9 @@ object Plugin extends sbt.Plugin {
   
   import RunModeKeys._
   
-  val RunMode = untyped.runmode.RunMode
+  val Development = config("development") extend(Compile)
+  val Production  = config("production")  extend(Compile)
+  val Pilot       = config("pilot")       extend(Compile)
   
   def propertiesSetting: Initialize[Properties] = 
     (streams, propertiesPath, runMode) apply {
@@ -28,7 +35,7 @@ object Plugin extends sbt.Plugin {
     }
   
   def updateRunModeTask: Initialize[Task[Unit]] =
-    (streams, runMode in updateRunMode, jettyWebPath in updateRunMode, charset in updateRunMode) map {
+    (streams, runMode, jettyWebPath, charset) map {
       (out, runMode, jettyWebPath, charset) =>
         runMode match {
           case RunMode.Development =>
@@ -51,18 +58,34 @@ object Plugin extends sbt.Plugin {
        |  </Call>
        |</Configure>""".stripMargin.format(mode.name)
 
-  def runModeSettingsIn(conf: Configuration, mode: RunMode): Seq[Setting[_]] =
-    inConfig(conf)(Seq(
-      charset        :=  Charset.forName("utf-8"),
-      propertiesPath <<= (sourceDirectory in conf) { _ / "resources" },
-      jettyWebPath   <<= (sourceDirectory in conf) { _ / "webapp" / "WEB-INF" / "jetty-web.xml" },
-      runMode        :=  mode,
-      properties     <<= propertiesSetting,
-      updateRunMode  <<= updateRunModeTask
-    ))
+  def runModeSettingsIn(conf: Configuration, container: Container, mode: RunMode): Seq[Setting[_]] =
+    inConfig(conf)(
+      untyped.js.Plugin.jsSettingsIn(conf)     ++
+      untyped.less.Plugin.lessSettingsIn(conf) ++
+      Seq(
+        charset                             :=  Charset.forName("utf-8"),
+        propertiesPath                      <<= (sourceDirectory in conf)(_ / "main" / "resources"),
+        jettyWebPath                        <<= (sourceDirectory in conf)(_ / "main" / "webapp" / "WEB-INF" / "jetty-web.xml"),
+        runMode                             :=  mode,
+        properties                          <<= propertiesSetting,
+        updateRunMode                       <<= updateRunModeTask,
+        JsKeys.templateProperties           <<= (RunModeKeys.properties in conf),
+        sourceDirectory        in JsKeys.js <<= (sourceDirectory in conf)(_ / "main" / "js"),
+        resourceManaged        in JsKeys.js <<= (sourceDirectory in conf)(_ / "main" / "webapp"),
+        LessKeys.templateProperties         <<= (RunModeKeys.properties in conf),
+        sourceDirectory    in LessKeys.less <<= (sourceDirectory in conf)(_ / "main" / "css"),
+        resourceManaged    in LessKeys.less <<= (sourceDirectory in conf)(_ / "main" / "webapp"),
+        compile                             <<= compile in Compile,
+        clean                               <<= clean in Compile,
+        packageKey                          <<= (packageKey in Compile)                    dependsOn (updateRunMode in conf) dependsOn (JsKeys.js in conf) dependsOn (LessKeys.less in conf),
+        WebKeys.start                       <<= (WebKeys.start in container.Configuration) dependsOn (updateRunMode in conf) dependsOn (JsKeys.js in conf) dependsOn (LessKeys.less in conf),
+        WebKeys.stop                        <<= (WebKeys.stop  in container.Configuration)
+      ))
   
   def runModeSettings: Seq[Setting[_]] =
-    runModeSettingsIn(Compile, RunMode.Development) ++
-    runModeSettingsIn(Test, RunMode.Test)
+    WebPlugin.webSettings ++
+    runModeSettingsIn(Development, WebPlugin.container, RunMode.Development) ++
+    runModeSettingsIn(Pilot,       WebPlugin.container, RunMode.Pilot)       ++
+    runModeSettingsIn(Production,  WebPlugin.container, RunMode.Production)
     
 }

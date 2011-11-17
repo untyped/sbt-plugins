@@ -27,6 +27,8 @@ object Plugin extends sbt.Plugin {
   def sourceGraphTask: Initialize[Task[Graph]] =
     (streams, sourceDirectory in less, resourceManaged in less, includeFilter in less, excludeFilter in less, templateProperties in less, downloadDirectory in less, prettyPrint in less) map {
       (out, sourceDir, targetDir, includeFilter, excludeFilter, templateProperties, downloadDir, prettyPrint) =>
+        out.log.debug("sbt-less template properties " + templateProperties)
+      
         val graph = Graph(
           log                = out.log,
           sourceDir          = sourceDir, 
