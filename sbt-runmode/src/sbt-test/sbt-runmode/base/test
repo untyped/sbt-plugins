@@ -1,24 +1,27 @@
-> update-run-mode
+> package
 
 # Check that jetty-web.xml does not exist:
 -$ exists src/main/webapp/WEB-INF/jetty-web.xml
 
-> set RunModeKeys.runMode in Compile := RunMode.Production
-> update-run-mode
+> production:package
 
 # Check that jetty-web.xml contains the right run.mode:
 $ exists   src/main/webapp/WEB-INF/jetty-web.xml
 > contents src/main/webapp/WEB-INF/jetty-web.xml fixtures/production.jetty-web.xml
 
-> set RunModeKeys.runMode in Compile := RunMode.Pilot
-> update-run-mode
+> pilot:package
 
 # Check that jetty-web.xml contains the right run.mode:
 $ exists   src/main/webapp/WEB-INF/jetty-web.xml
 > contents src/main/webapp/WEB-INF/jetty-web.xml fixtures/pilot.jetty-web.xml
 
-> set RunModeKeys.runMode in Compile := RunMode.Development
-> update-run-mode
+> development:package
 
 # Check that jetty-web.xml does not exist:
 -$ exists src/main/webapp/WEB-INF/jetty-web.xml
+
+> test
+
+# Check that jetty-web.xml contains the right run.mode:
+$ exists   src/main/webapp/WEB-INF/jetty-web.xml
+> contents src/main/webapp/WEB-INF/jetty-web.xml fixtures/test.jetty-web.xml

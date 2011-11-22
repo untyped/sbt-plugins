@@ -28,6 +28,9 @@ object Plugin extends sbt.Plugin {
   val Production  = config("production")  extend(Compile)
   val Pilot       = config("pilot")       extend(Compile)
   
+  // Alias to make RunMode visible in .sbt files:
+  val RunMode = untyped.runmode.RunMode
+  
   def propertiesSetting: Initialize[Properties] = 
     (streams, propertiesPath, runMode) apply {
       (out, propertiesPath, runMode) =>
@@ -57,35 +60,66 @@ object Plugin extends sbt.Plugin {
        |    <Arg>%s</Arg>
        |  </Call>
        |</Configure>""".stripMargin.format(mode.name)
-
+  
+  /**
+   * Generate the settings for a run-mode configuration containing the following wrapper tasks:
+   *
+   *  - compile - runs compile:compile;
+   *  - clean   - runs compile:clean;
+   *  - start   - sets the run mode, compiles JS and CSS, and runs container:start;
+   *  - stop    - runs container:stop;
+   *  - package - sets the run mode, compiles JS and CSS, and runs compile:package.
+   */
   def runModeSettingsIn(conf: Configuration, container: Container, mode: RunMode): Seq[Setting[_]] =
     inConfig(conf)(
       untyped.js.Plugin.jsSettingsIn(conf)     ++
       untyped.less.Plugin.lessSettingsIn(conf) ++
       Seq(
         charset                             :=  Charset.forName("utf-8"),
-        propertiesPath                      <<= (sourceDirectory in conf)(_ / "main" / "resources"),
-        jettyWebPath                        <<= (sourceDirectory in conf)(_ / "main" / "webapp" / "WEB-INF" / "jetty-web.xml"),
+        propertiesPath                      <<= (sourceDirectory in Compile)(_ / "resources"),
+        jettyWebPath                        <<= (sourceDirectory in Compile)(_ / "webapp" / "WEB-INF" / "jetty-web.xml"),
         runMode                             :=  mode,
         properties                          <<= propertiesSetting,
         updateRunMode                       <<= updateRunModeTask,
         JsKeys.templateProperties           <<= (RunModeKeys.properties in conf),
-        sourceDirectory        in JsKeys.js <<= (sourceDirectory in conf)(_ / "main" / "js"),
-        resourceManaged        in JsKeys.js <<= (sourceDirectory in conf)(_ / "main" / "webapp"),
+        sourceDirectory        in JsKeys.js <<= (sourceDirectory in Compile)(_ / "js"),
+        resourceManaged        in JsKeys.js <<= (sourceDirectory in Compile)(_ / "webapp"),
         LessKeys.templateProperties         <<= (RunModeKeys.properties in conf),
-        sourceDirectory    in LessKeys.less <<= (sourceDirectory in conf)(_ / "main" / "css"),
-        resourceManaged    in LessKeys.less <<= (sourceDirectory in conf)(_ / "main" / "webapp"),
-        compile                             <<= compile in Compile,
-        clean                               <<= clean in Compile,
-        packageKey                          <<= (packageKey in Compile)                    dependsOn (updateRunMode in conf) dependsOn (JsKeys.js in conf) dependsOn (LessKeys.less in conf),
-        WebKeys.start                       <<= (WebKeys.start in container.Configuration) dependsOn (updateRunMode in conf) dependsOn (JsKeys.js in conf) dependsOn (LessKeys.less in conf),
-        WebKeys.stop                        <<= (WebKeys.stop  in container.Configuration)
+        sourceDirectory    in LessKeys.less <<= (sourceDirectory in Compile)(_ / "css"),
+        resourceManaged    in LessKeys.less <<= (sourceDirectory in Compile)(_ / "webapp"),
+        compile                             <<= (compile         in Compile),
+        clean                               <<= (clean           in Compile),
+        packageKey                          <<= (packageKey      in Compile)                 dependsOn (updateRunMode in conf) dependsOn (JsKeys.js in conf) dependsOn (LessKeys.less in conf),
+        WebKeys.start                       <<= (WebKeys.start   in container.Configuration) dependsOn (updateRunMode in conf) dependsOn (JsKeys.js in conf) dependsOn (LessKeys.less in conf),
+        WebKeys.stop                        <<= (WebKeys.stop    in container.Configuration)
+      ))
+
+  /**
+   * Cut-down version of `runModeSettingsIn` for configrations in which:
+   *
+   *  - we need a run mode, but;
+   *  - we don't run a full container, and;
+   *  - we don't need to compile Javascript or Less CSS.
+   *
+   * Essentially, redefines foo:test to depend on updateRunMode.
+   */
+  def runModeTestSettingsIn(conf: Configuration, mode: RunMode): Seq[Setting[_]] =
+    inConfig(conf)(
+      Seq(
+        charset                             :=  Charset.forName("utf-8"),
+        propertiesPath                      <<= (sourceDirectory in Compile)(_ / "resources"),
+        jettyWebPath                        <<= (sourceDirectory in Compile)(_ / "webapp" / "WEB-INF" / "jetty-web.xml"),
+        runMode                             :=  mode,
+        properties                          <<= propertiesSetting,
+        updateRunMode                       <<= updateRunModeTask,
+        test                                <<= test dependsOn (updateRunModeTask)
       ))
   
   def runModeSettings: Seq[Setting[_]] =
     WebPlugin.webSettings ++
     runModeSettingsIn(Development, WebPlugin.container, RunMode.Development) ++
     runModeSettingsIn(Pilot,       WebPlugin.container, RunMode.Pilot)       ++
-    runModeSettingsIn(Production,  WebPlugin.container, RunMode.Production)
+    runModeSettingsIn(Production,  WebPlugin.container, RunMode.Production)  ++
+    runModeTestSettingsIn(Test,                         RunMode.Test)
     
 }
