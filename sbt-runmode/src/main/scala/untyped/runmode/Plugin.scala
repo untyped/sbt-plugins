@@ -65,6 +65,8 @@ object Plugin extends sbt.Plugin {
    * Generate the settings for a run-mode configuration containing the following wrapper tasks:
    *
    *  - compile - runs compile:compile;
+   *  - js      - runs js;
+   *  - less    - runs less;
    *  - clean   - runs compile:clean;
    *  - start   - sets the run mode, compiles JS and CSS, and runs container:start;
    *  - stop    - runs container:stop;
@@ -87,7 +89,9 @@ object Plugin extends sbt.Plugin {
         LessKeys.templateProperties         <<= (RunModeKeys.properties in conf),
         sourceDirectory    in LessKeys.less <<= (sourceDirectory in Compile)(_ / "css"),
         resourceManaged    in LessKeys.less <<= (sourceDirectory in Compile)(_ / "webapp"),
-        compile                             <<= (compile         in Compile),
+        JsKeys.js                           <<= JsKeys.js,
+        LessKeys.less                       <<= LessKeys.less,
+		compile                             <<= (compile         in Compile),
         clean                               <<= (clean           in Compile),
         packageKey                          <<= (packageKey      in Compile)                 dependsOn (updateRunMode in conf) dependsOn (JsKeys.js in conf) dependsOn (LessKeys.less in conf),
         WebKeys.start                       <<= (WebKeys.start   in container.Configuration) dependsOn (updateRunMode in conf) dependsOn (JsKeys.js in conf) dependsOn (LessKeys.less in conf),
