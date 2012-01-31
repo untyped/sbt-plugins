@@ -77,25 +77,28 @@ object Plugin extends sbt.Plugin {
       untyped.js.Plugin.jsSettingsIn(conf)     ++
       untyped.less.Plugin.lessSettingsIn(conf) ++
       Seq(
-        charset                             :=  Charset.forName("utf-8"),
-        propertiesPath                      <<= (sourceDirectory in Compile)(_ / "resources"),
-        jettyWebPath                        <<= (sourceDirectory in Compile)(_ / "webapp" / "WEB-INF" / "jetty-web.xml"),
-        runMode                             :=  mode,
-        properties                          <<= propertiesSetting,
-        updateRunMode                       <<= updateRunModeTask,
-        JsKeys.templateProperties           <<= (RunModeKeys.properties in conf),
-        sourceDirectory        in JsKeys.js <<= (sourceDirectory in Compile)(_ / "js"),
-        resourceManaged        in JsKeys.js <<= (sourceDirectory in Compile)(_ / "webapp"),
-        LessKeys.templateProperties         <<= (RunModeKeys.properties in conf),
-        sourceDirectory    in LessKeys.less <<= (sourceDirectory in Compile)(_ / "css"),
-        resourceManaged    in LessKeys.less <<= (sourceDirectory in Compile)(_ / "webapp"),
-        JsKeys.js                           <<= JsKeys.js,
-        LessKeys.less                       <<= LessKeys.less,
-		compile                             <<= (compile         in Compile),
-        clean                               <<= (clean           in Compile),
-        packageKey                          <<= (packageKey      in Compile)                 dependsOn (updateRunMode in conf) dependsOn (JsKeys.js in conf) dependsOn (LessKeys.less in conf),
-        WebKeys.start                       <<= (WebKeys.start   in container.Configuration) dependsOn (updateRunMode in conf) dependsOn (JsKeys.js in conf) dependsOn (LessKeys.less in conf),
-        WebKeys.stop                        <<= (WebKeys.stop    in container.Configuration)
+        charset                                    :=  Charset.forName("utf-8"),
+        propertiesPath                             <<= (sourceDirectory in Compile)(_ / "resources"),
+        jettyWebPath                               <<= (sourceDirectory in Compile)(_ / "webapp" / "WEB-INF" / "jetty-web.xml"),
+        runMode                                    :=  mode,
+        properties                                 <<= propertiesSetting,
+        updateRunMode                              <<= updateRunModeTask,
+        JsKeys.templateProperties                  <<= (RunModeKeys.properties in conf),
+        sourceDirectory               in JsKeys.js <<= (sourceDirectory in Compile)(_ / "js"),
+        resourceManaged               in JsKeys.js <<= (sourceDirectory in Compile)(_ / "webapp"),
+        JsKeys.prettyPrint            in JsKeys.js :=  (mode == RunMode.Development),
+        JsKeys.variableRenamingPolicy in JsKeys.js :=  (if(mode == RunMode.Development) untyped.js.Plugin.VariableRenamingPolicy.OFF else untyped.js.Plugin.VariableRenamingPolicy.LOCAL),
+        LessKeys.templateProperties                <<= (RunModeKeys.properties in conf),
+        sourceDirectory           in LessKeys.less <<= (sourceDirectory in Compile)(_ / "css"),
+        resourceManaged           in LessKeys.less <<= (sourceDirectory in Compile)(_ / "webapp"),
+        LessKeys.prettyPrint      in LessKeys.less :=  (mode == RunMode.Development),
+        JsKeys.js                                  <<= JsKeys.js,
+        LessKeys.less                              <<= LessKeys.less,
+    		compile                                    <<= (compile         in Compile),
+        clean                                      <<= (clean           in Compile),
+        packageKey                                 <<= (packageKey      in Compile)                 dependsOn (updateRunMode in conf) dependsOn (JsKeys.js in conf) dependsOn (LessKeys.less in conf),
+        WebKeys.start                              <<= (WebKeys.start   in container.Configuration) dependsOn (updateRunMode in conf) dependsOn (JsKeys.js in conf) dependsOn (LessKeys.less in conf),
+        WebKeys.stop                               <<= (WebKeys.stop    in container.Configuration)
       ))
 
   /**
@@ -121,9 +124,9 @@ object Plugin extends sbt.Plugin {
   
   def runModeSettings: Seq[Setting[_]] =
     WebPlugin.webSettings ++
-    runModeSettingsIn(Development, WebPlugin.container, RunMode.Development) ++
-    runModeSettingsIn(Pilot,       WebPlugin.container, RunMode.Pilot)       ++
-    runModeSettingsIn(Production,  WebPlugin.container, RunMode.Production)  ++
+    runModeSettingsIn(Development, WebPlugin.container, RunMode.Development)  ++
+    runModeSettingsIn(Pilot,       WebPlugin.container, RunMode.Pilot) ++
+    runModeSettingsIn(Production,  WebPlugin.container, RunMode.Production) ++
     runModeTestSettingsIn(Test,                         RunMode.Test)
     
 }
