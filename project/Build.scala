@@ -7,12 +7,12 @@ object Build extends Build {
   
   // Libraries ----------------------------------
   
-  val closure   = "com.google.javascript" % "closure-compiler" % "r706"
-  val mustache  = "com.samskivert" % "jmustache" % "1.3"
-  val rhino     = "rhino" % "js" % "1.7R2"
-  val scalatest = "org.scalatest" %% "scalatest" % "1.6.1"
+  val closure    = "com.google.javascript" % "closure-compiler" % "r706"
+  val mustache   = "com.samskivert" % "jmustache" % "1.3"
+  val rhino      = "rhino" % "js" % "1.7R2"
+  val scalatest  = "org.scalatest" %% "scalatest" % "1.6.1"
   
-  val webPlugin = "com.github.siasia" %% "xsbt-web-plugin" % "0.11.0-0.2.4"
+  val webPlugin  = "com.github.siasia" %% "xsbt-web-plugin" % "0.11.2-0.2.10"
   
   // Settings -----------------------------------
   

@@ -5,6 +5,6 @@ resolvers ++= Seq(
   "Web plugin" at "http://siasia.github.com/maven2"
 )
 
-libraryDependencies <+= sbtVersion(v => "com.github.siasia" %% "xsbt-web-plugin" % (v+"-0.2.4"))
+libraryDependencies <+= sbtVersion(v => "com.github.siasia" %% "xsbt-web-plugin" % (v+"-0.2.10"))
 
 addSbtPlugin("untyped" %% "sbt-runmode" % "0.1-SNAPSHOT")
