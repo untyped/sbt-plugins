@@ -1,0 +1,1 @@
+alert("Hello'); // compile error - mismatching quotes

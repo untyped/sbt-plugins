@@ -38,8 +38,18 @@ object Build extends Build {
   
   lazy val root = Project(
     id = "root",
-    base = file(".")
-  ) aggregate(sbtJs, sbtLess, sbtRunmode)
+    base = file("."),
+    settings = defaultSettings ++ Seq(
+      publishArtifact in (Compile) := false,
+      publishArtifact in (Compile, packageBin) := false,
+      publishArtifact in (Compile, packageSrc) := false,
+      publishArtifact in (Compile, packageDoc) := false
+    )
+  ) aggregate (
+    sbtJs,
+    sbtLess,
+    sbtRunmode
+  )
   
   // lazy val sbtGraph = Project(
   //   id = "sbt-graph",

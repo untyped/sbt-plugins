@@ -68,7 +68,12 @@ object Plugin extends sbt.Plugin {
             Nil
           
           case toCompile =>
-            toCompile.flatMap(_.compile)
+            var compiled = toCompile.flatMap(_.compile)
+            if(compiled.length < toCompile.length) {
+              error("Some Javascript sources could not be compiled")
+            } else {
+              compiled
+            }
         }
     }
   

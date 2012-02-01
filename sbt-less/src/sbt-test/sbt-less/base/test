@@ -9,7 +9,7 @@ $ exists target/scala-2.9.1/resource_managed/main/resources/file1.css
 $ exists target/scala-2.9.1/resource_managed/main/scala/file2.css
 $ exists target/scala-2.9.1/resource_managed/main/resources/dir1/file3.css
 $ exists target/scala-2.9.1/resource_managed/main/scala/dir2/file4.css
--$ exists target/scala-2.9.1/resource_managed/main/resources/file5.notemplate.css
+$ exists target/scala-2.9.1/resource_managed/main/resources/file5.notemplate.css
 $ exists target/scala-2.9.1/resource_managed/main/resources/file6.css
 
 # Check that the temporary downloads exist:
