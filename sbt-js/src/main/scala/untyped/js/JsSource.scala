@@ -16,7 +16,7 @@ object JsSource {
   
 }
 
-case class JsSource(val graph: Graph, val src: File, val des: File, val temporaryDownload: Boolean) extends Source {
+case class JsSource(val graph: Graph, val src: File, val des: File) extends Source {
   
   lazy val parents: List[Source] =
     for {

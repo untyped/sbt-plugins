@@ -42,15 +42,11 @@ trait Source {
   
   def isTemplated: Boolean
   
-  def temporaryDownload: Boolean
-
   def requiresRecompilation: Boolean =
-    !temporaryDownload && (
-      !des.exists ||
-      (src newerThan des) ||
-      isTemplated ||
-      parents.exists(_.requiresRecompilation)
-    )
+    !des.exists ||
+    (src newerThan des) ||
+    isTemplated ||
+    parents.exists(_.requiresRecompilation)
   
   def compile: Option[File]
   

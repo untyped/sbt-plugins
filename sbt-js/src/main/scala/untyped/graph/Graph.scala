@@ -19,10 +19,10 @@ trait Graph {
   var sources: List[S] = Nil
   
   def +=(file: File): Unit =
-    this += createSource(file, false)
+    this += createSource(file)
 
   def +=(url: URL): Unit =
-    this += createSource(downloadAndCache(url), true)
+    this += createSource(downloadAndCache(url))
 
   private def +=(source: S): Unit =
     if(!sources.contains(source)) {
@@ -38,15 +38,12 @@ trait Graph {
     }
   
   def getSource(src: URL): S =
-    getSource(downloadAndCache(src), true)
+    getSource(downloadAndCache(src))
 
   def getSource(src: File): S =
-    getSource(src, false)
+    sources find (_.src == src) getOrElse createSource(src)
 
-  def getSource(src: File, temporaryDownload: Boolean): S =
-    sources find (_.src == src) getOrElse createSource(src, temporaryDownload)
-
-  def createSource(src: File, temporaryDownload: Boolean): S
+  def createSource(src: File): S
 
   def srcToDes(file: File): File = {
     val rel =
@@ -74,6 +71,9 @@ trait Graph {
   }
   
   // Reasoning about sources --------------------
+  
+  def findSource(file: File): Option[S] =
+    sources find (source => source.src == file)
   
   def sourcesRequiringRecompilation: List[S] =
     sources filter (_.requiresRecompilation)

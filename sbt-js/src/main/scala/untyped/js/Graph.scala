@@ -16,11 +16,11 @@ case class Graph(
   
   type S = untyped.js.Source
   
-  override def createSource(src: File, temporaryDownload: Boolean): Source =
+  override def createSource(src: File): Source =
     if(src.toString.trim.toLowerCase.endsWith(".jsm")) {
-      JsmSource(this, src.getCanonicalFile, srcToDes(src).getCanonicalFile, temporaryDownload)
+      JsmSource(this, src.getCanonicalFile, srcToDes(src).getCanonicalFile)
     } else {
-      JsSource(this, src.getCanonicalFile, srcToDes(src).getCanonicalFile, temporaryDownload)
+      JsSource(this, src.getCanonicalFile, srcToDes(src).getCanonicalFile)
     }
 
   def srcFilenameToDesFilename(filename: String) =

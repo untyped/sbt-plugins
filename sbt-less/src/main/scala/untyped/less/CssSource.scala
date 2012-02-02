@@ -13,7 +13,7 @@ object CssSource {
 
 }
 
-case class CssSource(val graph: Graph, val src: File, val des: File, val temporaryDownload: Boolean) extends Source {
+case class CssSource(val graph: Graph, val src: File, val des: File) extends Source {
     
   lazy val parents: List[Source] =
     for {

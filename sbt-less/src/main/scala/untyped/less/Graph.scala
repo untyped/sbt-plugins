@@ -15,11 +15,11 @@ case class Graph(
 
   type S = untyped.less.Source
 
-  def createSource(src: File, temporaryDownload: Boolean): Source =
+  def createSource(src: File): Source =
     if(src.toString.trim.toLowerCase.endsWith(".less")) {
-      LessSource(this, src.getCanonicalFile, srcToDes(src).getCanonicalFile, temporaryDownload)
+      LessSource(this, src.getCanonicalFile, srcToDes(src).getCanonicalFile)
     } else {
-      CssSource(this, src.getCanonicalFile, srcToDes(src).getCanonicalFile, temporaryDownload)
+      CssSource(this, src.getCanonicalFile, srcToDes(src).getCanonicalFile)
     }
 
   def srcFilenameToDesFilename(filename: String) =

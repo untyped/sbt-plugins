@@ -9,7 +9,7 @@ import sbt.Project.Initialize
 object Plugin extends sbt.Plugin {
 
   object LessKeys {
-    val less                = TaskKey[List[File]]("less", "Compile Less CSS sources.")
+    val less                = TaskKey[Seq[File]]("less", "Compile Less CSS sources.")
     val sourceGraph         = TaskKey[Graph]("less-source-graph", "List of Less CSS sources.")
     val templateProperties  = SettingKey[Properties]("less-template-properties", "Properties to use in Less CSS templates")
     val downloadDirectory   = SettingKey[File]("less-download-directory", "Temporary directory to download Less CSS files to")
@@ -19,14 +19,14 @@ object Plugin extends sbt.Plugin {
   import LessKeys._
   
   def sourcesTask: Initialize[Task[Seq[File]]] =
-    (streams, sourceGraph in less) map {
-      (out, graph) =>
-        graph.sources.map(_.src)
+    (streams, sourceDirectory in less, includeFilter in less, excludeFilter in less) map {
+      (out, sourceDir, includeFilter, excludeFilter) =>
+        sourceDir.descendentsExcept(includeFilter, excludeFilter).get
     }
   
   def sourceGraphTask: Initialize[Task[Graph]] =
-    (streams, sourceDirectory in less, resourceManaged in less, includeFilter in less, excludeFilter in less, templateProperties in less, downloadDirectory in less, prettyPrint in less) map {
-      (out, sourceDir, targetDir, includeFilter, excludeFilter, templateProperties, downloadDir, prettyPrint) =>
+    (streams, sourceDirectory in less, resourceManaged in less, unmanagedSources in less, templateProperties in less, downloadDirectory in less, prettyPrint in less) map {
+      (out, sourceDir, targetDir, sourceFiles, templateProperties, downloadDir, prettyPrint) =>
         out.log.debug("sbt-less template properties " + templateProperties)
       
         val graph = Graph(
@@ -38,19 +38,17 @@ object Plugin extends sbt.Plugin {
           prettyPrint        = prettyPrint
         )
         
-        for {
-          src <- sourceDir.descendentsExcept(includeFilter, excludeFilter).get
-        } graph += src
+        sourceFiles.foreach(graph += _)
       
         graph
     }
   
   def compileTask =
-    (streams, sourceGraph in less) map {
-      (out, graph: Graph) =>
+    (streams, unmanagedSources in less, sourceGraph in less) map {
+      (out, sourceFiles, graph: Graph) =>
         graph.dump
         
-        graph.sourcesRequiringRecompilation match {
+        sourceFiles.flatMap(graph.findSource _).filter(_.requiresRecompilation) match {
           case Nil =>
             out.log.info("No Less CSS sources requiring compilation")
             Nil
@@ -75,13 +73,13 @@ object Plugin extends sbt.Plugin {
     inConfig(conf)(Seq(
       prettyPrint                :=  false,
       includeFilter in less      :=  "*.less",
-      excludeFilter in less      :=  (".*" - ".") || HiddenFileFilter,
+      excludeFilter in less      :=  (".*" - ".") || "_*" || HiddenFileFilter,
       sourceDirectory in less    <<= (sourceDirectory in conf),
+      unmanagedSources in less   <<= sourcesTask,
       resourceManaged in less    <<= (resourceManaged in conf),
       templateProperties         :=  new Properties,
       downloadDirectory          <<= (target in conf) { _ / "sbt-less" / "downloads" },
       sourceGraph                <<= sourceGraphTask,
-      unmanagedSources in less   <<= sourcesTask,
       clean in less              <<= cleanTask,
       less                       <<= compileTask
     ))

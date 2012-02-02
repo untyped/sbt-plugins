@@ -143,8 +143,13 @@ v0.1-v0.5 for SBT 0.7 based on [Coffee Script SBT plugin], Copyright (c) 2010 Lu
 
 Heavily influenced by the [YUI Compressor SBT plugin] by Jon Hoffman.
 
-Thanks to [Tim Nelson](https://github.com/eltimn) for his work on the SBT 0.11 
-migration and dramatic improvements to this README.
+Thanks to:
+
+ - [Tim Nelson](https://github.com/eltimn) for his work on the SBT 0.11 
+   migration and dramatic improvements to this README.
+
+ - [Glade Diviney](https://github.com/gladed) for help producing test cases
+   and debugging various issues.
 
 [Coffee Script SBT plugin]: https://github.com/rubbish/coffee-script-sbt-plugin
 [YUI Compressor SBT plugin]: https://github.com/hoffrocket/sbt-yui

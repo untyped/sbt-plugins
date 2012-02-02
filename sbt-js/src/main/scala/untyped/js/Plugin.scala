@@ -10,7 +10,7 @@ import sbt.Project.Initialize
 object Plugin extends sbt.Plugin {
 
   object JsKeys {
-    val js                     = TaskKey[List[File]]("js", "Compile Javascript sources and manifest files")
+    val js                     = TaskKey[Seq[File]]("js", "Compile Javascript sources and manifest files")
     val sourceGraph            = TaskKey[Graph]("js-source-graph", "Dependency graph of Javascript sources and manifest files")
     val charset                = SettingKey[Charset]("js-charset", "Sets the character encoding used in Javascript files (default utf-8)")
     val templateProperties     = SettingKey[Properties]("js-template-properties", "Properties to use in Javascript templates")
@@ -31,14 +31,18 @@ object Plugin extends sbt.Plugin {
   import JsKeys._
   
   def sourcesTask: Initialize[Task[Seq[File]]] =
-    (streams, sourceGraph in js) map {
-      (out, graph) =>
-        graph.sources.map(_.src)
+    (streams, sourceDirectory in js, includeFilter in js, excludeFilter in js) map {
+      (out, sourceDir, includeFilter, excludeFilter) =>
+        out.log.debug("sourceDirectory: " + sourceDir)
+        out.log.debug("includeFilter: " + includeFilter)
+        out.log.debug("excludeFilter: " + excludeFilter)
+      
+        sourceDir.descendentsExcept(includeFilter, excludeFilter).get
     }
   
   def sourceGraphTask: Initialize[Task[Graph]] =
-    (streams, sourceDirectory in js, resourceManaged in js, includeFilter in js, excludeFilter in js, templateProperties, downloadDirectory, compilerOptions) map {
-      (out, sourceDir, targetDir, includeFilter, excludeFilter, templateProperties, downloadDir, compilerOptions) =>
+    (streams, sourceDirectory in js, resourceManaged in js, unmanagedSources in js, templateProperties, downloadDirectory, compilerOptions) map {
+      (out, sourceDir, targetDir, sourceFiles, templateProperties, downloadDir, compilerOptions) =>
         out.log.debug("sbt-js template properties " + templateProperties)
       
         val graph = Graph(
@@ -50,19 +54,22 @@ object Plugin extends sbt.Plugin {
           compilerOptions    = compilerOptions
         )
         
-        for {
-          src <- sourceDir.descendentsExcept(includeFilter, excludeFilter).get
-        } graph += src
+        sourceFiles.foreach(graph += _)
       
         graph
     }
   
   def compileTask =
-    (streams, sourceGraph in js) map {
-      (out, graph: Graph) =>
+    (streams, unmanagedSources in js, sourceGraph in js) map {
+      (out, sourceFiles, graph: Graph) =>
+        out.log.debug("sourceFiles for sbt-js:")
+        sourceFiles.foreach { file =>
+          out.log.debug("  " + file)
+        }
+        
         graph.dump
         
-        graph.sourcesRequiringRecompilation match {
+        sourceFiles.flatMap(graph.findSource _).filter(_.requiresRecompilation) match {
           case Nil =>
             out.log.info("No Javascript sources requiring compilation")
             Nil
@@ -96,13 +103,13 @@ object Plugin extends sbt.Plugin {
     inConfig(conf)(Seq(
       charset                      :=  Charset.forName("utf-8"),
       includeFilter in js          :=  "*.js" || "*.jsm" || "*.jsmanifest",
-      excludeFilter in js          :=  (".*" - ".") || HiddenFileFilter,
+      excludeFilter in js          :=  (".*" - ".") || "_*" || HiddenFileFilter,
       sourceDirectory in js        <<= (sourceDirectory in conf),
+      unmanagedSources in js       <<= sourcesTask,
       resourceManaged in js        <<= (resourceManaged in conf),
       templateProperties           :=  new Properties,
       downloadDirectory            <<= (target in conf) { _ / "sbt-js" / "downloads" },
       sourceGraph                  <<= sourceGraphTask,
-      unmanagedSources in js       <<= sourcesTask,
       variableRenamingPolicy       :=  VariableRenamingPolicy.LOCAL,
       prettyPrint                  :=  false,
       compilerOptions              <<= compilerOptionsSetting,

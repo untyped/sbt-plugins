@@ -81,8 +81,13 @@ Heavily influenced by the [YUI Compressor SBT plugin] by Jon Hoffman.
 
 v0.1 used a tweaked version of the [Less for Java] wrapper by Asual.
 
-Thanks to [Tim Nelson](https://github.com/eltimn) for his work on the SBT 0.11 
-migration and dramatic improvements to this README.
+Thanks to:
+
+ - [Tim Nelson](https://github.com/eltimn) for his work on the SBT 0.11 
+   migration and dramatic improvements to this README.
+
+ - [Glade Diviney](https://github.com/gladed) for help producing test cases
+   and debugging various issues.
 
 [less-sbt]: https://github.com/softprops/less-sbt
 [Coffee Script SBT plugin]: https://github.com/rubbish/coffee-script-sbt-plugin
