@@ -18,7 +18,7 @@ object Plugin extends sbt.Plugin {
   
   import LessKeys._
   
-  def sourcesTask: Initialize[Task[Seq[File]]] =
+  def unmanagedSourcesTask: Initialize[Task[Seq[File]]] =
     (streams, sourceDirectory in less, includeFilter in less, excludeFilter in less) map {
       (out, sourceDir, includeFilter, excludeFilter) =>
         sourceDir.descendentsExcept(includeFilter, excludeFilter).get
@@ -41,6 +41,12 @@ object Plugin extends sbt.Plugin {
         sourceFiles.foreach(graph += _)
       
         graph
+    }
+  
+  def watchSourcesTask: Initialize[Task[Seq[File]]] =
+    (streams, sourceGraph in less) map {
+      (out, graph) =>
+        graph.sources.map(_.src)
     }
   
   def compileTask =
@@ -71,18 +77,23 @@ object Plugin extends sbt.Plugin {
 
   def lessSettingsIn(conf: Configuration): Seq[Setting[_]] =
     inConfig(conf)(Seq(
-      prettyPrint                :=  false,
-      includeFilter in less      :=  "*.less",
-      excludeFilter in less      :=  (".*" - ".") || "_*" || HiddenFileFilter,
-      sourceDirectory in less    <<= (sourceDirectory in conf),
-      unmanagedSources in less   <<= sourcesTask,
-      resourceManaged in less    <<= (resourceManaged in conf),
-      templateProperties         :=  new Properties,
-      downloadDirectory          <<= (target in conf) { _ / "sbt-less" / "downloads" },
-      sourceGraph                <<= sourceGraphTask,
-      clean in less              <<= cleanTask,
-      less                       <<= compileTask
-    ))
+      prettyPrint                  :=  false,
+      includeFilter in less        :=  "*.less",
+      excludeFilter in less        :=  (".*" - ".") || "_*" || HiddenFileFilter,
+      sourceDirectory in less      <<= (sourceDirectory in conf),
+      unmanagedSources in less     <<= unmanagedSourcesTask,
+      resourceManaged in less      <<= (resourceManaged in conf),
+      templateProperties           :=  new Properties,
+      downloadDirectory            <<= (target in conf) { _ / "sbt-less" / "downloads" },
+      sourceGraph                  <<= sourceGraphTask,
+      sources in less              <<= watchSourcesTask,
+      watchSources in less         <<= watchSourcesTask,
+      clean in less                <<= cleanTask,
+      less                         <<= compileTask
+    )) ++ Seq(
+      cleanFiles                   <+=  (resourceManaged in less in conf),
+      watchSources                 <++= (watchSources in less in conf)
+    )
   
   def lessSettings: Seq[Setting[_]] =
     lessSettingsIn(Compile) ++

@@ -30,7 +30,7 @@ object Plugin extends sbt.Plugin {
   
   import JsKeys._
   
-  def sourcesTask: Initialize[Task[Seq[File]]] =
+  def unmanagedSourcesTask: Initialize[Task[Seq[File]]] =
     (streams, sourceDirectory in js, includeFilter in js, excludeFilter in js) map {
       (out, sourceDir, includeFilter, excludeFilter) =>
         out.log.debug("sourceDirectory: " + sourceDir)
@@ -57,6 +57,12 @@ object Plugin extends sbt.Plugin {
         sourceFiles.foreach(graph += _)
       
         graph
+    }
+  
+  def watchSourcesTask: Initialize[Task[Seq[File]]] =
+    (streams, sourceGraph in js) map {
+      (out, graph) =>
+        graph.sources.map(_.src)
     }
   
   def compileTask =
@@ -101,25 +107,26 @@ object Plugin extends sbt.Plugin {
 
   def jsSettingsIn(conf: Configuration): Seq[Setting[_]] =
     inConfig(conf)(Seq(
-      charset                      :=  Charset.forName("utf-8"),
-      includeFilter in js          :=  "*.js" || "*.jsm" || "*.jsmanifest",
-      excludeFilter in js          :=  (".*" - ".") || "_*" || HiddenFileFilter,
-      sourceDirectory in js        <<= (sourceDirectory in conf),
-      unmanagedSources in js       <<= sourcesTask,
-      resourceManaged in js        <<= (resourceManaged in conf),
-      templateProperties           :=  new Properties,
-      downloadDirectory            <<= (target in conf) { _ / "sbt-js" / "downloads" },
-      sourceGraph                  <<= sourceGraphTask,
-      variableRenamingPolicy       :=  VariableRenamingPolicy.LOCAL,
-      prettyPrint                  :=  false,
-      compilerOptions              <<= compilerOptionsSetting,
-      clean in js                  <<= cleanTask,
-      js                           <<= compileTask
-    )) ++
-    inConfig(conf)(Seq(
-      cleanFiles   <+=  resourceManaged in js,
-      watchSources <++= unmanagedSources in js
-    ))
+      charset                      :=   Charset.forName("utf-8"),
+      includeFilter in js          :=   "*.js" || "*.jsm" || "*.jsmanifest",
+      excludeFilter in js          :=   (".*" - ".") || "_*" || HiddenFileFilter,
+      sourceDirectory in js        <<=  (sourceDirectory in conf),
+      unmanagedSources in js       <<=  unmanagedSourcesTask,
+      resourceManaged in js        <<=  (resourceManaged in conf),
+      templateProperties           :=   new Properties,
+      downloadDirectory            <<=  (target in conf) { _ / "sbt-js" / "downloads" },
+      sourceGraph                  <<=  sourceGraphTask,
+      sources in js                <<=  watchSourcesTask,
+      watchSources in js           <<=  watchSourcesTask,
+      variableRenamingPolicy       :=   VariableRenamingPolicy.LOCAL,
+      prettyPrint                  :=   false,
+      compilerOptions              <<=  compilerOptionsSetting,
+      clean in js                  <<=  cleanTask,
+      js                           <<=  compileTask
+    )) ++ Seq(
+      cleanFiles                   <+=  (resourceManaged in js in conf),
+      watchSources                 <++= (watchSources in js in conf)
+    )
   
   def jsSettings: Seq[Setting[_]] =
     jsSettingsIn(Compile) ++
