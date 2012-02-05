@@ -16,7 +16,7 @@ object JsSource {
   
 }
 
-case class JsSource(val graph: Graph, val src: File, val des: File) extends Source {
+case class JsSource(val graph: Graph, val src: File) extends Source {
   
   lazy val parents: List[Source] =
     for {
@@ -37,6 +37,6 @@ case class JsSource(val graph: Graph, val src: File, val des: File) extends Sour
     src.toString.contains(".template")
   
   override def toString =
-    "JsSource(" + src + ", " + des + ")"
+    "JsSource(" + src + ")"
   
 }

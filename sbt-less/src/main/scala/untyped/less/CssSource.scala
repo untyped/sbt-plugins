@@ -13,7 +13,7 @@ object CssSource {
 
 }
 
-case class CssSource(val graph: Graph, val src: File, val des: File) extends Source {
+case class CssSource(val graph: Graph, val src: File) extends Source {
     
   lazy val parents: List[Source] =
     for {
@@ -25,6 +25,7 @@ case class CssSource(val graph: Graph, val src: File, val des: File) extends Sou
     src.toString.contains(".template")
   
   def compile: Option[File] = {
+    val des = this.des getOrElse (throw new Exception("Could not determine destination filename for " + src))
     graph.log.info("Copying %s source %s".format(graph.pluginName, des))
 
     IO.copy(List((src, des)))
@@ -32,6 +33,6 @@ case class CssSource(val graph: Graph, val src: File, val des: File) extends Sou
   }
   
   override def toString =
-    "CssSource(" + src + ", " + des + ")"
+    "CssSource(" + src + ")"
   
 }

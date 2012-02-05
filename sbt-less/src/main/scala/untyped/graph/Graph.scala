@@ -45,14 +45,17 @@ trait Graph {
 
   def createSource(src: File): S
 
-  def srcToDes(file: File): File = {
-    val rel =
-      IO.relativize(sourceDir, file) orElse
-      IO.relativize(downloadDir, file) getOrElse
-      (throw new Exception("Could not determine destination filename for " + file))
-    
-    new File(targetDir, srcFilenameToDesFilename(rel).replaceAll("[.]template", ""))
-  }
+  /**
+   * Translates the `src` filename to a `des` filename.
+   * Returns `None' if `des` could not be determined.
+   * This typically occurs if `src` is outside of `srcDirectory`.
+   */
+  def srcToDes(file: File): Option[File] =
+    for(rel <- IO.relativize(sourceDir, file)) yield {
+      new File(targetDir, srcFilenameToDesFilename(rel).
+          replaceAll("[.]template", "")).
+          getCanonicalFile
+    }
   
   def srcFilenameToDesFilename(filename: String): String
   
@@ -120,7 +123,7 @@ trait Graph {
       log.debug("      " + source.src)
 
       log.debug("    des:")
-      log.debug("      " + source.des)
+      log.debug("      " + source.des.map(_.toString).getOrElse("NONE"))
 
       log.debug("    templated?:")
       log.debug("      " + source.isTemplated)

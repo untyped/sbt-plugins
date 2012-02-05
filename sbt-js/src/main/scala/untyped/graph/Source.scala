@@ -28,7 +28,16 @@ trait Source {
   def graph: G
   
   def src: File
-  def des: File
+  
+  /**
+   * Destination filename, or None if src filename 
+   * cannot be translated to destination filename.
+   *
+   * Failure to translate normally occurs if src 
+   * filename is outside srcDirectory.
+   */
+  final def des: Option[File] =
+    graph.srcToDes(src)
   
   lazy val srcDirectory: File =
     src.getParentFile
@@ -43,17 +52,20 @@ trait Source {
   def isTemplated: Boolean
   
   def requiresRecompilation: Boolean =
-    !des.exists ||
-    (src newerThan des) ||
-    isTemplated ||
-    parents.exists(_.requiresRecompilation)
+    des map { des => 
+      !des.exists ||
+      (src newerThan des) ||
+      isTemplated ||
+      parents.exists(_.requiresRecompilation)
+    } getOrElse false
   
   def compile: Option[File]
   
-  def clean: Unit = {
-    graph.log.info("Cleaning %s source %s".format(graph.pluginName, des))
-    IO.delete(des)
-  }
+  def clean: Unit =
+    des foreach { des =>
+      graph.log.info("Cleaning %s source %s".format(graph.pluginName, des))
+      IO.delete(des)
+    }
   
   // Templating and properties ------------------
   

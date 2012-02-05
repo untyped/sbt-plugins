@@ -4,7 +4,7 @@ import com.google.javascript.jscomp.JSSourceFile
 import sbt._
 import scala.collection._
 
-case class JsmSource(val graph: Graph, val src: File, val des: File) extends Source {
+case class JsmSource(val graph: Graph, val src: File) extends Source {
   
   lazy val parents: List[Source] =
     for {
@@ -32,6 +32,6 @@ case class JsmSource(val graph: Graph, val src: File, val des: File) extends Sou
     line.matches("^https?:.*")
   
   override def toString =
-    "JsmSource(" + src + ", " + des + ")"
+    "JsmSource(" + src + ")"
 
 }

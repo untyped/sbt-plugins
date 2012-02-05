@@ -17,9 +17,9 @@ case class Graph(
 
   def createSource(src: File): Source =
     if(src.toString.trim.toLowerCase.endsWith(".less")) {
-      LessSource(this, src.getCanonicalFile, srcToDes(src).getCanonicalFile)
+      LessSource(this, src.getCanonicalFile)
     } else {
-      CssSource(this, src.getCanonicalFile, srcToDes(src).getCanonicalFile)
+      CssSource(this, src.getCanonicalFile)
     }
 
   def srcFilenameToDesFilename(filename: String) =

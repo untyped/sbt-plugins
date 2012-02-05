@@ -16,7 +16,7 @@ object LessSource {
 
 }
 
-case class LessSource(val graph: Graph, val src: File, val des: File) extends Source {
+case class LessSource(val graph: Graph, val src: File) extends Source {
   
   lazy val parents: List[Source] =
     for {
@@ -29,6 +29,8 @@ case class LessSource(val graph: Graph, val src: File, val des: File) extends So
   
   def compile: Option[File] =
     withContext { ctx =>
+      val des = this.des getOrElse (throw new Exception("Could not determine destination filename for " + src))
+      
       graph.log.info("Compiling %s source %s".format(graph.pluginName, des))
 
       val scope = ctx.initStandardObjects()
@@ -85,6 +87,6 @@ case class LessSource(val graph: Graph, val src: File, val des: File) extends So
   }
   
   override def toString =
-    "LessSource(" + src + ", " + des + ")"
+    "LessSource(" + src + ")"
   
 }

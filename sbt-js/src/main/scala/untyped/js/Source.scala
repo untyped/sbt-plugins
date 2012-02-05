@@ -11,6 +11,8 @@ trait Source extends untyped.graph.Source {
   type G = untyped.js.Graph
 
   def compile: Option[File] = {
+    val des = this.des getOrElse (throw new Exception("Could not determine destination filename for " + src))
+    
     graph.log.info("Compiling %s source %s".format(graph.pluginName, des))
     
     val compiler = new jscomp.Compiler
