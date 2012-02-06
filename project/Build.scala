@@ -2,20 +2,20 @@ import sbt._
 import sbt.Keys._
 
 object Build extends Build {
-  
+
   import ScriptedPlugin._
-  
+
   // Libraries ----------------------------------
-  
-  val closure    = "com.google.javascript" % "closure-compiler" % "r706"
+
+  val closure    = "com.google.javascript" % "closure-compiler" % "r1592"
   val mustache   = "com.samskivert" % "jmustache" % "1.3"
   val rhino      = "rhino" % "js" % "1.7R2"
   val scalatest  = "org.scalatest" %% "scalatest" % "1.6.1"
-  
+
   val webPlugin  = "com.github.siasia" %% "xsbt-web-plugin" % "0.11.2-0.2.10"
-  
+
   // Settings -----------------------------------
-  
+
   def defaultSettings =
     Project.defaultSettings ++
     scriptedSettings ++
@@ -25,17 +25,22 @@ object Build extends Build {
       scalaVersion := "2.9.1",
       resolvers += "Untyped Public Repo" at "http://repo.untyped.com",
       publishTo := {
-        val host = System.getenv("DEFAULT_REPO_HOST")
-        val path = System.getenv("DEFAULT_REPO_PATH")
-        val user = System.getenv("DEFAULT_REPO_USER")
-        val keyfile = new File(System.getenv("DEFAULT_REPO_KEYFILE"))
-        Some(Resolver.sftp("Default Repo", host, path).as(user, keyfile))
+        for {
+          host <- Option(System.getenv("DEFAULT_REPO_HOST"))
+          path <- Option(System.getenv("DEFAULT_REPO_PATH"))
+          user <- Option(System.getenv("DEFAULT_REPO_USER"))
+          keyfile <- Option(System.getenv("DEFAULT_REPO_KEYFILE"))
+        } yield {
+          Resolver.sftp("Default Repo", host, path).as(user, new File(keyfile))
+        }
       },
-      scriptedBufferLog := false
+      scriptedBufferLog := false,
+      scalacOptions += "-deprecation",
+      scalacOptions += "-unchecked"
     )
-  
+
   // Projects -----------------------------------
-  
+
   lazy val root = Project(
     id = "root",
     base = file("."),
@@ -50,7 +55,7 @@ object Build extends Build {
     sbtLess,
     sbtRunmode
   )
-  
+
   // lazy val sbtGraph = Project(
   //   id = "sbt-graph",
   //   base = file("sbt-graph"),
@@ -58,7 +63,7 @@ object Build extends Build {
   //     version := "0.1-SNAPSHOT"
   //   )
   // )
-  
+
   lazy val sbtLess = Project(
     id = "sbt-less",
     base = file("sbt-less"),
@@ -71,7 +76,7 @@ object Build extends Build {
       )
     )
   )
-  
+
   lazy val sbtJs = Project(
     id = "sbt-js",
     base = file("sbt-js"),
@@ -84,7 +89,7 @@ object Build extends Build {
       )
     )
   )
-  
+
   lazy val sbtRunmode = Project(
     id = "sbt-runmode",
     base = file("sbt-runmode"),
@@ -96,5 +101,5 @@ object Build extends Build {
       )
     )
   ) dependsOn(sbtLess, sbtJs)
-  
+
 }
