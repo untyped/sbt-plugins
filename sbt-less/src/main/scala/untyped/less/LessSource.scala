@@ -17,7 +17,7 @@ object LessSource {
 }
 
 case class LessSource(val graph: Graph, val src: File) extends Source {
-  
+
   lazy val parents: List[Source] =
     for {
       line <- IO.readLines(src).map(_.trim).toList
@@ -26,22 +26,22 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
 
   def isTemplated: Boolean =
     src.toString.contains(".template")
-  
+
   def compile: Option[File] =
     withContext { ctx =>
       val des = this.des getOrElse (throw new Exception("Could not determine destination filename for " + src))
-      
+
       graph.log.info("Compiling %s source %s".format(graph.pluginName, des))
 
       val scope = ctx.initStandardObjects()
-      
+
       ctx.evaluateReader(
         scope,
-        new InputStreamReader(getClass().getResourceAsStream("/less-rhino-1.1.3.js"), Charset.forName("utf-8")),
+        new InputStreamReader(getClass().getResourceAsStream("/less-rhino-1.1.5.js"), Charset.forName("utf-8")),
         "less-rhino-1.1.3.js",
         1,
         null)
-  
+
       val lessCompiler = scope.get("compile", scope).asInstanceOf[Callable]
 
       try {
@@ -51,10 +51,10 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
           } else {
             IO.read(src)
           }
-        
+
         val minify =
           !graph.prettyPrint
-        
+
         val css =
           lessCompiler.call(
             ctx,
@@ -62,7 +62,7 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
             scope,
             Array(src.getPath, less, minify.asInstanceOf[AnyRef])
           ).toString
-        
+
         IO.write(des, css)
         Some(des)
       } catch {
@@ -71,11 +71,11 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
             case value: Scriptable => graph.log.error(ScriptableObject.getProperty(value, "message").toString)
             case value             => graph.log.error("Unknown exception compiling Less CSS: " + value)
           }
-          
+
           None
       }
     }
-  
+
   private def withContext[T](f: Context => T): T = {
     val ctx = Context.enter()
     try {
@@ -85,8 +85,7 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
       Context.exit()
     }
   }
-  
+
   override def toString =
     "LessSource(" + src + ")"
-  
 }

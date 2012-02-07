@@ -19,7 +19,7 @@ object Plugin extends sbt.Plugin {
     val prettyPrint            = SettingKey[Boolean]("js-pretty-print", "Whether to pretty print Javascript (default false)")
     val compilerOptions        = SettingKey[CompilerOptions]("js-compiler-options", "Options for the Google Closure compiler")
   }
-  
+
   /** Provide quick access to the enum values in com.google.javascript.jscomp.VariableRenamingPolicy */
   object VariableRenamingPolicy {
     val ALL         = com.google.javascript.jscomp.VariableRenamingPolicy.ALL
@@ -27,44 +27,44 @@ object Plugin extends sbt.Plugin {
     val OFF         = com.google.javascript.jscomp.VariableRenamingPolicy.OFF
     val UNSPECIFIED = com.google.javascript.jscomp.VariableRenamingPolicy.UNSPECIFIED
   }
-  
+
   import JsKeys._
-  
+
   def unmanagedSourcesTask: Initialize[Task[Seq[File]]] =
     (streams, sourceDirectory in js, includeFilter in js, excludeFilter in js) map {
       (out, sourceDir, includeFilter, excludeFilter) =>
         out.log.debug("sourceDirectory: " + sourceDir)
         out.log.debug("includeFilter: " + includeFilter)
         out.log.debug("excludeFilter: " + excludeFilter)
-      
+
         sourceDir.descendentsExcept(includeFilter, excludeFilter).get
     }
-  
+
   def sourceGraphTask: Initialize[Task[Graph]] =
     (streams, sourceDirectory in js, resourceManaged in js, unmanagedSources in js, templateProperties, downloadDirectory, compilerOptions) map {
       (out, sourceDir, targetDir, sourceFiles, templateProperties, downloadDir, compilerOptions) =>
         out.log.debug("sbt-js template properties " + templateProperties)
-      
+
         val graph = Graph(
           log                = out.log,
-          sourceDir          = sourceDir, 
+          sourceDir          = sourceDir,
           targetDir          = targetDir,
           templateProperties = templateProperties,
           downloadDir        = downloadDir,
           compilerOptions    = compilerOptions
         )
-        
+
         sourceFiles.foreach(graph += _)
-      
+
         graph
     }
-  
+
   def watchSourcesTask: Initialize[Task[Seq[File]]] =
     (streams, sourceGraph in js) map {
       (out, graph) =>
         graph.sources.map(_.src)
     }
-  
+
   def compileTask =
     (streams, unmanagedSources in js, sourceGraph in js) map {
       (out, sourceFiles, graph: Graph) =>
@@ -72,30 +72,30 @@ object Plugin extends sbt.Plugin {
         sourceFiles.foreach { file =>
           out.log.debug("  " + file)
         }
-        
+
         graph.dump
-        
+
         sourceFiles.flatMap(graph.findSource _).filter(_.requiresRecompilation) match {
           case Nil =>
             out.log.info("No Javascript sources requiring compilation")
             Nil
-          
+
           case toCompile =>
             var compiled = toCompile.flatMap(_.compile)
             if(compiled.length < toCompile.length) {
-              error("Some Javascript sources could not be compiled")
+              sys.error("Some Javascript sources could not be compiled")
             } else {
               compiled
             }
         }
     }
-  
+
   def cleanTask =
     (streams, sourceGraph in js) map {
       (out, graph) =>
         graph.sources.foreach(_.clean)
     }
-  
+
   def compilerOptionsSetting: Initialize[CompilerOptions] =
     (streams, variableRenamingPolicy in js, prettyPrint in js) apply {
       (out, variableRenamingPolicy, prettyPrint) =>
@@ -127,9 +127,9 @@ object Plugin extends sbt.Plugin {
       cleanFiles                   <+=  (resourceManaged in js in conf),
       watchSources                 <++= (watchSources in js in conf)
     )
-  
+
   def jsSettings: Seq[Setting[_]] =
     jsSettingsIn(Compile) ++
     jsSettingsIn(Test)
-    
+
 }
