@@ -37,8 +37,8 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
 
       ctx.evaluateReader(
         scope,
-        new InputStreamReader(getClass().getResourceAsStream("/less-rhino-1.1.5.js"), Charset.forName("utf-8")),
-        "less-rhino-1.1.3.js",
+        new InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.url), Charset.forName("utf-8")),
+        graph.lessVersion.filename,
         1,
         null)
 

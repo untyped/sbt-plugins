@@ -10,6 +10,7 @@ case class Graph(
     val targetDir: File,
     val templateProperties: Properties,
     val downloadDir: File,
+    val lessVersion: Plugin.LessVersion,
     val prettyPrint: Boolean
   ) extends untyped.graph.Graph {
 

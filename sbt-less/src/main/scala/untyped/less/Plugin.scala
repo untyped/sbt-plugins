@@ -13,7 +13,23 @@ object Plugin extends sbt.Plugin {
     val sourceGraph         = TaskKey[Graph]("less-source-graph", "List of Less CSS sources.")
     val templateProperties  = SettingKey[Properties]("less-template-properties", "Properties to use in Less CSS templates")
     val downloadDirectory   = SettingKey[File]("less-download-directory", "Temporary directory to download Less CSS files to")
-    val prettyPrint         = SettingKey[Boolean]("less-pretty-priny", "Whether to pretty print CSS (default false)")
+    val prettyPrint         = SettingKey[Boolean]("less-pretty-print", "Whether to pretty print CSS (default false)")
+    val lessVersion         = SettingKey[LessVersion]("less-version", "The version of the Less CSS compiler to use")
+  }
+
+  sealed trait LessVersion {
+    val filename: String
+    lazy val url = "/" + filename
+  }
+  
+  object LessVersion {
+    // val Less110 = new LessVersion { val filename = "less-rhino-1.1.0.js" }
+    // val Less111 = new LessVersion { val filename = "less-rhino-1.1.1.js" }
+    // val Less112 = new LessVersion { val filename = "less-rhino-1.1.2.js" }
+    val Less113 = new LessVersion { val filename = "less-rhino-1.1.3.js" }
+    val Less114 = new LessVersion { val filename = "less-rhino-1.1.4.js" }
+    val Less115 = new LessVersion { val filename = "less-rhino-1.1.5.js" }
+    val Less121 = new LessVersion { val filename = "less-rhino-1.2.1.js" }
   }
 
   import LessKeys._
@@ -25,8 +41,8 @@ object Plugin extends sbt.Plugin {
     }
 
   def sourceGraphTask: Initialize[Task[Graph]] =
-    (streams, sourceDirectory in less, resourceManaged in less, unmanagedSources in less, templateProperties in less, downloadDirectory in less, prettyPrint in less) map {
-      (out, sourceDir, targetDir, sourceFiles, templateProperties, downloadDir, prettyPrint) =>
+    (streams, sourceDirectory in less, resourceManaged in less, unmanagedSources in less, templateProperties in less, downloadDirectory in less, prettyPrint in less, lessVersion in less) map {
+      (out, sourceDir, targetDir, sourceFiles, templateProperties, downloadDir, prettyPrint, lessVersion) =>
         out.log.debug("sbt-less template properties " + templateProperties)
 
         val graph = Graph(
@@ -35,6 +51,7 @@ object Plugin extends sbt.Plugin {
           targetDir          = targetDir,
           templateProperties = templateProperties,
           downloadDir        = downloadDir,
+          lessVersion        = lessVersion,
           prettyPrint        = prettyPrint
         )
 
@@ -80,6 +97,7 @@ object Plugin extends sbt.Plugin {
       prettyPrint                  :=  false,
       includeFilter in less        :=  "*.less",
       excludeFilter in less        :=  (".*" - ".") || "_*" || HiddenFileFilter,
+      lessVersion in less          :=  LessVersion.Less113,
       sourceDirectory in less      <<= (sourceDirectory in conf),
       unmanagedSources in less     <<= unmanagedSourcesTask,
       resourceManaged in less      <<= (resourceManaged in conf),
