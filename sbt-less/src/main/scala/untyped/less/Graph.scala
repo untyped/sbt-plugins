@@ -27,5 +27,23 @@ case class Graph(
     filename.replaceAll("[.]less$", ".css")
 
   val pluginName = "sbt-less"
-  
+
+  override def dump: Unit = {
+    log.debug("Graph for " + pluginName + ":")
+
+    log.debug("  lessVersion:")
+    log.debug("    " + lessVersion.filename)
+
+    log.debug("  prettyPrint:")
+    log.debug("    " + prettyPrint)
+
+    log.debug("  templateProperties:")
+    log.debug("    " + templateProperties)
+
+    log.debug("  downloadDir:")
+    log.debug("    " + downloadDir)
+
+    sources.foreach(dumpSource _)
+  }
+
 }

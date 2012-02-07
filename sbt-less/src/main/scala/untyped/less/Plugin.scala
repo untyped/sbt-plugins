@@ -23,13 +23,9 @@ object Plugin extends sbt.Plugin {
   }
   
   object LessVersion {
-    // val Less110 = new LessVersion { val filename = "less-rhino-1.1.0.js" }
-    // val Less111 = new LessVersion { val filename = "less-rhino-1.1.1.js" }
-    // val Less112 = new LessVersion { val filename = "less-rhino-1.1.2.js" }
     val Less113 = new LessVersion { val filename = "less-rhino-1.1.3.js" }
-    val Less114 = new LessVersion { val filename = "less-rhino-1.1.4.js" }
     val Less115 = new LessVersion { val filename = "less-rhino-1.1.5.js" }
-    val Less121 = new LessVersion { val filename = "less-rhino-1.2.1.js" }
+    val Less121 = new LessVersion { val filename = "less-rhino-1.2.1.js" } // Note: this version doesn't work yet.
   }
 
   import LessKeys._
@@ -78,6 +74,7 @@ object Plugin extends sbt.Plugin {
 
           case toCompile =>
             var compiled = toCompile.flatMap(_.compile)
+
             if(compiled.length < toCompile.length) {
               sys.error("Some Less CSS sources could not be compiled")
             } else {
@@ -97,7 +94,7 @@ object Plugin extends sbt.Plugin {
       prettyPrint                  :=  false,
       includeFilter in less        :=  "*.less",
       excludeFilter in less        :=  (".*" - ".") || "_*" || HiddenFileFilter,
-      lessVersion in less          :=  LessVersion.Less113,
+      lessVersion in less          :=  LessVersion.Less115,
       sourceDirectory in less      <<= (sourceDirectory in conf),
       unmanagedSources in less     <<= unmanagedSourcesTask,
       resourceManaged in less      <<= (resourceManaged in conf),

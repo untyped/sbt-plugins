@@ -1,11 +1,52 @@
 package untyped
 package less
 
+import org.mozilla.javascript.{ Callable, Context, Function, FunctionObject, JavaScriptException, NativeArray, NativeObject, Scriptable, ScriptableObject }
+import org.mozilla.javascript.tools.shell.{ Environment, Global }
 import java.io.InputStreamReader
 import java.nio.charset.Charset
 import org.mozilla.javascript._
 import sbt._
 import scala.collection._
+
+/**
+ * Stub out a basic environment for Rhino that emulates running it on the command line.
+ * 
+ * This code was stolen mostly intact from less-sbt:
+ *   https://github.com/softprops/less-sbt/blob/master/src/main/scala/compiler.scala
+ */
+object ShellEmulation {
+  /** common functions the rhino shell defines */
+  val ShellFunctions = Array(
+    "doctest",
+    "gc",
+    "load",
+    "loadClass",
+    "print",
+    "quit",
+    "readFile",
+    "readUrl",
+    "runCommand",
+    "seal",
+    "sync",
+    "toint32",
+    "version")
+
+  /** Most `rhino friendly` js libraries make liberal use
+   *  if non emca script properties and functions that the
+   *  rhino shell env defines. Unfortunately we are not
+   *  evaluating these sources in a rhino shell.
+   *  instead of crying me a river, provide an interface
+   *  that enables emulation of the shell env */
+  def emulate(s: ScriptableObject) = {
+    // define rhino shell functions
+    s.defineFunctionProperties(ShellFunctions, classOf[Global], ScriptableObject.DONTENUM)
+    // make rhino `detectable` - http://github.com/ringo/ringojs/issues/#issue/88
+    Environment.defineClass(s)
+    s.defineProperty("environment", new Environment(s), ScriptableObject.DONTENUM)
+    s
+  }
+}
 
 object LessSource {
 
@@ -16,6 +57,12 @@ object LessSource {
 
 }
 
+/**
+ * Less CSS compiler.
+ *
+ * This code was adapted from less-sbt:
+ *   https://github.com/softprops/less-sbt/blob/master/src/main/scala/compiler.scala
+ */
 case class LessSource(val graph: Graph, val src: File) extends Source {
 
   lazy val parents: List[Source] =
@@ -33,7 +80,7 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
 
       graph.log.info("Compiling %s source %s".format(graph.pluginName, des))
 
-      val scope = ctx.initStandardObjects()
+      val scope = ShellEmulation.emulate(ctx.initStandardObjects())
 
       ctx.evaluateReader(
         scope,
@@ -68,8 +115,12 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
       } catch {
         case e : JavaScriptException =>
           e.getValue match {
-            case value: Scriptable => graph.log.error(ScriptableObject.getProperty(value, "message").toString)
-            case value             => graph.log.error("Unknown exception compiling Less CSS: " + value)
+            case value: Scriptable =>
+              graph.log.error("Less CSS error: " + ScriptableObject.getProperty(value, "message").toString)
+              graph.log.error("Stack trace: " + ScriptableObject.getProperty(value, "stack").toString)
+
+            case value =>
+              graph.log.error("Unknown exception compiling Less CSS: " + value)
           }
 
           None

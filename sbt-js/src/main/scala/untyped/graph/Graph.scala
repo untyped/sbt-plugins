@@ -109,43 +109,45 @@ trait Graph {
     }
 
   def pluginName: String
-  
+
   def dump: Unit = {
     log.debug("Graph for " + pluginName + ":")
 
     log.debug("  templateProperties:")
     log.debug("    " + templateProperties)
-    
+
     log.debug("  downloadDir:")
     log.debug("    " + downloadDir)
-  
-    sources.foreach { source =>
-      log.debug("  source:")
-      
-      log.debug("    src:")
-      log.debug("      " + source.src)
 
-      log.debug("    des:")
-      log.debug("      " + source.des.map(_.toString).getOrElse("NONE"))
-
-      log.debug("    templated?:")
-      log.debug("      " + source.isTemplated)
-      
-      log.debug("    recompile?:")
-      log.debug("      " + source.requiresRecompilation)
-
-      log.debug("    parents:")
-      parents(source).foreach(src => log.debug("      " + src))
-      
-      log.debug("    children:")
-      children(source).foreach(src => log.debug("      " + src))
-      
-      log.debug("    ancestors:")
-      ancestors(source).foreach(src => log.debug("      " + src))
-      
-      log.debug("    descendents:")
-      descendents(source).foreach(src => log.debug("      " + src))
-    }
+    sources.foreach(dumpSource _)
   }
-  
+
+  def dumpSource(source: S): Unit = {
+    log.debug("  source:")
+
+    log.debug("    src:")
+    log.debug("      " + source.src)
+
+    log.debug("    des:")
+    log.debug("      " + source.des.map(_.toString).getOrElse("NONE"))
+
+    log.debug("    templated?:")
+    log.debug("      " + source.isTemplated)
+    
+    log.debug("    recompile?:")
+    log.debug("      " + source.requiresRecompilation)
+
+    log.debug("    parents:")
+    parents(source).foreach(src => log.debug("      " + src))
+
+    log.debug("    children:")
+    children(source).foreach(src => log.debug("      " + src))
+
+    log.debug("    ancestors:")
+    ancestors(source).foreach(src => log.debug("      " + src))
+
+    log.debug("    descendents:")
+    descendents(source).foreach(src => log.debug("      " + src))
+  }
+
 }

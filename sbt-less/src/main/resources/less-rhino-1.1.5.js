@@ -2443,39 +2443,54 @@ function writeFile(filename, content) {
     out.close();
 }
 
+// DJG: Removed original command line implementation (as per less-sbt):
+
 // Command line integration via Rhino
-(function (args) {
-    name = args[0];
-    var output = args[1];
+// (function (args) {
+//     name = args[0];
+//     var output = args[1];
+// 
+//     if (!name) {
+//         print('No files present in the fileset; Check your pattern match in build.xml');
+//         quit(1);
+//     }
+//     path = name.split("/");path.pop();path=path.join("/")
+// 
+//     var input = readFile(name);
+// 
+//     if (!input) {
+//         print('lesscss: couldn\'t open file ' + name);
+//         quit(1);
+//     }
+// 
+//     var result;
+//     var parser = new less.Parser();
+//     parser.parse(input, function (e, root) {
+//         if (e) {
+//             quit(1);
+//         } else {
+//             result = root.toCSS();
+//             if (output) {
+//                 writeFile(output, result);
+//                 print("Written to " + output);
+//             } else {
+//                 print(result);
+//             }
+//             quit(0);
+//         }
+//     });
+//     print("done");
+// }(arguments));
 
-    if (!name) {
-        print('No files present in the fileset; Check your pattern match in build.xml');
-        quit(1);
-    }
-    path = name.split("/");path.pop();path=path.join("/")
+// DJG: Added top-level "compile()" function (as per less-sbt):
 
-    var input = readFile(name);
-
-    if (!input) {
-        print('lesscss: couldn\'t open file ' + name);
-        quit(1);
-    }
-
-    var result;
-    var parser = new less.Parser();
-    parser.parse(input, function (e, root) {
-        if (e) {
-            quit(1);
-        } else {
-            result = root.toCSS();
-            if (output) {
-                writeFile(output, result);
-                print("Written to " + output);
-            } else {
-                print(result);
-            }
-            quit(0);
-        }
-    });
-    print("done");
-}(arguments));
+// removed origilnal cmdline argument handling function with this function for convenient scoped access to the less.Parser function
+function compile(scriptName, code, min) {
+  name = scriptName;
+  var css = null;
+  new less.Parser().parse(code, function (e, root) {
+    if(e) { throw e; }
+    css = root.toCSS({ compress: min || false })
+  });
+  return css;
+}
