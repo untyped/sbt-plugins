@@ -33,6 +33,10 @@ object Plugin extends sbt.Plugin {
   def unmanagedSourcesTask: Initialize[Task[Seq[File]]] =
     (streams, sourceDirectory in less, includeFilter in less, excludeFilter in less) map {
       (out, sourceDir, includeFilter, excludeFilter) =>
+        out.log.debug("sourceDirectory: " + sourceDir)
+        out.log.debug("includeFilter: " + includeFilter)
+        out.log.debug("excludeFilter: " + excludeFilter)
+
         sourceDir.descendentsExcept(includeFilter, excludeFilter).get
     }
 
@@ -65,6 +69,11 @@ object Plugin extends sbt.Plugin {
   def compileTask =
     (streams, unmanagedSources in less, sourceGraph in less) map {
       (out, sourceFiles, graph: Graph) =>
+        out.log.debug("sourceFiles for sbt-less:")
+        sourceFiles.foreach { file =>
+          out.log.debug("  " + file)
+        }
+
         graph.dump
 
         sourceFiles.flatMap(graph.findSource _).filter(_.requiresRecompilation) match {

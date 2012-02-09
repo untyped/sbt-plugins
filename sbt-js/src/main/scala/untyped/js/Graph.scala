@@ -13,9 +13,9 @@ case class Graph(
     val downloadDir: File,
     val compilerOptions: CompilerOptions
   ) extends untyped.graph.Graph {
-  
+
   type S = untyped.js.Source
-  
+
   override def createSource(src: File): Source =
     if(src.toString.trim.toLowerCase.endsWith(".jsm")) {
       JsmSource(this, src.getCanonicalFile)
@@ -27,14 +27,14 @@ case class Graph(
     filename.replaceAll("[.]jsm(anifest)?$", ".js")
 
   val pluginName = "sbt-js"
-  
+
   def closureLogLevel: java.util.logging.Level =
     java.util.logging.Level.OFF
 
   def closureExterns(a: Source): List[JSSourceFile] =
-    (a :: ancestors(a)).reverse.flatMap(_.closureExterns)
+    ancestors(a).flatMap(_.closureExterns)
 
   def closureSources(a: Source): List[JSSourceFile] =
-    (a :: ancestors(a)).reverse.flatMap(_.closureSources)
+    ancestors(a).flatMap(_.closureSources)
 
 }

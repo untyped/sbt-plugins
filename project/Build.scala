@@ -90,6 +90,18 @@ object Build extends Build {
     )
   )
 
+  lazy val sbtMustache = Project(
+    id = "sbt-mustache",
+    base = file("sbt-mustache"),
+    settings = defaultSettings ++ Seq(
+      version := "0.1-SNAPSHOT",
+      libraryDependencies ++= Seq(
+        mustache,
+        scalatest % "test"
+      )
+    )
+  )
+
   lazy val sbtRunmode = Project(
     id = "sbt-runmode",
     base = file("sbt-runmode"),

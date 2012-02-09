@@ -5,7 +5,7 @@ import sbt._
 import scala.collection._
 
 trait Graph {
-  
+
   type S <: Source
 
   val log: Logger
@@ -13,11 +13,11 @@ trait Graph {
   val targetDir: File
   val templateProperties: Properties
   val downloadDir: File
-  
+
   // Adding sources -----------------------------
-  
+
   var sources: List[S] = Nil
-  
+
   def +=(file: File): Unit =
     this += createSource(file)
 
@@ -29,14 +29,14 @@ trait Graph {
       sources = source :: sources
       parents(source).foreach(this += _)
     }
-  
+
   def getSource(src: String, referredToBy: S): S =
     if(src.matches("^https?:.*")) {
       getSource(new URL(src))
     } else {
       getSource(new File(referredToBy.srcDirectory, src).getCanonicalFile)
     }
-  
+
   def getSource(src: URL): S =
     getSource(downloadAndCache(src))
 
@@ -56,54 +56,56 @@ trait Graph {
           replaceAll("[.]template", "")).
           getCanonicalFile
     }
-  
+
   def srcFilenameToDesFilename(filename: String): String
-  
+
   // Downloading and caching URLs ---------------
-  
+
   def downloadAndCache(url: URL): File = {
     val file = downloadDir / url.toString.replaceAll("""[^-A-Za-z0-9.]""", "_")
-    
+
     if(!file.exists) {
       val content = scala.io.Source.fromInputStream(url.openStream).mkString
       IO.createDirectory(downloadDir)
       IO.write(file, content)
     }
-    
+
     file
   }
-  
+
   // Reasoning about sources --------------------
-  
+
   def findSource(file: File): Option[S] =
     sources find (source => source.src == file)
-  
+
   def parents(a: S): List[S] =
     a.parents.asInstanceOf[List[S]]
 
   def children(a: S): List[S] =
     sources filter(b => b.parents.contains(a))
-  
+
   def ancestors(a: S): List[S] =
-    breadthFirstSearch(parents _, List(a), Nil).
-    filterNot(_ == a)
-    
+    postorder(a, parents _)
+
   def descendents(a: S): List[S] =
-    breadthFirstSearch(children _, List(a), Nil).
-    filterNot(_ == a)
-  
-  def breadthFirstSearch(succ: (S) => List[S], open: List[S], ans: List[S]): List[S] =
-    open match {
-      case Nil =>
-        ans
-      
-      case next :: rest =>
-        if(ans.contains(next)) {
-          breadthFirstSearch(succ, rest, ans)
-        } else {
-          breadthFirstSearch(succ, rest ::: succ(next), next :: ans)
-        }
+    postorder(a, children _)
+
+  def postorder(node: S, succ: (S) => List[S]): List[S] = {
+    var accum: Seq[S] = Seq()
+    var visited: Seq[S] = Seq()
+
+    def visit(node: S): Unit = {
+      if(!visited.contains(node)) {
+        visited = visited ++ Seq(node)
+        succ(node).foreach(visit _)
+        accum = accum ++ Seq(node)
+      }
     }
+
+    visit(node)
+
+    accum.toList
+  }
 
   def pluginName: String
 
@@ -130,7 +132,7 @@ trait Graph {
 
     log.debug("    templated?:")
     log.debug("      " + source.isTemplated)
-    
+
     log.debug("    recompile?:")
     log.debug("      " + source.requiresRecompilation)
 
