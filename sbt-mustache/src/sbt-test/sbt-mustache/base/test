@@ -1,0 +1,46 @@
+# Mark the time and run the compile task:
+$ sleep 1000
+$ touch fixtures/last-compile-time
+$ sleep 1000
+> mustache
+
+# Check that the files exist:
+$ exists target/scala-2.9.1/resource_managed/main/resources/file1.html
+$ exists target/scala-2.9.1/resource_managed/main/resources/lib/file2.html
+$ exists target/scala-2.9.1/resource_managed/main/resources/lib/file3.html
+
+# Check that the files have the correct content:
+> contents target/scala-2.9.1/resource_managed/main/resources/file1.html         fixtures/file1.html
+> contents target/scala-2.9.1/resource_managed/main/resources/lib/file2.html     fixtures/file2.html
+> contents target/scala-2.9.1/resource_managed/main/resources/lib/file3.html     fixtures/file3.html
+
+# Check that the files were updated by the last compile task:
+$ newer target/scala-2.9.1/resource_managed/main/resources/file1.html            fixtures/last-compile-time
+$ newer target/scala-2.9.1/resource_managed/main/resources/lib/file2.html        fixtures/last-compile-time
+$ newer target/scala-2.9.1/resource_managed/main/resources/lib/file3.html        fixtures/last-compile-time
+
+# Touch some (but not all) of the source files:
+$ touch src/main/resources/lib/file2.html
+
+# Mark the time and run the compile task again:
+$ sleep 1000
+$ touch fixtures/last-compile-time
+$ sleep 1000
+> mustache
+
+# Check that the files still have the correct content:
+> contents target/scala-2.9.1/resource_managed/main/resources/file1.html         fixtures/file1.html
+> contents target/scala-2.9.1/resource_managed/main/resources/lib/file2.html     fixtures/file2.html
+> contents target/scala-2.9.1/resource_managed/main/resources/lib/file3.html     fixtures/file3.html
+
+# Check that only the touched files were updated:
+$ newer fixtures/last-compile-time     target/scala-2.9.1/resource_managed/main/resources/file1.html
+$ newer target/scala-2.9.1/resource_managed/main/resources/lib/file2.html fixtures/last-compile-time
+$ newer target/scala-2.9.1/resource_managed/main/resources/lib/file3.html fixtures/last-compile-time
+
+# Clean everything:
+> clean
+
+# Check the target and temporary downloads directories have been deleted:
+$ absent target/scala-2.9.1/resource_managed
+$ absent target/sbt-mustache/downloads

@@ -10,10 +10,10 @@ object JsSource {
     """
     //[ \t]*require[ \t]*"([^"]+)"
     """.trim.r
-  
+
   def parseRequire(line: String): Option[String] =
     requireRegex.findAllIn(line).matchData.map(data => data.group(1)).toList.headOption
-  
+
 }
 
 case class JsSource(val graph: Graph, val src: File) extends Source {
