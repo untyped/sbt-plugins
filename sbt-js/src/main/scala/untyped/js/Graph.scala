@@ -19,7 +19,7 @@ case class Graph(
   override def createSource(src: File): Source =
     if(src.toString.trim.toLowerCase.endsWith(".jsm")) {
       JsmSource(this, src.getCanonicalFile)
-    if(src.toString.trim.toLowerCase.endsWith(".coffee")) {
+    } else if(src.toString.trim.toLowerCase.endsWith(".coffee")) {
       CoffeeSource(this, src.getCanonicalFile)
     } else {
       JsSource(this, src.getCanonicalFile)

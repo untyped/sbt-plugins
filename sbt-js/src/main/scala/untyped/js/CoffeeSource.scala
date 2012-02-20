@@ -9,7 +9,7 @@ object CoffeeSource {
 
   val requireRegex =
     """
-    //[ \t]*require[ \t]*"([^"]+)"
+    #[ \t]*require[ \t]*"([^"]+)"
     """.trim.r
 
   def parseRequire(line: String): Option[String] =
@@ -26,7 +26,7 @@ case class CoffeeSource(val graph: Graph, val src: File) extends Source {
     } yield graph.getSource(name, this)
 
   def coffeeCompile(in: String): String =
-    new JCoffeeScriptCompiler.compile(in)
+    (new JCoffeeScriptCompiler).compile(in)
 
   /** Closure sources for this file (not its parents). */
   def closureSources: List[JSSourceFile] =
