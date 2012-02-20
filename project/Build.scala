@@ -7,12 +7,12 @@ object Build extends Build {
 
   // Libraries ----------------------------------
 
-  val closure    = "com.google.javascript" % "closure-compiler" % "r1592"
-  val mustache   = "com.samskivert" % "jmustache" % "1.3"
-  val rhino      = "rhino" % "js" % "1.7R2"
-  val scalatest  = "org.scalatest" %% "scalatest" % "1.6.1"
-
-  val webPlugin  = "com.github.siasia" %% "xsbt-web-plugin" % "0.11.2-0.2.10"
+  val closure       = "com.google.javascript" % "closure-compiler" % "r1592"
+  val mustache      = "com.samskivert" % "jmustache" % "1.3"
+  val rhino         = "rhino" % "js" % "1.7R2"
+  val scalatest     = "org.scalatest" %% "scalatest" % "1.6.1"
+  val jCoffeescript = "org.jcoffeescript" % "jcoffeescript" % "1.1" from "http://cloud.github.com/downloads/yeungda/jcoffeescript/jcoffeescript-1.1.jar"
+  val webPlugin     = "com.github.siasia" %% "xsbt-web-plugin" % "0.11.2-0.2.10"
 
   // Settings -----------------------------------
 
@@ -53,6 +53,7 @@ object Build extends Build {
   ) aggregate (
     sbtJs,
     sbtLess,
+    sbtMustache,
     sbtRunmode
   )
 
@@ -84,6 +85,7 @@ object Build extends Build {
       version := "0.1-SNAPSHOT",
       libraryDependencies ++= Seq(
         closure,
+        jCoffeescript,
         mustache,
         scalatest % "test"
       )

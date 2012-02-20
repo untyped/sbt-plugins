@@ -2,9 +2,12 @@
 //  - blank lines;
 //  - lines with spaces at the beginning/end (file1.less)
 //  - entire-line comments (file2.less);
-//  - end-of-line comments (file3.less).
+//  - end-of-line comments (file3.less);
+//  - importing a file (file5) that imports another file (file1), changing the relative directory of the import.
 
-@import "../../resources/file1.less";
+@import "../../resources/file5.notemplate.less";
 // @import "file2.less";
 
 @import "../../resources/dir1/file3.less"; // @import "file4.less";
+
+.file4{is:here;}

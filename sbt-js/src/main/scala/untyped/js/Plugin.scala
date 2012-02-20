@@ -108,7 +108,7 @@ object Plugin extends sbt.Plugin {
   def jsSettingsIn(conf: Configuration): Seq[Setting[_]] =
     inConfig(conf)(Seq(
       charset                      :=   Charset.forName("utf-8"),
-      includeFilter in js          :=   "*.js" || "*.jsm" || "*.jsmanifest",
+      includeFilter in js          :=   "*.js" || "*.jsm" || "*.jsmanifest" || "*.coffee",
       excludeFilter in js          :=   (".*" - ".") || "_*" || HiddenFileFilter,
       sourceDirectory in js        <<=  (sourceDirectory in conf),
       unmanagedSources in js       <<=  unmanagedSourcesTask,

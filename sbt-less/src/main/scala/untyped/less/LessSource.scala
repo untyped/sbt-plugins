@@ -11,7 +11,7 @@ import scala.collection._
 
 /**
  * Stub out a basic environment for Rhino that emulates running it on the command line.
- * 
+ *
  * This code was stolen mostly intact from less-sbt:
  *   https://github.com/softprops/less-sbt/blob/master/src/main/scala/compiler.scala
  */
@@ -50,7 +50,7 @@ object ShellEmulation {
 
 object LessSource {
 
-  val importRegex = """^@import "([^"]+)";$""".r
+  val importRegex = """^[ \t]*@import "([^"]+)";.*$""".r
 
   def parseImport(line: String): Option[String] =
     importRegex.findAllIn(line).matchData.map(_.group(1)).toList.headOption
@@ -94,9 +94,9 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
       try {
         val less =
           if(isTemplated) {
-            renderTemplate(IO.read(src))
+            renderTemplate(completeRawSource)
           } else {
-            IO.read(src)
+            completeRawSource
           }
 
         val minify =
