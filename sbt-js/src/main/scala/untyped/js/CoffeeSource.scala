@@ -3,7 +3,7 @@ package untyped.js
 import com.google.javascript.jscomp.JSSourceFile
 import sbt._
 import scala.collection._
-import org.jcoffeescript.JCoffeeScriptCompiler
+import org.jcoffeescript.{JCoffeeScriptCompiler, JCoffeeScriptCompileException}
 
 object CoffeeSource {
 
@@ -26,7 +26,13 @@ case class CoffeeSource(val graph: Graph, val src: File) extends Source {
     } yield graph.getSource(name, this)
 
   def coffeeCompile(in: String): String =
-    (new JCoffeeScriptCompiler).compile(in)
+    try {
+      (new JCoffeeScriptCompiler).compile(in)
+    } catch {
+      case exn: JCoffeeScriptCompileException =>
+        sys.error("Error compiling Coffeescript: " + this.src + ": " + exn.getMessage)
+    }
+
 
   /** Closure sources for this file (not its parents). */
   def closureSources: List[JSSourceFile] =

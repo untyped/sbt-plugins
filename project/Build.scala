@@ -12,7 +12,13 @@ object Build extends Build {
   val rhino         = "rhino" % "js" % "1.7R2"
   val scalatest     = "org.scalatest" %% "scalatest" % "1.6.1"
   val jCoffeescript = "org.jcoffeescript" % "jcoffeescript" % "1.1" from "http://cloud.github.com/downloads/yeungda/jcoffeescript/jcoffeescript-1.1.jar"
-  val webPlugin     = "com.github.siasia" %% "xsbt-web-plugin" % "0.11.2-0.2.10"
+
+  def webPlugin(sbtVersion: String) =
+    sbtVersion match {
+      case "0.11.0" => "com.github.siasia" %% "xsbt-web-plugin" % "0.11.0-0.2.8"
+      case "0.11.1" => "com.github.siasia" %% "xsbt-web-plugin" % "0.11.1-0.2.10"
+      case "0.11.2" => "com.github.siasia" %% "xsbt-web-plugin" % "0.11.2-0.2.11"
+    }
 
   // Settings -----------------------------------
 
@@ -109,10 +115,8 @@ object Build extends Build {
     base = file("sbt-runmode"),
     settings = defaultSettings ++ Seq(
       version := "0.1-SNAPSHOT",
-      libraryDependencies ++= Seq(
-        webPlugin,
-        scalatest % "test"
-      )
+      libraryDependencies <+= sbtVersion(v => webPlugin(v)),
+      libraryDependencies += scalatest % "test"
     )
   ) dependsOn(sbtLess, sbtJs)
 

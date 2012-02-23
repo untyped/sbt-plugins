@@ -26,7 +26,7 @@ case class Graph(
     }
 
   def srcFilenameToDesFilename(filename: String) =
-    filename.replaceAll("[.]jsm(anifest)?$", ".js")
+    filename.replaceAll("[.](js|jsm|jsmanifest|coffee)$", ".js")
 
   val pluginName = "sbt-js"
 
