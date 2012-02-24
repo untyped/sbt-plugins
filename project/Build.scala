@@ -91,6 +91,7 @@ object Build extends Build {
       version := "0.3-SNAPSHOT",
       libraryDependencies ++= Seq(
         closure,
+        rhino,
         // jCoffeescript,
         mustache,
         scalatest % "test"
