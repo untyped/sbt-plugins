@@ -17,9 +17,20 @@ For SBT 0.11:
 
 Create a `project/plugins.sbt` file and paste the following content into it:
 
+    resolvers += Resolver.url(
+      "sbt-plugin-releases",
+      url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/")
+    )(Resolver.ivyStylePatterns)
+
     addSbtPlugin("com.untyped" %% "sbt-less" % "0.3")
 
-Then, in your build.sbt file, put:
+Note that, as of version 0.3, certain things have changed:
+
+ - the plugin has moved from `repo.untyped.com` to `scalasbt.artifactoryonline.com`;
+ - the group ID has changed from `untyped` to `com.untyped`;
+ - the package name has changed from `untyped.less` to `com.untyped.sbtless`.
+
+In your build.sbt file, put:
 
     seq(lessSettings : _*)
 
