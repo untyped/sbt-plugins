@@ -1,14 +1,15 @@
-package com.untyped.js
+package com.untyped.sbtjs
 
 import com.google.javascript.jscomp.JSSourceFile
 import sbt._
 import scala.collection._
+import org.jcoffeescript.{JCoffeeScriptCompiler, JCoffeeScriptCompileException}
 
-object JsSource {
+object CoffeeSource {
 
   val requireRegex =
     """
-    //[ \t]*require[ \t]*"([^"]+)"
+    #[ \t]*require[ \t]*"([^"]+)"
     """.trim.r
 
   def parseRequire(line: String): Option[String] =
@@ -16,27 +17,36 @@ object JsSource {
 
 }
 
-case class JsSource(val graph: Graph, val src: File) extends Source {
-  
+case class CoffeeSource(val graph: Graph, val src: File) extends Source {
+
   lazy val parents: List[Source] =
     for {
       line <- IO.readLines(src).map(_.trim).toList
-      name <- JsSource.parseRequire(line)
+      name <- CoffeeSource.parseRequire(line)
     } yield graph.getSource(name, this)
-  
+
+  def coffeeCompile(in: String): String =
+    try {
+      (new JCoffeeScriptCompiler).compile(in)
+    } catch {
+      case exn: JCoffeeScriptCompileException =>
+        sys.error("Error compiling Coffeescript: " + this.src + ": " + exn.getMessage)
+    }
+
+
   /** Closure sources for this file (not its parents). */
   def closureSources: List[JSSourceFile] =
     if(this.isTemplated) {
-      List(JSSourceFile.fromCode(src.toString, renderTemplate(src)))
+      List(JSSourceFile.fromCode(src.toString, coffeeCompile(renderTemplate(src))))
     } else {
-      List(JSSourceFile.fromFile(src))
+      List(JSSourceFile.fromCode(src.toString, coffeeCompile(IO.read(src))))
     }
-  
+
   /** Is the source file templated? It's templated if the file name contains ".template", e.g. "foo.template.js" */
   def isTemplated: Boolean =
     src.toString.contains(".template")
-  
+
   override def toString =
-    "JsSource(" + src + ")"
-  
+    "CoffeeSource(" + src + ")"
+
 }

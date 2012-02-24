@@ -1,4 +1,4 @@
-package com.untyped.mustache
+package com.untyped.sbtmustache
 
 import sbt._
 import scala.collection._
@@ -12,10 +12,10 @@ object JsSource {
 
 }
 
-case class Source(val graph: Graph, val src: File) extends com.untyped.graph.Source {
+case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.Source {
 
-  type S = com.untyped.mustache.Source
-  type G = com.untyped.mustache.Graph
+  type S = com.untyped.sbtmustache.Source
+  type G = com.untyped.sbtmustache.Graph
 
   def isTemplated = true
 

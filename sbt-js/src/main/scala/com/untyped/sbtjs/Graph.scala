@@ -1,4 +1,4 @@
-package com.untyped.js
+package com.untyped.sbtjs
 
 import com.google.javascript.jscomp._
 import java.util.Properties
@@ -12,9 +12,9 @@ case class Graph(
     val templateProperties: Properties,
     val downloadDir: File,
     val compilerOptions: CompilerOptions
-  ) extends com.untyped.graph.Graph {
+  ) extends com.untyped.sbtgraph.Graph {
 
-  type S = com.untyped.js.Source
+  type S = com.untyped.sbtjs.Source
 
   override def createSource(src: File): Source =
     if(src.toString.trim.toLowerCase.endsWith(".jsm")) {

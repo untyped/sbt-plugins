@@ -1,4 +1,4 @@
-package com.untyped.js
+package com.untyped.sbtjs
 
 import com.google.javascript.jscomp.JSSourceFile
 import sbt._

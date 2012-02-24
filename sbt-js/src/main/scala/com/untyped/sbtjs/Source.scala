@@ -1,14 +1,14 @@
-package com.untyped.js
+package com.untyped.sbtjs
 
 import com.google.javascript.jscomp
 import com.google.javascript.jscomp._
 import sbt._
 import scala.collection._
 
-trait Source extends com.untyped.graph.Source {
+trait Source extends com.untyped.sbtgraph.Source {
 
-  type S = com.untyped.js.Source
-  type G = com.untyped.js.Graph
+  type S = com.untyped.sbtjs.Source
+  type G = com.untyped.sbtjs.Graph
 
   def compile: Option[File] = {
     val des = this.des getOrElse (throw new Exception("Could not determine destination filename for " + src))

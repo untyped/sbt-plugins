@@ -1,5 +1,4 @@
-package com.untyped
-package less
+package com.untyped.sbtless
 
 import org.mozilla.javascript.{ Callable, Context, Function, FunctionObject, JavaScriptException, NativeArray, NativeObject, Scriptable, ScriptableObject }
 import org.mozilla.javascript.tools.shell.{ Environment, Global }

@@ -1,4 +1,4 @@
-package com.untyped.less
+package com.untyped.sbtless
 
 import java.nio.charset.Charset
 import java.util.Properties

@@ -1,4 +1,4 @@
-package com.untyped.mustache
+package com.untyped.sbtmustache
 
 import java.util.Properties
 import sbt._
@@ -10,9 +10,9 @@ case class Graph(
     val targetDir: File,
     val templateProperties: Properties,
     val downloadDir: File
-  ) extends com.untyped.graph.Graph {
+  ) extends com.untyped.sbtgraph.Graph {
 
-  type S = com.untyped.mustache.Source
+  type S = com.untyped.sbtmustache.Source
 
   override def createSource(src: File): Source = {
     log.debug("Graph.createSource " + src)

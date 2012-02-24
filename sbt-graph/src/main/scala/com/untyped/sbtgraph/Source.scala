@@ -1,4 +1,4 @@
-package com.untyped.graph
+package com.untyped.sbtgraph
 
 import com.samskivert.mustache.{Mustache,Template}
 import java.util.Properties

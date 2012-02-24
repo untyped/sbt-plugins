@@ -1,4 +1,4 @@
-package com.untyped.runmode
+package com.untyped.sbtrunmode
 
 import com.github.siasia._
 import com.github.siasia.{PluginKeys=>WebKeys}
@@ -8,8 +8,8 @@ import sbt._
 import sbt.Keys._
 import sbt.Keys.{`package` => packageKey}
 import sbt.Project.Initialize
-import com.untyped.js.Plugin.JsKeys
-import com.untyped.less.Plugin.LessKeys
+import com.untyped.sbtjs.Plugin.JsKeys
+import com.untyped.sbtless.Plugin.LessKeys
 
 object Plugin extends sbt.Plugin {
   
@@ -29,7 +29,7 @@ object Plugin extends sbt.Plugin {
   val Pilot       = config("pilot")       extend(Compile)
   
   // Alias to make RunMode visible in .sbt files:
-  val RunMode = com.untyped.runmode.RunMode
+  val RunMode = com.untyped.sbtrunmode.RunMode
   
   def propertiesSetting: Initialize[Properties] = 
     (streams, propertiesPath, runMode) apply {
@@ -74,8 +74,8 @@ object Plugin extends sbt.Plugin {
    */
   def runModeSettingsIn(conf: Configuration, container: Container, mode: RunMode): Seq[Setting[_]] =
     inConfig(conf)(
-      com.untyped.js.Plugin.jsSettingsIn(conf)     ++
-      com.untyped.less.Plugin.lessSettingsIn(conf) ++
+      com.untyped.sbtjs.Plugin.jsSettingsIn(conf)     ++
+      com.untyped.sbtless.Plugin.lessSettingsIn(conf) ++
       Seq(
         charset                                    :=  Charset.forName("utf-8"),
         propertiesPath                             <<= (sourceDirectory in Compile)(_ / "resources"),
@@ -87,7 +87,7 @@ object Plugin extends sbt.Plugin {
         sourceDirectory               in JsKeys.js <<= (sourceDirectory in Compile)(_ / "js"),
         resourceManaged               in JsKeys.js <<= (sourceDirectory in Compile)(_ / "webapp"),
         JsKeys.prettyPrint            in JsKeys.js :=  (mode == RunMode.Development),
-        JsKeys.variableRenamingPolicy in JsKeys.js :=  (if(mode == RunMode.Development) com.untyped.js.Plugin.VariableRenamingPolicy.OFF else com.untyped.js.Plugin.VariableRenamingPolicy.LOCAL),
+        JsKeys.variableRenamingPolicy in JsKeys.js :=  (if(mode == RunMode.Development) com.untyped.sbtjs.Plugin.VariableRenamingPolicy.OFF else com.untyped.sbtjs.Plugin.VariableRenamingPolicy.LOCAL),
         LessKeys.templateProperties                <<= (RunModeKeys.properties in conf),
         sourceDirectory           in LessKeys.less <<= (sourceDirectory in Compile)(_ / "css"),
         resourceManaged           in LessKeys.less <<= (sourceDirectory in Compile)(_ / "webapp"),

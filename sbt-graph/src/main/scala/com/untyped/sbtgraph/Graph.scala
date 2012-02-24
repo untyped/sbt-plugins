@@ -1,4 +1,4 @@
-package com.untyped.graph
+package com.untyped.sbtgraph
 
 import java.util.Properties
 import sbt._

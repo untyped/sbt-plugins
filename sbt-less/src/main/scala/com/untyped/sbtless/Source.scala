@@ -1,11 +1,11 @@
-package com.untyped.less
+package com.untyped.sbtless
 
 import sbt._
 
-trait Source extends com.untyped.graph.Source {
+trait Source extends com.untyped.sbtgraph.Source {
 
-  type S = com.untyped.less.Source
-  type G = com.untyped.less.Graph
+  type S = com.untyped.sbtless.Source
+  type G = com.untyped.sbtless.Graph
 
   val graph: G
 

@@ -1,4 +1,4 @@
-package com.untyped.runmode
+package com.untyped.sbtrunmode
 
 import java.io.{File,FileInputStream}
 import java.net.InetAddress

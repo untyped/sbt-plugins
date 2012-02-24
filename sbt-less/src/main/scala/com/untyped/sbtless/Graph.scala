@@ -1,4 +1,4 @@
-package com.untyped.less
+package com.untyped.sbtless
 
 import java.util.Properties
 import sbt._
@@ -12,9 +12,9 @@ case class Graph(
     val downloadDir: File,
     val lessVersion: Plugin.LessVersion,
     val prettyPrint: Boolean
-  ) extends com.untyped.graph.Graph {
+  ) extends com.untyped.sbtgraph.Graph {
 
-  type S = com.untyped.less.Source
+  type S = com.untyped.sbtless.Source
 
   def createSource(src: File): Source =
     if(src.toString.trim.toLowerCase.endsWith(".less")) {

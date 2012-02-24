@@ -1,4 +1,4 @@
-package com.untyped.js
+package com.untyped.sbtjs
 
 import com.google.javascript.jscomp._
 import java.nio.charset.Charset

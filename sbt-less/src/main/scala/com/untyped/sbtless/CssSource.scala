@@ -1,5 +1,4 @@
-package com.untyped
-package less
+package com.untyped.sbtless
 
 import sbt._
 import scala.collection._

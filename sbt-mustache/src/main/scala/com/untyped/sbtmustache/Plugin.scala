@@ -1,4 +1,4 @@
-package com.untyped.mustache
+package com.untyped.sbtmustache
 
 import java.nio.charset.Charset
 import java.util.Properties
