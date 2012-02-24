@@ -9,6 +9,12 @@ This repo contains source for three SBT plugins:
  - [sbt-js] - Javascript and Coffeescript compilation, minification, and templating;
  - [sbt-runmode] - specification of Lift run modes using custom jetty-web.xml files.
 
+Note that, as of version 0.3 of these plugins, certain things have changed:
+
+ - the plugins have moved from `repo.untyped.com` to `scalasbt.artifactoryonline.com`;
+ - the group ID has changed from `untyped` to `com.untyped`;
+ - the package names have changed from `untyped.<foo>` to `com.untyped.sbt<foo>`.
+
 See the `README` files in the relevant subdirectories for more information.
 
 [Dave Gurnell]: http://boxandarrow.com
