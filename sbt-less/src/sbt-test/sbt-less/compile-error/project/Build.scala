@@ -1,8 +1,8 @@
 import sbt._
 import sbt.Keys._
 import sbt.Project.Initialize
-import untyped.less.Plugin._
-import untyped.less.Plugin.LessKeys._
+import com.untyped.less.Plugin._
+import com.untyped.less.Plugin.LessKeys._
 
 object Build extends Build {
   
@@ -19,7 +19,7 @@ object Build extends Build {
     base = file("."),
     settings = 
       Project.defaultSettings ++ 
-      untyped.less.Plugin.lessSettings ++
+      com.untyped.less.Plugin.lessSettings ++
       Seq(
         logLevel := Level.Debug,
         runTest <<= runTestTask

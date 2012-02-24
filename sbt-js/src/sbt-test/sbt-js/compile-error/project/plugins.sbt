@@ -1,1 +1,1 @@
-addSbtPlugin("untyped" %% "sbt-js" % "0.3-SNAPSHOT")
+addSbtPlugin("com.untyped" %% "sbt-js" % "latest.integration")

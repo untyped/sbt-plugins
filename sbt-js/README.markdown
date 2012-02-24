@@ -4,7 +4,7 @@ sbt-js: SBT Javascript Plugin
 [Simple Build Tool] plugin for compiling Javascript and [Coffeescript] files from multiple sources
 using Google's [Closure compiler]. Coffeescript is currently experimental.
 
-Copyright (c) 2011 [Dave Gurnell] of [Untyped].
+Copyright 2011-12 [Dave Gurnell] of [Untyped]
 
 [Simple Build Tool]: http://simple-build-tool.googlecode.com
 [Coffeescript]: http://coffeescript.org
@@ -19,9 +19,7 @@ For SBT 0.11:
 
 Create a `project/plugins.sbt` file and paste the following content into it:
 
-    resolvers += "Untyped Public Repo" at "http://repo.untyped.com"
-
-    addSbtPlugin("untyped" %% "sbt-js" % "0.1-SNAPSHOT")
+    addSbtPlugin("com.untyped" %% "sbt-js" % "0.3")
 
 Then, in your build.sbt file, put:
 
@@ -174,20 +172,19 @@ Thanks to:
 Licence
 =======
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Copyright 2011-12 [Dave Gurnell] of [Untyped]
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+[Dave Gurnell]: http://boxandarrow.com
+[Untyped]: http://untyped.com
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

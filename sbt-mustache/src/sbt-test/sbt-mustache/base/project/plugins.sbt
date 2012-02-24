@@ -1,1 +1,1 @@
-addSbtPlugin("untyped" %% "sbt-mustache" % "0.3-SNAPSHOT")
+addSbtPlugin("com.untyped" %% "sbt-mustache" % "latest.integration")

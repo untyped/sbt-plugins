@@ -1,12 +1,12 @@
 Untyped SBT Plugins
 ===================
 
-Copyright (c) 2011 [Dave Gurnell] of [Untyped].
+Copyright 2011-12 [Dave Gurnell] of [Untyped]
 
 This repo contains source for three SBT plugins:
 
  - [sbt-less] - Less CSS compilation, minification, and templating;
- - [sbt-js] - Javascript compilation, minification, and templating;
+ - [sbt-js] - Javascript and Coffeescript compilation, minification, and templating;
  - [sbt-runmode] - specification of Lift run modes using custom jetty-web.xml files.
 
 See the `README` files in the relevant subdirectories for more information.
@@ -16,3 +16,23 @@ See the `README` files in the relevant subdirectories for more information.
 [sbt-less]: https://github.com/untyped/sbt-plugins/tree/master/sbt-less
 [sbt-js]: https://github.com/untyped/sbt-plugins/tree/master/sbt-js
 [sbt-runmode]: https://github.com/untyped/sbt-plugins/tree/master/sbt-runmode
+
+Licence
+=======
+
+Copyright 2011-12 [Dave Gurnell] of [Untyped]
+
+[Dave Gurnell]: http://boxandarrow.com
+[Untyped]: http://untyped.com
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

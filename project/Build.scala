@@ -5,6 +5,8 @@ object Build extends Build {
 
   import ScriptedPlugin._
 
+  val pluginsVersion = "0.3-SNAPSHOT"
+
   // Libraries ----------------------------------
 
   val closure       = "com.google.javascript" % "closure-compiler" % "r1592"
@@ -27,18 +29,27 @@ object Build extends Build {
     scriptedSettings ++
     Seq(
       sbtPlugin := true,
-      organization := "untyped",
+      organization := "com.untyped",
+      version := pluginsVersion,
       scalaVersion := "2.9.1",
       resolvers += "Untyped Public Repo" at "http://repo.untyped.com",
-      publishTo := {
-        for {
-          host <- Option(System.getenv("DEFAULT_REPO_HOST"))
-          path <- Option(System.getenv("DEFAULT_REPO_PATH"))
-          user <- Option(System.getenv("DEFAULT_REPO_USER"))
-          keyfile <- Option(System.getenv("DEFAULT_REPO_KEYFILE"))
-        } yield {
-          Resolver.sftp("Default Repo", host, path).as(user, new File(keyfile))
-        }
+      // publishTo := {
+      //   for {
+      //     host <- Option(System.getenv("DEFAULT_REPO_HOST"))
+      //     path <- Option(System.getenv("DEFAULT_REPO_PATH"))
+      //     user <- Option(System.getenv("DEFAULT_REPO_USER"))
+      //     keyfile <- Option(System.getenv("DEFAULT_REPO_KEYFILE"))
+      //   } yield {
+      //     Resolver.sftp("Default Repo", host, path).as(user, new File(keyfile))
+      //   }
+      // },
+      publishTo <<= (version) { version: String =>
+         val scalasbt = "http://scalasbt.artifactoryonline.com/scalasbt/"
+         val (name, url) = if (version.contains("-SNAPSHOT"))
+                             ("sbt-plugin-snapshots", scalasbt+"sbt-plugin-snapshots")
+                           else
+                             ("sbt-plugin-releases", scalasbt+"sbt-plugin-releases")
+         Some(Resolver.url(name, new URL(url))(Resolver.ivyStylePatterns))
       },
       scriptedBufferLog := false,
       scalacOptions += "-deprecation",
@@ -57,65 +68,75 @@ object Build extends Build {
       publishArtifact in (Compile, packageDoc) := false
     )
   ) aggregate (
+    sbtGraph,
     sbtJs,
     sbtLess,
     sbtMustache,
     sbtRunmode
   )
 
-  // lazy val sbtGraph = Project(
-  //   id = "sbt-graph",
-  //   base = file("sbt-graph"),
-  //   settings = defaultSettings ++ Seq(
-  //     version := "0.1-SNAPSHOT"
-  //   )
-  // )
-
-  lazy val sbtLess = Project(
-    id = "sbt-less",
-    base = file("sbt-less"),
+  lazy val sbtGraph = Project(
+    id = "sbt-graph",
+    base = file("sbt-graph"),
     settings = defaultSettings ++ Seq(
-      version := "0.3-SNAPSHOT",
+      publishArtifact in (Compile) := false,
+      publishArtifact in (Compile, packageBin) := false,
+      publishArtifact in (Compile, packageSrc) := false,
+      publishArtifact in (Compile, packageDoc) := false,
       libraryDependencies ++= Seq(
-        rhino,
         mustache,
         scalatest % "test"
       )
     )
   )
 
+  lazy val sbtLess = Project(
+    id = "sbt-less",
+    base = file("sbt-less"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Seq(
+        rhino,
+        mustache,
+        scalatest % "test"
+      ),
+      // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-less:
+      unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
+    )
+  ).dependsOn(sbtGraph)
+
   lazy val sbtJs = Project(
     id = "sbt-js",
     base = file("sbt-js"),
     settings = defaultSettings ++ Seq(
-      version := "0.3-SNAPSHOT",
       libraryDependencies ++= Seq(
         closure,
         rhino,
         // jCoffeescript,
         mustache,
         scalatest % "test"
-      )
+      ),
+      // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-js:
+      unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
     )
-  )
+  ).dependsOn(sbtGraph)
 
   lazy val sbtMustache = Project(
     id = "sbt-mustache",
     base = file("sbt-mustache"),
     settings = defaultSettings ++ Seq(
-      version := "0.3-SNAPSHOT",
       libraryDependencies ++= Seq(
         mustache,
         scalatest % "test"
-      )
+      ),
+      // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-mustache:
+      unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
     )
-  )
+  ).dependsOn(sbtGraph)
 
   lazy val sbtRunmode = Project(
     id = "sbt-runmode",
     base = file("sbt-runmode"),
     settings = defaultSettings ++ Seq(
-      version := "0.3-SNAPSHOT",
       libraryDependencies <+= sbtVersion(v => webPlugin(v)),
       libraryDependencies += scalatest % "test"
     )

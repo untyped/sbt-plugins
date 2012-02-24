@@ -1,7 +1,5 @@
-
 resolvers ++= Seq(
   Classpaths.typesafeResolver,
-  "Untyped"    at "http://repo.untyped.com",
   "Web plugin" at "http://siasia.github.com/maven2"
 )
 
@@ -11,4 +9,4 @@ libraryDependencies <+= sbtVersion(v => v match {
   case "0.11.2" => "com.github.siasia" %% "xsbt-web-plugin" % "0.11.2-0.2.11"
 })
 
-addSbtPlugin("untyped" %% "sbt-runmode" % "0.3-SNAPSHOT")
+addSbtPlugin("com.untyped" %% "sbt-runmode" % "latest.integration")

@@ -3,7 +3,7 @@ sbt-runmode: SBT Runmode Plugin
 
 [Simple Build Tool] plugin for setting run modes and compiling Javascript and Less CSS assets in a [Lift] web application. Gets you off to a flying start!
 
-Copyright (c) 2011 [Dave Gurnell] of [Untyped].
+Copyright 2011-12 [Dave Gurnell] of [Untyped]
 
 [Simple Build Tool]: http://simple-build-tool.googlecode.com
 [Lift]: http://liftweb.net
@@ -17,9 +17,7 @@ For SBT 0.11:
 
 Create a `project/plugins.sbt` file and paste the following content into it:
 
-    resolvers += "Untyped Public Repo" at "http://repo.untyped.com"
-
-    addSbtPlugin("untyped" %% "sbt-runmode" % "0.1-SNAPSHOT")
+    addSbtPlugin("com.untyped" %% "sbt-runmode" % "0.3")
 
 Then, in your build.sbt file, put:
 
@@ -32,17 +30,17 @@ Organise your source files as follows:
 
  - Place Javascript sources in `src/main/js`. Files will be compiled and placed in
    the same directory structure under `src/main/webapp`. For example:
-   
+
        src/main/js/foo/bar/baz.js    =>    src/main/webapp/foo/bar/baz.js
- 
+
  - Place Less CSS sources in `src/main/css`. Files will be compiled and placed in
    the same directory structure under `src/main/webapp`. For example:
-   
+
        src/main/css/a/b/c.less       =>    src/main/webapp/a/b/c.css
 
- - Place any remaining web assets - images, Lift templates, plain CSS files, and 
-   so on - in `src/main/webapp` as usual. This includes images you are referencing 
-   from your Less CSS sources (the URLs will resolve correctly once the Less sources 
+ - Place any remaining web assets - images, Lift templates, plain CSS files, and
+   so on - in `src/main/webapp` as usual. This includes images you are referencing
+   from your Less CSS sources (the URLs will resolve correctly once the Less sources
    are compiled and moved into place).
 
  - Place Scala sources, unit tests, Lift properties files, and other resources
@@ -65,18 +63,18 @@ Now you've set everything up, you will have access to the following SBT commands
     - `development:stop` - stops the embedded Jetty;
     - `pilot:package` - compiles all sources and packages the app as a WAR with Lift in `development` run mode.
 
-   Jetty is configured to take its web assets straight out of your `src/main/webapp` 
+   Jetty is configured to take its web assets straight out of your `src/main/webapp`
    directory, so you won't need to recompile anything if you change a template.
-   
+
    You can run `development:js` and `development:less` without stopping and restarting Jetty.
 
  - Commands to use for unit testing:
- 
+
     - `test:run-mode` - sets Lift's run mode to "test" (by installing an appropriate `jetty-web.xml`);
     - `test:test` - run your unit tests with Lift in `test` run mode.
 
  - Commands to use to test a "pilot" version of your app with minified Javascript and CSS:
- 
+
     - `pilot:compile` - recompiles the project's Scala sources;
     - `pilot:js` - recompiles the project's Javascript sources in production mode (minified with local variable renaming);
     - `pilot:less` - recompiles the project's Less CSS sources in production mode (minified);
@@ -86,7 +84,7 @@ Now you've set everything up, you will have access to the following SBT commands
     - `pilot:package` - compiles all sources and packages the app as a WAR with Lift in `pilot` run mode.
 
  - Commands to use to test/package a "production" version of your app:
- 
+
     - `production:compile` - recompiles the project's Scala sources;
     - `production:js` - recompiles the project's Javascript sources in production mode (minified with local variable renaming);
     - `production:less` - recompiles the project's Less CSS sources in production mode (minified);
@@ -98,20 +96,19 @@ Now you've set everything up, you will have access to the following SBT commands
 Licence
 =======
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Copyright 2011-12 [Dave Gurnell] of [Untyped]
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+[Dave Gurnell]: http://boxandarrow.com
+[Untyped]: http://untyped.com
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

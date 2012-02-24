@@ -1,1 +1,1 @@
-addSbtPlugin("untyped" %% "sbt-less" % "0.3-SNAPSHOT")
+addSbtPlugin("com.untyped" %% "sbt-less" % "latest.integration")

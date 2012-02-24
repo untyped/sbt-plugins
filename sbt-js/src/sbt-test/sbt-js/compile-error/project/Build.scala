@@ -1,8 +1,8 @@
 import sbt._
 import sbt.Keys._
 import sbt.Project.Initialize
-import untyped.js.Plugin._
-import untyped.js.Plugin.JsKeys._
+import com.untyped.js.Plugin._
+import com.untyped.js.Plugin.JsKeys._
 
 object Build extends Build {
   
@@ -19,7 +19,7 @@ object Build extends Build {
     base = file("."),
     settings = 
       Project.defaultSettings ++ 
-      untyped.js.Plugin.jsSettings ++
+      com.untyped.js.Plugin.jsSettings ++
       Seq(
         logLevel := Level.Debug,
         runTest <<= runTestTask
