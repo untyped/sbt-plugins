@@ -1,1 +1,1 @@
-addSbtPlugin("untyped" %% "sbt-mustache" % "0.1-SNAPSHOT")
+addSbtPlugin("untyped" %% "sbt-mustache" % "0.2")
