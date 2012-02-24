@@ -154,6 +154,10 @@ Acknowledgements
 v0.6+ for SBT 0.11 based on [less-sbt](https://github.com/softprops/less-sbt), Copyright (c) 2011 Doug Tangren.
 v0.1-v0.5 for SBT 0.7 based on [Coffee Script SBT plugin], Copyright (c) 2010 Luke Amdor.
 
+Includes an embedded copy of [jCoffeeScript 1.1] (bundled with sbt-js to solve deployment issues).
+
+[jCoffeeScript 1.1]: https://github.com/yeungda/jcoffeescript
+
 Heavily influenced by the [YUI Compressor SBT plugin] by Jon Hoffman.
 
 Thanks to:
