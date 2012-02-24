@@ -5,7 +5,7 @@ object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.3-SNAPSHOT"
+  val pluginsVersion = "0.4-SNAPSHOT"
 
   // Libraries ----------------------------------
 
