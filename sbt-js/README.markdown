@@ -1,12 +1,13 @@
 sbt-js: SBT Javascript Plugin
 =============================
 
-[Simple Build Tool] plugin for compiling Javascript files from multiple sources using 
-Google's [Closure compiler].
+[Simple Build Tool] plugin for compiling Javascript and [Coffeescript] files from multiple sources
+using Google's [Closure compiler]. Coffeescript is currently experimental.
 
 Copyright (c) 2011 [Dave Gurnell] of [Untyped].
 
 [Simple Build Tool]: http://simple-build-tool.googlecode.com
+[Coffeescript]: http://coffeescript.org
 [Closure compiler]: http://code.google.com/p/closure-compiler
 [Dave Gurnell]: http://boxandarrow.com
 [Untyped]: http://untyped.com
@@ -26,14 +27,14 @@ Then, in your build.sbt file, put:
 
     seq(jsSettings : _*)
 
-If you're using [xsbt-web-plugin](https://github.com/siasia/xsbt-web-plugin "xsbt-web-plugin"), 
+If you're using [xsbt-web-plugin](https://github.com/siasia/xsbt-web-plugin "xsbt-web-plugin"),
 add the output files to the webapp with:
 
     (webappResources in Compile) <+= (resourceManaged in Compile)
 
 To change the directory that is scanned, use:
 
-    (sourceDirectory in (Compile, JsKeys.js)) <<= (sourceDirectory in Compile)(_ / "path" / "to" / "js-files")
+    (sourceDirectory in (Compile, JsKeys.js)) <<= (sourceDirectory in Compile)(_ / "path" / "to" / "js-and-coffee-files")
 
 To cause the `js` task to run automatically when you run `compile`:
 
@@ -43,7 +44,7 @@ To use pretty-printing instead of regular Javascript minification:
 
     (JsKeys.prettyPrint in (Compile, JsKeys.js)) := true
 
-To use more aggressive variable renaming (producing smaller output files that are less 
+To use more aggressive variable renaming (producing smaller output files that are less
 likely to work without care):
 
     (JsKeys.variableRenamingPolicy in (Compile, JsKeys.js)) := VariableRenamingPolicy.ALL
@@ -55,35 +56,47 @@ Or to turn variable renaming off altogether:
 Usage
 =====
 
-To compile Javascript sources, use the `js` command in sbt. Read the installation 
-instructions above to see how to include Javascript compilation as part of the regular
-`compile` command.
+To compile Javascript and Coffeescript sources, use the `js` command in sbt. Read the
+installation instructions above to see how to include Javascript compilation as part
+of the regular `compile` command.
 
-The default behaviour of the plugin is to scan your `src/main` directory and look for 
+The default behaviour of the plugin is to scan your `src/main` directory and look for
 two types of files:
 
  - Javascript files, with extension `.js`
+ - Coffeescript files, with extension `.coffee`
  - Javascript manifest files, with extension `.jsm` or `.jsmanifest`
 
-These files are compiled and minified using Google's Closure compiler and placed in 
+These files are compiled and minified using Google's Closure compiler and placed in
 equivalent locations under `target/scala-2.9.x/resource_managed`.
 
 Read on for a description of the handling for each type of file.
 
-### *Require* statements in Javascript files
+### *Require* statements in Javascript and Coffeescript files
 
 You can add *require* statements to your Javascript files to specify dependencies
-on other files or URLs. Require statements can be of the following forms:
+on other files or URLs. Require statements are comments of the following forms:
+
+In Javascript files:
 
     // require "path/to/my/file.js"
-
+    // require "path/to/my/file.coffee"
     // require "http://mywebsite.com/path/to/my/file.js"
+    // require "http://mywebsite.com/path/to/my/file.coffee"
 
-Required files are *prepended* to the file they appear in, and the whole lot is
-passed through the Google Closure compiler for minification. Note the following:
+In Coffeescript files:
+
+    # require "path/to/my/file.js"
+    # require "path/to/my/file.coffee"
+    # require "http://mywebsite.com/path/to/my/file.js"
+    # require "http://mywebsite.com/path/to/my/file.coffee"
+
+Required files are *prepended* to the file they appear in, Coffeescript files are
+individually compiled, and the whole lot is passed through the Google Closure
+compiler for minification. Note the following:
 
  - paths are resolved relative to the file they appear in;
- 
+
  - the position of a require statement in the source does not matter - dependencies
    are always inserted just before the beginning of the file;
 
@@ -91,13 +104,13 @@ passed through the Google Closure compiler for minification. Note the following:
    in the order they are required;
 
  - dependencies can be recursive - files can require files that require files;
- 
+
  - woe betide you if you create recursive dependencies between your files :)
 
 ### Javascript manifest files
 
 Javascript manifest files are a useful shorthand for building Javascript from a list
-of sources. A manifest contains an ordered list of JavaScript source locations. 
+of sources. A manifest contains an ordered list of JavaScript source locations.
 For example:
 
     # You can specify remote files using URLs...
@@ -111,11 +124,11 @@ For example:
     # Blank lines and bash-style comments are also supported.
     # These may be swapped for JS-style comments in the future.
 
-The sources are cached and inlined into one large Javascript file, which is then 
-passed to the Closure compiler. The compiler outputs a file of the same name and 
-relative path of the manifest, but with a `.js` extension. For example, if your 
-manifest file is at `src/main/javascript/static/js/kitchen-sink.jsm` in the source 
-tree, the final path would be `resource_managed/main/static/js/kitchen-sink.js` 
+The sources are cached and inlined into one large Javascript file, which is then
+passed to the Closure compiler. The compiler outputs a file of the same name and
+relative path of the manifest, but with a `.js` extension. For example, if your
+manifest file is at `src/main/javascript/static/js/kitchen-sink.jsm` in the source
+tree, the final path would be `resource_managed/main/static/js/kitchen-sink.js`
 in the target tree.
 
 Templating
@@ -128,7 +141,7 @@ Javascript files with the extension `.template.js` are passed through a [Mustach
 template processor before being passed to the Closure compiler.
 
 Property names and values are drawn from a properties file that is located and parsed
-in an identical manner to the Lift web framework (though the implementation has no 
+in an identical manner to the Lift web framework (though the implementation has no
 dependency on Lift). The default location for property files is `src/main/resources/props`.
 See the [Lift documentation] for file formats and naming conventions.
 
@@ -145,7 +158,7 @@ Heavily influenced by the [YUI Compressor SBT plugin] by Jon Hoffman.
 
 Thanks to:
 
- - [Tim Nelson](https://github.com/eltimn) for his work on the SBT 0.11 
+ - [Tim Nelson](https://github.com/eltimn) for his work on the SBT 0.11
    migration and dramatic improvements to this README.
 
  - [Glade Diviney](https://github.com/gladed) for help producing test cases

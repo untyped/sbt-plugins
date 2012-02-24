@@ -11,7 +11,7 @@ object Build extends Build {
   val mustache      = "com.samskivert" % "jmustache" % "1.3"
   val rhino         = "rhino" % "js" % "1.7R2"
   val scalatest     = "org.scalatest" %% "scalatest" % "1.6.1"
-  val jCoffeescript = "org.jcoffeescript" % "jcoffeescript" % "1.1" from "http://cloud.github.com/downloads/yeungda/jcoffeescript/jcoffeescript-1.1.jar"
+  // val jCoffeescript = "org.jcoffeescript" % "jcoffeescript" % "1.1"
 
   def webPlugin(sbtVersion: String) =
     sbtVersion match {
@@ -91,7 +91,7 @@ object Build extends Build {
       version := "0.1-SNAPSHOT",
       libraryDependencies ++= Seq(
         closure,
-        jCoffeescript,
+        // jCoffeescript,
         mustache,
         scalatest % "test"
       )
