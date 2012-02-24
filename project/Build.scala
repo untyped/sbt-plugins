@@ -75,7 +75,7 @@ object Build extends Build {
     id = "sbt-less",
     base = file("sbt-less"),
     settings = defaultSettings ++ Seq(
-      version := "0.2-SNAPSHOT",
+      version := "0.3-SNAPSHOT",
       libraryDependencies ++= Seq(
         rhino,
         mustache,
@@ -88,7 +88,7 @@ object Build extends Build {
     id = "sbt-js",
     base = file("sbt-js"),
     settings = defaultSettings ++ Seq(
-      version := "0.1-SNAPSHOT",
+      version := "0.3-SNAPSHOT",
       libraryDependencies ++= Seq(
         closure,
         // jCoffeescript,
@@ -102,7 +102,7 @@ object Build extends Build {
     id = "sbt-mustache",
     base = file("sbt-mustache"),
     settings = defaultSettings ++ Seq(
-      version := "0.1-SNAPSHOT",
+      version := "0.3-SNAPSHOT",
       libraryDependencies ++= Seq(
         mustache,
         scalatest % "test"
@@ -114,7 +114,7 @@ object Build extends Build {
     id = "sbt-runmode",
     base = file("sbt-runmode"),
     settings = defaultSettings ++ Seq(
-      version := "0.1-SNAPSHOT",
+      version := "0.3-SNAPSHOT",
       libraryDependencies <+= sbtVersion(v => webPlugin(v)),
       libraryDependencies += scalatest % "test"
     )
