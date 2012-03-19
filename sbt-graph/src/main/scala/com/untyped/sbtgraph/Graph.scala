@@ -1,5 +1,6 @@
 package com.untyped.sbtgraph
 
+import java.io.File
 import java.util.Properties
 import sbt._
 import scala.collection._
@@ -9,7 +10,7 @@ trait Graph {
   type S <: Source
 
   val log: Logger
-  val sourceDir: File
+  val sourceDirs: Seq[File]
   val targetDir: File
   val templateProperties: Properties
   val downloadDir: File
@@ -19,7 +20,7 @@ trait Graph {
   var sources: List[S] = Nil
 
   def +=(file: File): Unit =
-    this += createSource(file)
+    this += createSource(unshadowSourceFile(file))
 
   def +=(url: URL): Unit =
     this += createSource(downloadAndCache(url))
@@ -40,10 +41,59 @@ trait Graph {
   def getSource(src: URL): S =
     getSource(downloadAndCache(src))
 
-  def getSource(src: File): S =
-    sources find (_.src == src) getOrElse createSource(src)
+  def getSource(src: File): S = {
+    val unshadowedSrc = unshadowSourceFile(src)
+    sources find (_.src == unshadowedSrc) getOrElse createSource(unshadowedSrc)
+  }
 
   def createSource(src: File): S
+
+  /**
+   * If there are multiple directories in our search path,
+   * one source file may be shadowed by another further up the path list.
+   * Retrieve the unshadowed version of any given file.
+   */
+  def unshadowSourceFile(file: File): File =
+    splitSourceFile(file) match {
+      // The file is inside a sourceDir - find an unshadowed version of it:
+      case Some((fileDir, filePath)) =>
+        // We've managed to split `file` into a dir and a path,
+        // we should always be able to recombine them:
+        findSourceFile(filePath).getOrElse(sys.error("could not unshadow " + file))
+
+      // The file is outside sourceDirs - nothing can shadow it:
+      case None =>
+        file
+    }
+
+  /** Splits a source filename into a sourceDir and relative path. */
+  def splitSourceFile(file: File): Option[(File, String)] =
+    if(file == null) {
+      None
+    } else if(sourceDirs.contains(file)) {
+      Some((file, ""))
+    } else {
+      for {
+        (parentDir, parentRel) <- splitSourceFile(file.getParentFile)
+      } yield {
+        (parentDir, parentRel + "/" + file.getName)
+      }
+    }
+
+  /**
+   * Scans the available sourceDirs and finds the first file that
+   * exists at the specified path.
+   */
+  def findSourceFile(path: String): Option[File] =
+    sourceDirs.foldLeft(None : Option[File]) {
+      (ans, dir) =>
+        ans match {
+          case None =>
+            val file = new File(dir, path)
+            if(file.exists) Some(file) else None
+          case ans => ans
+        }
+    }
 
   /**
    * Translates the `src` filename to a `des` filename.
@@ -51,7 +101,10 @@ trait Graph {
    * This typically occurs if `src` is outside of `sourceDir`.
    */
   def srcToDes(file: File): Option[File] =
-    for(rel <- IO.relativize(sourceDir, file)) yield {
+    for {
+      (dir, _) <- splitSourceFile(file)
+      rel      <- IO.relativize(dir, file)
+    } yield {
       new File(targetDir, srcFilenameToDesFilename(rel).
           replaceAll("[.]template", "")).
           getCanonicalFile

@@ -7,7 +7,7 @@ import scala.collection._
 
 case class Graph(
     val log: Logger,
-    val sourceDir: File,
+    val sourceDirs: Seq[File],
     val targetDir: File,
     val templateProperties: Properties,
     val downloadDir: File,

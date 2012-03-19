@@ -21,7 +21,7 @@ object Plugin extends sbt.Plugin {
     val filename: String
     lazy val url = "/" + filename
   }
-  
+
   object LessVersion {
     val Less113 = new LessVersion { val filename = "less-rhino-1.1.3.js" }
     val Less115 = new LessVersion { val filename = "less-rhino-1.1.5.js" }
@@ -31,23 +31,26 @@ object Plugin extends sbt.Plugin {
   import LessKeys._
 
   def unmanagedSourcesTask: Initialize[Task[Seq[File]]] =
-    (streams, sourceDirectory in less, includeFilter in less, excludeFilter in less) map {
-      (out, sourceDir, includeFilter, excludeFilter) =>
-        out.log.debug("sourceDirectory: " + sourceDir)
+    (streams, sourceDirectories in less, includeFilter in less, excludeFilter in less) map {
+      (out, sourceDirs, includeFilter, excludeFilter) =>
+        out.log.debug("sourceDirectories: " + sourceDirs)
         out.log.debug("includeFilter: " + includeFilter)
         out.log.debug("excludeFilter: " + excludeFilter)
 
-        sourceDir.descendentsExcept(includeFilter, excludeFilter).get
+        sourceDirs.foldLeft(Seq[File]()) {
+          (accum, sourceDir) =>
+            accum ++ sourceDir.descendentsExcept(includeFilter, excludeFilter).get
+        }
     }
 
   def sourceGraphTask: Initialize[Task[Graph]] =
-    (streams, sourceDirectory in less, resourceManaged in less, unmanagedSources in less, templateProperties in less, downloadDirectory in less, prettyPrint in less, lessVersion in less) map {
-      (out, sourceDir, targetDir, sourceFiles, templateProperties, downloadDir, prettyPrint, lessVersion) =>
+    (streams, sourceDirectories in less, resourceManaged in less, unmanagedSources in less, templateProperties in less, downloadDirectory in less, prettyPrint in less, lessVersion in less) map {
+      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, prettyPrint, lessVersion) =>
         out.log.debug("sbt-less template properties " + templateProperties)
 
         val graph = Graph(
           log                = out.log,
-          sourceDir          = sourceDir,
+          sourceDirs         = sourceDirs,
           targetDir          = targetDir,
           templateProperties = templateProperties,
           downloadDir        = downloadDir,
@@ -105,6 +108,7 @@ object Plugin extends sbt.Plugin {
       excludeFilter in less        :=  (".*" - ".") || "_*" || HiddenFileFilter,
       lessVersion in less          :=  LessVersion.Less115,
       sourceDirectory in less      <<= (sourceDirectory in conf),
+      sourceDirectories in less    <<= (sourceDirectory in conf) { Seq(_) },
       unmanagedSources in less     <<= unmanagedSourcesTask,
       resourceManaged in less      <<= (resourceManaged in conf),
       templateProperties           :=  new Properties,

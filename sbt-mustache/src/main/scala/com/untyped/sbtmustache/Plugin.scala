@@ -19,23 +19,26 @@ object Plugin extends sbt.Plugin {
   import MustacheKeys._
 
   def unmanagedSourcesTask: Initialize[Task[Seq[File]]] =
-    (streams, sourceDirectory in mustache, includeFilter in mustache, excludeFilter in mustache) map {
-      (out, sourceDir, includeFilter, excludeFilter) =>
-        out.log.debug("sourceDirectory: " + sourceDir)
+    (streams, sourceDirectories in mustache, includeFilter in mustache, excludeFilter in mustache) map {
+      (out, sourceDirs, includeFilter, excludeFilter) =>
+        out.log.debug("sourceDirectories: " + sourceDirs)
         out.log.debug("includeFilter: " + includeFilter)
         out.log.debug("excludeFilter: " + excludeFilter)
 
-        sourceDir.descendentsExcept(includeFilter, excludeFilter).get
+        sourceDirs.foldLeft(Seq[File]()) {
+          (accum, sourceDir) =>
+            accum ++ sourceDir.descendentsExcept(includeFilter, excludeFilter).get
+        }
     }
 
   def sourceGraphTask: Initialize[Task[Graph]] =
-    (streams, sourceDirectory in mustache, resourceManaged in mustache, unmanagedSources in mustache, templateProperties, downloadDirectory) map {
-      (out, sourceDir, targetDir, sourceFiles, templateProperties, downloadDir) =>
+    (streams, sourceDirectories in mustache, resourceManaged in mustache, unmanagedSources in mustache, templateProperties, downloadDirectory) map {
+      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir) =>
         out.log.debug("sbt-mustache template properties " + templateProperties)
 
         val graph = Graph(
           log                = out.log,
-          sourceDir          = sourceDir,
+          sourceDirs         = sourceDirs,
           targetDir          = targetDir,
           templateProperties = templateProperties,
           downloadDir        = downloadDir
@@ -85,22 +88,23 @@ object Plugin extends sbt.Plugin {
 
   def mustacheSettingsIn(conf: Configuration): Seq[Setting[_]] =
     inConfig(conf)(Seq(
-      charset                      :=   Charset.forName("utf-8"),
-      includeFilter in mustache    :=   "*.html",
-      excludeFilter in mustache    :=   (".*" - ".") || "_*" || HiddenFileFilter,
-      sourceDirectory in mustache  <<=  (sourceDirectory in conf),
-      unmanagedSources in mustache <<=  unmanagedSourcesTask,
-      resourceManaged in mustache  <<=  (resourceManaged in conf),
-      templateProperties           :=   new Properties,
-      downloadDirectory            <<=  (target in conf) { _ / "sbt-mustache" / "downloads" },
-      sourceGraph                  <<=  sourceGraphTask,
-      sources in mustache          <<=  watchSourcesTask,
-      watchSources in mustache     <<=  watchSourcesTask,
-      clean in mustache            <<=  cleanTask,
-      mustache                     <<=  compileTask
+      charset                       :=   Charset.forName("utf-8"),
+      includeFilter in mustache     :=   "*.html",
+      excludeFilter in mustache     :=   (".*" - ".") || "_*" || HiddenFileFilter,
+      sourceDirectory in mustache   <<=  (sourceDirectory in conf),
+      sourceDirectories in mustache <<=  (sourceDirectory in conf) { Seq(_) },
+      unmanagedSources in mustache  <<=  unmanagedSourcesTask,
+      resourceManaged in mustache   <<=  (resourceManaged in conf),
+      templateProperties            :=   new Properties,
+      downloadDirectory             <<=  (target in conf) { _ / "sbt-mustache" / "downloads" },
+      sourceGraph                   <<=  sourceGraphTask,
+      sources in mustache           <<=  watchSourcesTask,
+      watchSources in mustache      <<=  watchSourcesTask,
+      clean in mustache             <<=  cleanTask,
+      mustache                      <<=  compileTask
     )) ++ Seq(
-      cleanFiles                   <+=  (resourceManaged in mustache in conf),
-      watchSources                 <++= (watchSources    in mustache in conf)
+      cleanFiles                    <+=  (resourceManaged in mustache in conf),
+      watchSources                  <++= (watchSources    in mustache in conf)
     )
 
   def mustacheSettings: Seq[Setting[_]] =

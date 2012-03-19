@@ -1,12 +1,19 @@
-name := "include-exclude"
+name := "source-dirs"
 
 logLevel := Level.Debug
 
-seq(lessSettings : _*)
+seq(mustacheSettings : _*)
 
-(includeFilter in (Compile, LessKeys.less)) := ("*.include.less": FileFilter)
+(sourceDirectories in (Compile, MustacheKeys.mustache)) <<= (sourceDirectory in Compile) {
+  srcDir =>
+    Seq(srcDir / "resources" / "dir2", srcDir / "resources" / "dir1")
+}
 
-(excludeFilter in (Compile, LessKeys.less)) := ("*.exclude*": FileFilter)
+MustacheKeys.templateProperties in Compile := {
+  val props = new java.util.Properties
+  props.setProperty("test.user.name", "Mustache")
+  props
+}
 
 InputKey[Unit]("contents") <<= inputTask { (argsTask: TaskKey[Seq[String]]) =>
   (argsTask, streams) map { (args, out) =>

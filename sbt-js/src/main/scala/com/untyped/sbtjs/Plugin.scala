@@ -31,23 +31,26 @@ object Plugin extends sbt.Plugin {
   import JsKeys._
 
   def unmanagedSourcesTask: Initialize[Task[Seq[File]]] =
-    (streams, sourceDirectory in js, includeFilter in js, excludeFilter in js) map {
-      (out, sourceDir, includeFilter, excludeFilter) =>
-        out.log.debug("sourceDirectory: " + sourceDir)
+    (streams, sourceDirectories in js, includeFilter in js, excludeFilter in js) map {
+      (out, sourceDirs, includeFilter, excludeFilter) =>
+        out.log.debug("sourceDirectories: " + sourceDirs)
         out.log.debug("includeFilter: " + includeFilter)
         out.log.debug("excludeFilter: " + excludeFilter)
 
-        sourceDir.descendentsExcept(includeFilter, excludeFilter).get
+        sourceDirs.foldLeft(Seq[File]()) {
+          (accum, sourceDir) =>
+            accum ++ sourceDir.descendentsExcept(includeFilter, excludeFilter).get
+        }
     }
 
   def sourceGraphTask: Initialize[Task[Graph]] =
-    (streams, sourceDirectory in js, resourceManaged in js, unmanagedSources in js, templateProperties, downloadDirectory, compilerOptions) map {
-      (out, sourceDir, targetDir, sourceFiles, templateProperties, downloadDir, compilerOptions) =>
+    (streams, sourceDirectories in js, resourceManaged in js, unmanagedSources in js, templateProperties, downloadDirectory, compilerOptions) map {
+      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, compilerOptions) =>
         out.log.debug("sbt-js template properties " + templateProperties)
 
         val graph = Graph(
           log                = out.log,
-          sourceDir          = sourceDir,
+          sourceDirs         = sourceDirs,
           targetDir          = targetDir,
           templateProperties = templateProperties,
           downloadDir        = downloadDir,
@@ -111,6 +114,7 @@ object Plugin extends sbt.Plugin {
       includeFilter in js          :=   "*.js" || "*.jsm" || "*.jsmanifest" || "*.coffee",
       excludeFilter in js          :=   (".*" - ".") || "_*" || HiddenFileFilter,
       sourceDirectory in js        <<=  (sourceDirectory in conf),
+      sourceDirectories in js      <<= (sourceDirectory in conf) { Seq(_) },
       unmanagedSources in js       <<=  unmanagedSourcesTask,
       resourceManaged in js        <<=  (resourceManaged in conf),
       templateProperties           :=   new Properties,

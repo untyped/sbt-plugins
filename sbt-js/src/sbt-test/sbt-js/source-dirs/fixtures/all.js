@@ -1,0 +1,1 @@
+alert("dir1/a.js");alert("dir2/b.js");
