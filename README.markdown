@@ -11,16 +11,50 @@ This repo contains source for three SBT plugins:
 
 See the `README` files in the relevant subdirectories for more information.
 
-Changes for v0.3
-================
+Version 0.3
+===========
 
-Note that as of version 0.3 we have moved hosting for these plugins from the Untyped 
-Maven repository to the [SBT community plugins repo]. As a consequence, certain things 
-have changed:
+No new features or bug fixes.
+
+Hosting moved from the Untyped Maven repository to the [SBT community plugins repo].
+As a consequence of this, certain things have changed:
 
  - the plugins have moved from `repo.untyped.com` to `scalasbt.artifactoryonline.com`;
  - the group ID has changed from `untyped` to `com.untyped`;
  - the package names have changed from `untyped.<foo>` to `com.untyped.sbt<foo>`.
+
+These versions work with SBT 0.11.0 and SBT 0.11.2. Sample `plugins.sbt` file:
+
+    resolvers ++= Resolver.url("sbt-plugin-releases", url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
+
+    addSbtPlugin("com.untyped" % "sbt-js" % "0.3")
+
+    addSbtPlugin("com.untyped" % "sbt-less" % "0.3")
+
+    addSbtPlugin("com.untyped" % "sbt-runmode" % "0.3")
+
+Version 0.2
+===========
+
+New features:
+
+ - `sbt-js`: experimental support for CoffeeScript;
+ - `sbt-mustache`: new experimental plugin for templating arbitrary files (currently ver limited);
+ 
+Bug fixes:
+
+- `sbt-less`: Import statements in Less CSS files are interpreted relative to the file in which they appear,
+   rather than the root file in the dependency graph.
+
+These versions work with SBT 0.11.0 and SBT 0.11.2. Sample `plugins.sbt` file:
+
+    resolvers ++= "untyped" at "http://repo.untyped.com"
+
+    addSbtPlugin("untyped" % "sbt-js" % "0.2")
+
+    addSbtPlugin("untyped" % "sbt-less" % "0.2")
+
+    addSbtPlugin("untyped" % "sbt-runmode" % "0.2")
 
 Licence
 =======

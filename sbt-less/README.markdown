@@ -43,6 +43,10 @@ To change the directory that is scanned, use:
 
     (sourceDirectory in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile)(_ / "path" / "to" / "less-files")
 
+To change the destination directory to `src/main/webapp` in an `xsbt-web-plugin` project, use:
+
+    (resourceManaged in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile)(_ / "webapp")
+
 To cause the `less` task to run automatically when you run `compile`:
 
     (compile in Compile) <<= compile in Compile dependsOn (LessKeys.less in Compile)

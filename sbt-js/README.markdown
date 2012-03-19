@@ -45,6 +45,10 @@ To change the directory that is scanned, use:
 
     (sourceDirectory in (Compile, JsKeys.js)) <<= (sourceDirectory in Compile)(_ / "path" / "to" / "js-and-coffee-files")
 
+To change the destination directory to `src/main/webapp` in an `xsbt-web-plugin` project, use:
+
+    (resourceManaged in (Compile, JsKeys.js)) <<= (sourceDirectory in Compile)(_ / "webapp")
+
 To cause the `js` task to run automatically when you run `compile`:
 
     (compile in Compile) <<= compile in Compile dependsOn (JsKeys.js in Compile)
