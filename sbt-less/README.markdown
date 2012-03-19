@@ -43,6 +43,18 @@ To change the directory that is scanned, use:
 
     (sourceDirectory in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile)(_ / "path" / "to" / "less-files")
 
+To specify multiple source directories, use:
+
+    (sourceDirectories in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile) {
+      srcDir =>
+        Seq(
+          srcDir / "first" / "path",
+          srcDir / "second" / "path"
+        )
+    }
+
+When using multiple source directories, files in earlier directories will "shadow" similarly named files in later directories, allowing you you to override individual files in a library without destructively editing the whole thing.
+
 To change the destination directory to `src/main/webapp` in an `xsbt-web-plugin` project, use:
 
     (resourceManaged in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile)(_ / "webapp")
