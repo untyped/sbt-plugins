@@ -11,12 +11,15 @@ trait Source extends com.untyped.sbtgraph.Source {
 
   def compile: Option[File]
 
-  def importlessRawSource: String =
+  def completeRawSource: String = 
     IO.readLines(src).map { line =>
-      LessSource.importRegex.replaceAllIn(line, "")
+      
+      LessSource.parseImport(line.trim) match {
+        case Some(parentName) => graph.getSource(parentName, this).lines.mkString("\n")
+        case _ => line
+      }
     }.mkString("\n")
-
-  def completeRawSource: String =
-    graph.ancestors(this).foldLeft("")(_ + _.importlessRawSource)
+    
+ 
 
 }
