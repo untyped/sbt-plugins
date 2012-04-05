@@ -1,1 +1,0 @@
-alert("dir1/a.js");

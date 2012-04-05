@@ -1,1 +1,1 @@
-addSbtPlugin("com.untyped" %% "sbt-less" % "latest.integration")
+addSbtPlugin("org.lunatool" %% "sbt-less" % "latest.integration")

@@ -10,7 +10,6 @@ $ exists target/scala-2.9.1/resource_managed/main/scala/file2.css
 $ exists target/scala-2.9.1/resource_managed/main/resources/dir1/file3.css
 $ exists target/scala-2.9.1/resource_managed/main/scala/dir2/file4.css
 $ exists target/scala-2.9.1/resource_managed/main/resources/file5.notemplate.css
-$ exists target/scala-2.9.1/resource_managed/main/resources/file6.css
 
 # Check that the temporary downloads exist:
 # $ exists target/sbt-less/downloads/http___code.jquery.com_jquery-1.7.css
@@ -20,7 +19,6 @@ $ exists target/scala-2.9.1/resource_managed/main/resources/file6.css
 > contents target/scala-2.9.1/resource_managed/main/scala/file2.css                fixtures/file2.css
 > contents target/scala-2.9.1/resource_managed/main/resources/dir1/file3.css       fixtures/file3.css
 > contents target/scala-2.9.1/resource_managed/main/scala/dir2/file4.css           fixtures/file4.css
-> contents target/scala-2.9.1/resource_managed/main/resources/file6.css            fixtures/file6.css
 
 # Check that the temporary downloads have the correct content:
 # > contents target/sbt-less/downloads/http___code.jquery.com_jquery-1.7.css         fixtures/jquery-1.7.css
@@ -30,7 +28,6 @@ $ newer target/scala-2.9.1/resource_managed/main/resources/file1.css            
 $ newer target/scala-2.9.1/resource_managed/main/scala/file2.css                fixtures/last-compile-time
 $ newer target/scala-2.9.1/resource_managed/main/resources/dir1/file3.css       fixtures/last-compile-time
 $ newer target/scala-2.9.1/resource_managed/main/scala/dir2/file4.css           fixtures/last-compile-time
-$ newer target/scala-2.9.1/resource_managed/main/resources/file6.css            fixtures/last-compile-time
 
 # Touch some (but not all) of the source files:
 $ touch src/main/resources/file1.css
@@ -48,14 +45,12 @@ $ sleep 1000
 > contents target/scala-2.9.1/resource_managed/main/scala/file2.css                fixtures/file2.css
 > contents target/scala-2.9.1/resource_managed/main/resources/dir1/file3.css       fixtures/file3.css
 > contents target/scala-2.9.1/resource_managed/main/scala/dir2/file4.css           fixtures/file4.css
-> contents target/scala-2.9.1/resource_managed/main/resources/file6.css            fixtures/file6.css
 
 # Check that only the touched files were updated:
 $ newer target/scala-2.9.1/resource_managed/main/resources/file1.css      fixtures/last-compile-time
 $ newer fixtures/last-compile-time                                        target/scala-2.9.1/resource_managed/main/scala/file2.css
 $ newer target/scala-2.9.1/resource_managed/main/resources/dir1/file3.css fixtures/last-compile-time
 $ newer target/scala-2.9.1/resource_managed/main/scala/dir2/file4.css     fixtures/last-compile-time
-$ newer target/scala-2.9.1/resource_managed/main/resources/file6.css      fixtures/last-compile-time
 
 # Clean everything:
 > clean

@@ -9,12 +9,6 @@ seq(lessSettings : _*)
     Seq(srcDir / "resources" / "dir2", srcDir / "resources" / "dir1")
 }
 
-LessKeys.templateProperties in Compile := {
-  val props = new java.util.Properties
-  props.setProperty("test.user.name", "Mustache")
-  props
-}
-
 InputKey[Unit]("contents") <<= inputTask { (argsTask: TaskKey[Seq[String]]) =>
   (argsTask, streams) map { (args, out) =>
     args match {

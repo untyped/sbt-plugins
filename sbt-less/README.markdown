@@ -3,12 +3,10 @@ sbt-less: SBT Less CSS Plugin
 
 [Simple Build Tool] plugin for compiling [Less CSS] files.
 
-Copyright 2011-12 [Dave Gurnell] of [Untyped]
+Copyright 2011-12 [Denis Bardadym]
 
 [Simple Build Tool]: http://simple-build-tool.googlecode.com
 [Less CSS]: http://lesscss.org
-[Dave Gurnell]: http://boxandarrow.com
-[Untyped]: http://untyped.com
 
 Installation
 ============
@@ -22,13 +20,7 @@ Create a `project/plugins.sbt` file and paste the following content into it:
       url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/")
     )(Resolver.ivyStylePatterns)
 
-    addSbtPlugin("com.untyped" %% "sbt-less" % "0.3")
-
-Note that, as of version 0.3, certain things have changed:
-
- - the plugin has moved from `repo.untyped.com` to `scalasbt.artifactoryonline.com`;
- - the group ID has changed from `untyped` to `com.untyped`;
- - the package name has changed from `untyped.less` to `com.untyped.sbtless`.
+    addSbtPlugin("org.lunatool" %% "sbt-less" % "0.1-SNAPSHOT")
 
 In your build.sbt file, put:
 
@@ -53,7 +45,7 @@ To specify multiple source directories, use:
         )
     }
 
-When using multiple source directories, files in earlier directories will "shadow" similarly named files in later directories, allowing you you to override individual files in a library without destructively editing the whole thing.
+When using multiple source directories, files in last directories will "shadow" similarly named files in later directories, allowing you you to override individual files in a library without destructively editing the whole thing.
 
 To change the destination directory to `src/main/webapp` in an `xsbt-web-plugin` project, use:
 
@@ -76,56 +68,18 @@ above to see how to include Less CSS compilation as part of the regular `compile
 The default behaviour of the plugin is to scan your `src/main` directory and look files with the
 extension `.less`.
 
-These files are compiled to CSS using Less CSS v1.1.3 and placed in equivalent locations under
+These files are compiled to CSS using Less CSS v1.3.0 and placed in equivalent locations under
 `target/scala-2.9.x/resource_managed`.
-
-Templating
-==========
-
-It is sometime useful to template Less files. For example, you might want scripts
-to refer to one value during development and another value once deployed to production.
-
-Javascript files with the extension `.template.less` are passed through a [Mustache]
-template processor before being passed to the Less compiler.
-
-Property names and values are drawn from a properties file that is located and parsed
-in an identical manner to the Lift web framework (though the implementation has no
-dependency on Lift). The default location for property files is `src/main/resources/props`.
-See the [Lift documentation] for file formats and naming conventions.
-
-[Mustache]: http://mustache.github.com/
-[Lift documentation]: http://www.assembla.com/spaces/liftweb/wiki/Properties
 
 Acknowledgements
 ================
 
-v0.2 for SBT 0.11 based on [less-sbt], Copyright (c) 2011 Doug Tangren.
-v0.1 for SBT 0.7 based on [Coffee Script SBT plugin], Copyright (c) 2010 Luke Amdor.
-
-Heavily influenced by the [YUI Compressor SBT plugin] by Jon Hoffman.
-
-v0.1 used a tweaked version of the [Less for Java] wrapper by Asual.
-
-Thanks to:
-
- - [Tim Nelson](https://github.com/eltimn) for his work on the SBT 0.11
-   migration and dramatic improvements to this README.
-
- - [Glade Diviney](https://github.com/gladed) for help producing test cases
-   and debugging various issues.
-
-[less-sbt]: https://github.com/softprops/less-sbt
-[Coffee Script SBT plugin]: https://github.com/rubbish/coffee-script-sbt-plugin
-[YUI Compressor SBT plugin]: https://github.com/hoffrocket/sbt-yui
-[Less for Java]: http://www.asual.com/lesscss/
+Based on sbt-less of Dave Gurnell 
 
 Licence
 =======
 
-Copyright 2011-12 [Dave Gurnell] of [Untyped]
-
-[Dave Gurnell]: http://boxandarrow.com
-[Untyped]: http://untyped.com
+Copyright 2011-12 [Denis Bardadym]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

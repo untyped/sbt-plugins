@@ -1,8 +1,8 @@
 import sbt._
 import sbt.Keys._
 import sbt.Project.Initialize
-import com.untyped.sbtless.Plugin._
-import com.untyped.sbtless.Plugin.LessKeys._
+import org.lunatool.sbtless.Plugin._
+import org.lunatool.sbtless.Plugin.LessKeys._
 
 object Build extends Build {
   
@@ -19,7 +19,7 @@ object Build extends Build {
     base = file("."),
     settings = 
       Project.defaultSettings ++ 
-      com.untyped.sbtless.Plugin.lessSettings ++
+      org.lunatool.sbtless.Plugin.lessSettings ++
       Seq(
         logLevel := Level.Debug,
         runTest <<= runTestTask
