@@ -15,12 +15,7 @@ For SBT 0.11:
 
 Create a `project/plugins.sbt` file and paste the following content into it:
 
-    resolvers += Resolver.url(
-      "sbt-plugin-releases",
-      url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/")
-    )(Resolver.ivyStylePatterns)
-
-    addSbtPlugin("org.lunatool" %% "sbt-less" % "0.1-SNAPSHOT")
+    addSbtPlugin("com.github.btd" %% "sbt-less-plugin" % "0.0.1")
 
 In your build.sbt file, put:
 
@@ -74,7 +69,7 @@ These files are compiled to CSS using Less CSS v1.3.0 and placed in equivalent l
 Acknowledgements
 ================
 
-Based on sbt-less of Dave Gurnell 
+Based on sbt-less of Dave Gurnell.
 
 Licence
 =======
