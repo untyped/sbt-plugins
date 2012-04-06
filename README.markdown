@@ -15,6 +15,8 @@ For SBT 0.11:
 
 Create a `project/plugins.sbt` file and paste the following content into it:
 
+    resolvers += "btd github" at "http://btd.github.com/maven2"
+
     addSbtPlugin("com.github.btd" %% "sbt-less-plugin" % "0.0.1")
 
 In your build.sbt file, put:
