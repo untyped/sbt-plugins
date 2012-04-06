@@ -19,7 +19,7 @@ object Build extends Build {
     base = file("."),
     settings = 
       Project.defaultSettings ++ 
-      org.lunatool.sbtless.Plugin.lessSettings ++
+      com.github.btd.sbt.Plugin.lessSettings ++
       Seq(
         logLevel := Level.Debug,
         runTest <<= runTestTask
