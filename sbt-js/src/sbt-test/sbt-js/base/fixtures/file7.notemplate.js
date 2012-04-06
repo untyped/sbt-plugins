@@ -1,1 +1,0 @@
-var name="Dave";alert("Hello "+name);alert("Hello {{ test.user.name }}");

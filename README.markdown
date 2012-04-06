@@ -1,65 +1,82 @@
-Untyped SBT Plugins
-===================
+sbt-less: SBT Less CSS Plugin
+=============================
 
-Copyright 2011-12 [Dave Gurnell] of [Untyped]
+[Simple Build Tool] plugin for compiling [Less CSS] files.
 
-This repo contains source for three SBT plugins:
+Copyright 2011-12 [Denis Bardadym]
 
- - [sbt-less] - Less CSS compilation, minification, and templating;
- - [sbt-js] - Javascript and Coffeescript compilation, minification, and templating;
- - [sbt-runmode] - specification of Lift run modes using custom jetty-web.xml files.
+[Simple Build Tool]: http://simple-build-tool.googlecode.com
+[Less CSS]: http://lesscss.org
 
-See the `README` files in the relevant subdirectories for more information.
+Installation
+============
 
-Version 0.3
-===========
+For SBT 0.11:
 
-No new features or bug fixes.
+Create a `project/plugins.sbt` file and paste the following content into it:
 
-Hosting moved from the Untyped Maven repository to the [SBT community plugins repo].
-As a consequence of this, certain things have changed:
+    resolvers += "btd github" at "http://btd.github.com/maven2"
 
- - the plugins have moved from `repo.untyped.com` to `scalasbt.artifactoryonline.com`;
- - the group ID has changed from `untyped` to `com.untyped`;
- - the package names have changed from `untyped.<foo>` to `com.untyped.sbt<foo>`.
+    addSbtPlugin("com.github.btd" %% "sbt-less-plugin" % "0.0.1")
 
-These versions work with SBT 0.11.0 and SBT 0.11.2. Sample `plugins.sbt` file:
+In your build.sbt file, put:
 
-    resolvers ++= Resolver.url("sbt-plugin-releases", url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
+    seq(lessSettings : _*)
 
-    addSbtPlugin("com.untyped" % "sbt-js" % "0.3")
+If you're using [xsbt-web-plugin](https://github.com/siasia/xsbt-web-plugin "xsbt-web-plugin"),
+add the output files to the webapp with:
 
-    addSbtPlugin("com.untyped" % "sbt-less" % "0.3")
+    (webappResources in Compile) <+= (resourceManaged in Compile)
 
-    addSbtPlugin("com.untyped" % "sbt-runmode" % "0.3")
+To change the directory that is scanned, use:
 
-Version 0.2
-===========
+    (sourceDirectory in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile)(_ / "path" / "to" / "less-files")
 
-New features:
+To specify multiple source directories, use:
 
- - `sbt-js`: experimental support for CoffeeScript;
- - `sbt-mustache`: new experimental plugin for templating arbitrary files (currently ver limited);
- 
-Bug fixes:
+    (sourceDirectories in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile) {
+      srcDir =>
+        Seq(
+          srcDir / "first" / "path",
+          srcDir / "second" / "path"
+        )
+    }
 
-- `sbt-less`: Import statements in Less CSS files are interpreted relative to the file in which they appear,
-   rather than the root file in the dependency graph.
+When using multiple source directories, files in last directories will "shadow" similarly named files in later directories, allowing you you to override individual files in a library without destructively editing the whole thing.
 
-These versions work with SBT 0.11.0 and SBT 0.11.2. Sample `plugins.sbt` file:
+To change the destination directory to `src/main/webapp` in an `xsbt-web-plugin` project, use:
 
-    resolvers ++= "untyped" at "http://repo.untyped.com"
+    (resourceManaged in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile)(_ / "webapp")
 
-    addSbtPlugin("untyped" % "sbt-js" % "0.2")
+To cause the `less` task to run automatically when you run `compile`:
 
-    addSbtPlugin("untyped" % "sbt-less" % "0.2")
+    (compile in Compile) <<= compile in Compile dependsOn (LessKeys.less in Compile)
 
-    addSbtPlugin("untyped" % "sbt-runmode" % "0.2")
+To use pretty-printing instead of regular CSS minification:
+
+    (LessKeys.prettyPrint in (Compile, LessKeys.less)) := true
+
+Usage
+=====
+
+To compile Less CSS sources, use the `less` command in sbt. Read the installation instructions
+above to see how to include Less CSS compilation as part of the regular `compile` command.
+
+The default behaviour of the plugin is to scan your `src/main` directory and look files with the
+extension `.less`.
+
+These files are compiled to CSS using Less CSS v1.3.0 and placed in equivalent locations under
+`target/scala-2.9.x/resource_managed`.
+
+Acknowledgements
+================
+
+Based on sbt-less of Dave Gurnell.
 
 Licence
 =======
 
-Copyright 2011-12 [Dave Gurnell] of [Untyped]
+Copyright 2011-12 [Denis Bardadym]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -72,10 +89,3 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
-[SBT community plugins repo]: http://www.scala-sbt.org/
-[Dave Gurnell]: http://boxandarrow.com
-[Untyped]: http://untyped.com
-[sbt-less]: https://github.com/untyped/sbt-plugins/tree/master/sbt-less
-[sbt-js]: https://github.com/untyped/sbt-plugins/tree/master/sbt-js
-[sbt-runmode]: https://github.com/untyped/sbt-plugins/tree/master/sbt-runmode
