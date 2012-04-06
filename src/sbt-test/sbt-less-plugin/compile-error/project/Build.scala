@@ -1,8 +1,8 @@
 import sbt._
 import sbt.Keys._
 import sbt.Project.Initialize
-import org.lunatool.sbtless.Plugin._
-import org.lunatool.sbtless.Plugin.LessKeys._
+import com.github.btd.sbt.Plugin._
+import com.github.btd.sbt.Plugin.LessKeys._
 
 object Build extends Build {
   

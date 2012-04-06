@@ -1,4 +1,4 @@
-package org.lunatool.sbtless
+package com.github.btd.sbt
 
 import sbt._
 
