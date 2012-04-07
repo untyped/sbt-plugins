@@ -114,7 +114,7 @@ object Plugin extends sbt.Plugin {
       includeFilter in js          :=   "*.js" || "*.jsm" || "*.jsmanifest" || "*.coffee",
       excludeFilter in js          :=   (".*" - ".") || "_*" || HiddenFileFilter,
       sourceDirectory in js        <<=  (sourceDirectory in conf),
-      sourceDirectories in js      <<= (sourceDirectory in conf) { Seq(_) },
+      sourceDirectories in js      <<=  (sourceDirectory in (conf, js)) { Seq(_) },
       unmanagedSources in js       <<=  unmanagedSourcesTask,
       resourceManaged in js        <<=  (resourceManaged in conf),
       templateProperties           :=   new Properties,

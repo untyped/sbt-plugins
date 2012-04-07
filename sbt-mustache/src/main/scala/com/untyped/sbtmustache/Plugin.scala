@@ -92,7 +92,7 @@ object Plugin extends sbt.Plugin {
       includeFilter in mustache     :=   "*.html",
       excludeFilter in mustache     :=   (".*" - ".") || "_*" || HiddenFileFilter,
       sourceDirectory in mustache   <<=  (sourceDirectory in conf),
-      sourceDirectories in mustache <<=  (sourceDirectory in conf) { Seq(_) },
+      sourceDirectories in mustache <<=  (sourceDirectory in (conf, mustache)) { Seq(_) },
       unmanagedSources in mustache  <<=  unmanagedSourcesTask,
       resourceManaged in mustache   <<=  (resourceManaged in conf),
       templateProperties            :=   new Properties,

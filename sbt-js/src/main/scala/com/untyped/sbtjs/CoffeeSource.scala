@@ -15,6 +15,8 @@ object CoffeeSource {
   def parseRequire(line: String): Option[String] =
     requireRegex.findAllIn(line).matchData.map(data => data.group(1)).toList.headOption
 
+  lazy val compiler = new JCoffeeScriptCompiler
+
 }
 
 case class CoffeeSource(val graph: Graph, val src: File) extends Source {
@@ -27,12 +29,11 @@ case class CoffeeSource(val graph: Graph, val src: File) extends Source {
 
   def coffeeCompile(in: String): String =
     try {
-      (new JCoffeeScriptCompiler).compile(in)
+      CoffeeSource.compiler.compile(in)
     } catch {
       case exn: JCoffeeScriptCompileException =>
         sys.error("Error compiling Coffeescript: " + this.src + ": " + exn.getMessage)
     }
-
 
   /** Closure sources for this file (not its parents). */
   def closureSources: List[JSSourceFile] =

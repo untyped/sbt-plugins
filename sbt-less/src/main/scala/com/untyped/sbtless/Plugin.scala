@@ -108,7 +108,7 @@ object Plugin extends sbt.Plugin {
       excludeFilter in less        :=  (".*" - ".") || "_*" || HiddenFileFilter,
       lessVersion in less          :=  LessVersion.Less115,
       sourceDirectory in less      <<= (sourceDirectory in conf),
-      sourceDirectories in less    <<= (sourceDirectory in conf) { Seq(_) },
+      sourceDirectories in less    <<= (sourceDirectory in (conf, less)) { Seq(_) },
       unmanagedSources in less     <<= unmanagedSourcesTask,
       resourceManaged in less      <<= (resourceManaged in conf),
       templateProperties           :=  new Properties,
