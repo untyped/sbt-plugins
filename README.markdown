@@ -11,6 +11,29 @@ This repo contains source for three SBT plugins:
 
 See the `README` files in the relevant subdirectories for more information.
 
+Version 0.4
+===========
+
+You can now specify multiple `sourceDirectories` in `sbt-js` and `sbt-less`,
+providing `CLASSPATH`-style semantics when resolving files in `// require` and
+`@import` statements.
+
+This is useful if you want to override a single file in a library such as
+Twitter Bootstrap. Check the library out as a Git submodule in your project,
+and specify your sourceDirectories as follows:
+
+    (sourceDirectories in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile) {
+      srcDir =>
+        Seq(
+          srcDir / "path" / "to" / "my" / "files",
+          srcDir / "path" / "to" / "twitter" / "bootstrap"
+        )
+    }
+
+Any `@import` statements are resolved relative to your files first, and then
+Twitter's files. You can override `variables.less` and still maintain the ability
+to pull the latest fixes from Twitter's Github repo.
+
 Version 0.3
 ===========
 
@@ -27,11 +50,21 @@ These versions work with SBT 0.11.0 and SBT 0.11.2. Sample `plugins.sbt` file:
 
     resolvers ++= Resolver.url("sbt-plugin-releases", url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
 
-    addSbtPlugin("com.untyped" % "sbt-js" % "0.3")
+    addSbtPlugin("com.untyped" % "sbt-js"      % "0.3")
 
-    addSbtPlugin("com.untyped" % "sbt-less" % "0.3")
+    addSbtPlugin("com.untyped" % "sbt-less"    % "0.3")
 
     addSbtPlugin("com.untyped" % "sbt-runmode" % "0.3")
+
+Snapshots are published on [repo.untyped.com]:
+
+    resolvers ++= "Untyped" at "http://repo.untyped.com"
+
+    addSbtPlugin("com.untyped" % "sbt-js"      % "0.4-SNAPSHOT")
+
+    addSbtPlugin("com.untyped" % "sbt-less"    % "0.4-SNAPSHOT")
+
+    addSbtPlugin("com.untyped" % "sbt-runmode" % "0.4-SNAPSHOT")
 
 Version 0.2
 ===========
@@ -40,7 +73,7 @@ New features:
 
  - `sbt-js`: experimental support for CoffeeScript;
  - `sbt-mustache`: new experimental plugin for templating arbitrary files (currently ver limited);
- 
+
 Bug fixes:
 
 - `sbt-less`: Import statements in Less CSS files are interpreted relative to the file in which they appear,
