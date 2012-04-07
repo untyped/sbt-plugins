@@ -24,6 +24,9 @@ object Build extends Build {
 
   // Settings -----------------------------------
 
+  def isSnapshot(version: String) =
+    version.contains("-SNAPSHOT") || version.contains("-RC") || version.contains("-M")
+
   def defaultSettings =
     Project.defaultSettings ++
     scriptedSettings ++
@@ -44,7 +47,7 @@ object Build extends Build {
       //   }
       // },
       publishTo <<= (version) { version: String =>
-       if (version.contains("-SNAPSHOT") || version.contains("-RC") || version.contains("-M")) {
+       if (isSnapshot(version)) {
          for {
            host    <- Option(System.getenv("DEFAULT_REPO_HOST"))
            path    <- Option(System.getenv("DEFAULT_REPO_PATH"))
@@ -58,7 +61,7 @@ object Build extends Build {
          ))(Resolver.ivyStylePatterns))
        }
       },
-      publishMavenStyle := false,
+      publishMavenStyle <<= (version)(isSnapshot _),
       scriptedBufferLog := false,
       scalacOptions += "-deprecation",
       scalacOptions += "-unchecked"
