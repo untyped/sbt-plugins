@@ -76,7 +76,7 @@ object Build extends Build {
       publishArtifact in (Compile, packageDoc) := false
     )
   ) aggregate (
-    sbtGraph,
+    // sbtGraph,
     sbtJs,
     sbtLess,
     sbtMustache,
@@ -110,7 +110,7 @@ object Build extends Build {
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-less:
       unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
     )
-  ).dependsOn(sbtGraph)
+  )// .dependsOn(sbtGraph)
 
   lazy val sbtJs = Project(
     id = "sbt-js",
@@ -126,7 +126,7 @@ object Build extends Build {
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-js:
       unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
     )
-  ).dependsOn(sbtGraph)
+  )// .dependsOn(sbtGraph)
 
   lazy val sbtMustache = Project(
     id = "sbt-mustache",
@@ -139,7 +139,7 @@ object Build extends Build {
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-mustache:
       unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
     )
-  ).dependsOn(sbtGraph)
+  )// .dependsOn(sbtGraph)
 
   lazy val sbtRunmode = Project(
     id = "sbt-runmode",
@@ -148,6 +148,6 @@ object Build extends Build {
       libraryDependencies <+= sbtVersion(v => webPlugin(v)),
       libraryDependencies += scalatest % "test"
     )
-  ) dependsOn(sbtLess, sbtJs)
+  ).dependsOn(sbtLess, sbtJs)
 
 }

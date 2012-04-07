@@ -14,6 +14,8 @@ See the `README` files in the relevant subdirectories for more information.
 Version 0.4
 ===========
 
+New features:
+
 You can now specify multiple `sourceDirectories` in `sbt-js` and `sbt-less`,
 providing `CLASSPATH`-style semantics when resolving files in `// require` and
 `@import` statements.
@@ -33,6 +35,39 @@ and specify your sourceDirectories as follows:
 Any `@import` statements are resolved relative to your files first, and then
 Twitter's files. You can override `variables.less` and still maintain the ability
 to pull the latest fixes from Twitter's Github repo.
+
+Changes and bug fixes:
+
+Less CSS content pulled in by `@import` statements now appears at the point of the
+`@import` statement, rather than at the top of the file. For example, the following
+three files:
+
+    a.less:
+    .a{color:black;}
+
+    b.less:
+    .b{color:black;}
+
+    c.less:
+    @import "a.less";
+    .c{color:black;}
+    @import "b.less";
+
+compile to:
+
+    .a{color:black;}
+    .c{color:black;}
+    .b{color:black;}
+
+where they would previously have compiled to:
+
+    .a{color:black;}
+    .b{color:black;}
+    .c{color:black;}
+
+Note that `\\ require` statements in Javascript and Coffeescript files are unaffected.
+
+Thanks to [Denis Bardadym] for this fix.
 
 Version 0.3
 ===========
@@ -112,3 +147,4 @@ limitations under the License.
 [sbt-less]: https://github.com/untyped/sbt-plugins/tree/master/sbt-less
 [sbt-js]: https://github.com/untyped/sbt-plugins/tree/master/sbt-js
 [sbt-runmode]: https://github.com/untyped/sbt-plugins/tree/master/sbt-runmode
+[Denis Bardadym]: https://github.com/btd
