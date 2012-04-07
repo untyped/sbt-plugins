@@ -44,12 +44,19 @@ object Build extends Build {
       //   }
       // },
       publishTo <<= (version) { version: String =>
-         val scalasbt = "http://scalasbt.artifactoryonline.com/scalasbt/"
-         val (name, url) = if (version.contains("-SNAPSHOT"))
-                             ("sbt-plugin-snapshots", scalasbt+"sbt-plugin-snapshots")
-                           else
-                             ("sbt-plugin-releases", scalasbt+"sbt-plugin-releases")
-         Some(Resolver.url(name, new URL(url))(Resolver.ivyStylePatterns))
+       if (version.contains("-SNAPSHOT") || version.contains("-RC") || version.contains("-M")) {
+         for {
+           host    <- Option(System.getenv("DEFAULT_REPO_HOST"))
+           path    <- Option(System.getenv("DEFAULT_REPO_PATH"))
+           user    <- Option(System.getenv("DEFAULT_REPO_USER"))
+           keyfile <- Option(System.getenv("DEFAULT_REPO_KEYFILE"))
+         } yield Resolver.sftp("Default Repo", host, path).as(user, file(keyfile))
+       } else {
+         Some(Resolver.url(
+            "sbt-plugin-releases",
+            new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases"
+         ))(Resolver.ivyStylePatterns))
+       }
       },
       publishMavenStyle := false,
       scriptedBufferLog := false,
