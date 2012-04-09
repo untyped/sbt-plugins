@@ -91,9 +91,9 @@ These versions work with SBT 0.11.0 and SBT 0.11.2. Sample `plugins.sbt` file:
 
     addSbtPlugin("com.untyped" % "sbt-runmode" % "0.3")
 
-Snapshots are published on [repo.untyped.com]:
+Snapshots are published on [ivy.untyped.com]:
 
-    resolvers ++= "Untyped" at "http://repo.untyped.com"
+    resolvers ++= Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
 
     addSbtPlugin("com.untyped" % "sbt-js"      % "0.4-SNAPSHOT")
 

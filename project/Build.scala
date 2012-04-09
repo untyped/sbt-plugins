@@ -9,11 +9,13 @@ object Build extends Build {
 
   // Libraries ----------------------------------
 
+  val untyped       = Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
+
   val closure       = "com.google.javascript" % "closure-compiler" % "r1592"
   val mustache      = "com.samskivert" % "jmustache" % "1.3"
   val rhino         = "rhino" % "js" % "1.7R2"
   val scalatest     = "org.scalatest" %% "scalatest" % "1.6.1"
-  // val jCoffeescript = "org.jcoffeescript" % "jcoffeescript" % "1.1"
+  val tipi          = "com.untyped" %% "tipi" % "0.1-SNAPSHOT"
 
   def webPlugin(sbtVersion: String) =
     sbtVersion match {
@@ -31,29 +33,19 @@ object Build extends Build {
     Project.defaultSettings ++
     scriptedSettings ++
     Seq(
-      sbtPlugin := true,
+      sbtPlugin    := true,
       organization := "com.untyped",
-      version := pluginsVersion,
+      version      := pluginsVersion,
       scalaVersion := "2.9.1",
-      resolvers += "Untyped Public Repo" at "http://repo.untyped.com",
-      // publishTo := {
-      //   for {
-      //     host <- Option(System.getenv("DEFAULT_REPO_HOST"))
-      //     path <- Option(System.getenv("DEFAULT_REPO_PATH"))
-      //     user <- Option(System.getenv("DEFAULT_REPO_USER"))
-      //     keyfile <- Option(System.getenv("DEFAULT_REPO_KEYFILE"))
-      //   } yield {
-      //     Resolver.sftp("Default Repo", host, path).as(user, new File(keyfile))
-      //   }
-      // },
+      resolvers    += untyped,
       publishTo <<= (version) { version: String =>
        if (isSnapshot(version)) {
          for {
-           host    <- Option(System.getenv("DEFAULT_REPO_HOST"))
-           path    <- Option(System.getenv("DEFAULT_REPO_PATH"))
-           user    <- Option(System.getenv("DEFAULT_REPO_USER"))
-           keyfile <- Option(System.getenv("DEFAULT_REPO_KEYFILE"))
-         } yield Resolver.sftp("Default Repo", host, path).as(user, file(keyfile))
+           host    <- Option(System.getenv("DEFAULT_IVY_REPO_HOST"))
+           path    <- Option(System.getenv("DEFAULT_IVY_REPO_PATH"))
+           user    <- Option(System.getenv("DEFAULT_IVY_REPO_USER"))
+           keyfile <- Option(System.getenv("DEFAULT_IVY_REPO_KEYFILE"))
+         } yield Resolver.sftp("Untyped", host, path).as(user, file(keyfile))
        } else {
          Some(Resolver.url(
             "sbt-plugin-releases",
@@ -61,7 +53,7 @@ object Build extends Build {
          ))(Resolver.ivyStylePatterns))
        }
       },
-      publishMavenStyle <<= (version)(isSnapshot _),
+      publishMavenStyle := false,
       scriptedBufferLog := false,
       scalacOptions += "-deprecation",
       scalacOptions += "-unchecked"
@@ -83,6 +75,7 @@ object Build extends Build {
     sbtJs,
     sbtLess,
     sbtMustache,
+    sbtTipi,
     sbtRunmode
   )
 
@@ -136,6 +129,20 @@ object Build extends Build {
     base = file("sbt-mustache"),
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Seq(
+        mustache,
+        scalatest % "test"
+      ),
+      // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-mustache:
+      unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
+    )
+  )// .dependsOn(sbtGraph)
+
+  lazy val sbtTipi = Project(
+    id = "sbt-tipi",
+    base = file("sbt-tipi"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Seq(
+        tipi,
         mustache,
         scalatest % "test"
       ),
