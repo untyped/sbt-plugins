@@ -14,7 +14,7 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
   def isTemplated = true
 
   lazy val env: Env =
-    graph.environment ++ Env(immutable.Map(Id("include") -> includeTransform))
+    graph.environment ++ Env(immutable.Map(Id("import") -> importTransform))
 
   lazy val doc: Doc = {
     val source = io.Source.fromFile(src)
@@ -31,7 +31,7 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
     }
   }
 
-  lazy val includeTransform =
+  lazy val importTransform =
     new Transform {
       def isDefinedAt(in: (Env, Doc)): Boolean =
         true
@@ -41,20 +41,27 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
         doc match {
           case Block(_, StringArgument(name) :: Nil, Range.Empty) =>
             val source = graph.getSource(name, Source.this)
-            val (_, newDoc) = graph.expand((source.env, source.doc))
-            (env, newDoc)
+
+            // Execute the source in its own environment:
+            val (importedEnv, importedDoc) = graph.expand((source.env, source.doc))
+
+            // Import everything except "def", "bind", and "import" into the current environment:
+            val newEnv = env ++ (importedEnv -- Env.basic - Id("import"))
+
+            // Continue expanding the document:
+            (env ++ newEnv, importedDoc)
 
           case other =>
-            sys.error("Bad include tag: " + other)
+            sys.error("Bad import tag: " + other)
         }
       }
     }
 
-  lazy val includes = {
+  lazy val imports = {
     def loop(doc: Doc): List[String] = {
       doc match {
-        case Block(Id("include"), StringArgument(filename) :: _, _) => List(filename)
-        case Block(Id("include"), IdArgument(Id(filename)) :: _, _) => List(filename)
+        case Block(Id("import"), StringArgument(filename) :: _, _) => List(filename)
+        case Block(Id("import"), IdArgument(Id(filename)) :: _, _) => List(filename)
         case Range(children)                                       => children.flatMap(loop _)
         case _ => Nil
       }
@@ -65,7 +72,7 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
 
   lazy val parents: List[Source] = {
     println("DOC " + src + "\n" + doc)
-    includes.map(graph.getSource(_, this))
+    imports.map(graph.getSource(_, this))
   }
 
   def compiledContent: String =
