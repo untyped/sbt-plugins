@@ -18,7 +18,7 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
 
   lazy val doc: Doc = {
     val source = io.Source.fromFile(src)
-    val input = new CharSequenceReader(source.toString)
+    val input = new CharSequenceReader(source.mkString)
 
     try {
       graph.parse(input) match {
@@ -40,7 +40,9 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
         val (env, doc) = in
         doc match {
           case Block(_, StringArgument(name) :: Nil, Range.Empty) =>
-            (env, graph.getSource(name, Source.this).doc)
+            val source = graph.getSource(name, Source.this)
+            val (_, newDoc) = graph.expand((source.env, source.doc))
+            (env, newDoc)
 
           case other =>
             sys.error("Bad include tag: " + other)
@@ -48,11 +50,11 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
       }
     }
 
-  lazy val imports = {
+  lazy val includes = {
     def loop(doc: Doc): List[String] = {
       doc match {
-        case Block(Id("import"), StringArgument(filename) :: _, _) => List(filename)
-        case Block(Id("import"), IdArgument(Id(filename)) :: _, _) => List(filename)
+        case Block(Id("include"), StringArgument(filename) :: _, _) => List(filename)
+        case Block(Id("include"), IdArgument(Id(filename)) :: _, _) => List(filename)
         case Range(children)                                       => children.flatMap(loop _)
         case _ => Nil
       }
@@ -61,8 +63,10 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
     loop(doc)
   }
 
-  lazy val parents: List[Source] =
-    imports.map(graph.getSource(_, this))
+  lazy val parents: List[Source] = {
+    println("DOC " + src + "\n" + doc)
+    includes.map(graph.getSource(_, this))
+  }
 
   def compiledContent: String =
     graph.render(graph.expand((env, doc)))
@@ -74,4 +78,6 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
       des
     }
 
+  override def toString =
+    "Source(%s)".format(src)
 }

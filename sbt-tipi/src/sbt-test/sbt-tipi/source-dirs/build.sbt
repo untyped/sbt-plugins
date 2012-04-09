@@ -9,11 +9,11 @@ seq(tipiSettings : _*)
     Seq(srcDir / "resources" / "dir2", srcDir / "resources" / "dir1")
 }
 
-TipiKeys.templateProperties in Compile := {
-  val props = new java.util.Properties
-  props.setProperty("test.user.name", "Tipi")
-  props
-}
+// TipiKeys.templateProperties in Compile := {
+//   val props = new java.util.Properties
+//   props.setProperty("test.user.name", "Tipi")
+//   props
+// }
 
 InputKey[Unit]("contents") <<= inputTask { (argsTask: TaskKey[Seq[String]]) =>
   (argsTask, streams) map { (args, out) =>

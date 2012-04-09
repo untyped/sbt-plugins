@@ -21,15 +21,14 @@ case class Graph(
   val expand = Expand
   val render = Render
 
-  override def createSource(src: File): Source = {
-    log.debug("Graph.createSource " + src)
+  override def createSource(src: File): Source =
     Source(this, src.getCanonicalFile)
-  }
 
-  def srcFilenameToDesFilename(filename: String) = {
-    log.debug("Graph.srcFilenameToDesFilename " + filename)
+  def srcFilenameToDesFilename(filename: String) =
     filename
-  }
 
   val pluginName = "sbt-tipi"
+
+  override def toString =
+    "Graph(%s, %s)".format(pluginName, sources)
 }
