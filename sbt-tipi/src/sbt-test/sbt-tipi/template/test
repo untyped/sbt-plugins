@@ -1,0 +1,11 @@
+# Mark the time and run the compile task:
+$ sleep 1000
+$ touch fixtures/last-compile-time
+$ sleep 1000
+> tipi
+
+# Check that the files exist:
+$ exists target/scala-2.9.1/resource_managed/main/resources/file1.html
+
+# Check that the files have the correct content:
+> contents target/scala-2.9.1/resource_managed/main/resources/file1.html         fixtures/file1.html
