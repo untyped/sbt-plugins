@@ -1,0 +1,12 @@
+Block Scoped Import test:
+
+Define main:
+
+{{#def main}}
+	{{import source="Test02.import"}}
+	{{InlineDefineAuthor author=InlineAuthor url=InlineURL}}
+{{/def}}
+
+GlobalAuthor = '{{GlobalAuthor}}' (should be nothing)
+
+Main: {{main}}

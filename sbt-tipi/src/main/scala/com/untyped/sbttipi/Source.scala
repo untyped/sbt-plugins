@@ -39,7 +39,7 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
       def apply(in: (Env, Doc)): (Env, Doc) = {
         val (env, doc) = in
         doc match {
-          case Block(_, StringArgument(name) :: Nil, Range.Empty) =>
+          case Block(_, StringArgument(Id("source"), name) :: Nil, Range.Empty) =>
             val source = graph.getSource(name, Source.this)
 
             // Execute the source in its own environment:
@@ -60,9 +60,9 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
   lazy val imports = {
     def loop(doc: Doc): List[String] = {
       doc match {
-        case Block(Id("import"), StringArgument(filename) :: _, _) => List(filename)
-        case Block(Id("import"), IdArgument(Id(filename)) :: _, _) => List(filename)
-        case Range(children)                                       => children.flatMap(loop _)
+        case Block(Id("import"), StringArgument(Id("source"), filename) :: _, _) => List(filename)
+        case Block(Id("import"), UnitArgument(Id(filename)) :: _, _)             => List(filename)
+        case Range(children)                                                     => children.flatMap(loop _)
         case _ => Nil
       }
     }
