@@ -69,9 +69,9 @@ To use pretty-printing instead of regular CSS minification:
 	
 To include, exclude (filter) less files:
 
-(includeFilter in (Compile, LessKeys.less)) := ("*.include.less": FileFilter)
+    (includeFilter in (Compile, LessKeys.less)) := ("*.include.less": FileFilter)
 
-(excludeFilter in (Compile, LessKeys.less)) := ("*.exclude*": FileFilter)
+    (excludeFilter in (Compile, LessKeys.less)) := ("*.exclude*": FileFilter)
 
 Take a look at the unit test for more details.
 
