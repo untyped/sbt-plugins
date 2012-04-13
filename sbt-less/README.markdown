@@ -66,6 +66,14 @@ To cause the `less` task to run automatically when you run `compile`:
 To use pretty-printing instead of regular CSS minification:
 
     (LessKeys.prettyPrint in (Compile, LessKeys.less)) := true
+	
+To include, exclude (filter) less files:
+
+(includeFilter in (Compile, LessKeys.less)) := ("*.include.less": FileFilter)
+
+(excludeFilter in (Compile, LessKeys.less)) := ("*.exclude*": FileFilter)
+
+Take a look at the unit test for more details.
 
 Usage
 =====
@@ -123,9 +131,11 @@ Licence
 =======
 
 Copyright 2011-12 [Dave Gurnell] of [Untyped]
+Modified by [Alexandre Richonnier] of [heirko]
 
 [Dave Gurnell]: http://boxandarrow.com
 [Untyped]: http://untyped.com
+[Alexandre Richonnier]: http://www.hera.cc
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

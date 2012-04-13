@@ -5,7 +5,7 @@ object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.4-SNAPSHOT"
+  val pluginsVersion = "0.5-SNAPSHOT"
 
   // Libraries ----------------------------------
 
@@ -13,6 +13,7 @@ object Build extends Build {
   val mustache      = "com.samskivert" % "jmustache" % "1.3"
   val rhino         = "rhino" % "js" % "1.7R2"
   val scalatest     = "org.scalatest" %% "scalatest" % "1.6.1"
+  val lesscss		= "org.lesscss" % "lesscss" % "1.3.0"
   // val jCoffeescript = "org.jcoffeescript" % "jcoffeescript" % "1.1"
 
   def webPlugin(sbtVersion: String) =
@@ -108,6 +109,7 @@ object Build extends Build {
       libraryDependencies ++= Seq(
         rhino,
         mustache,
+		lesscss,
         scalatest % "test"
       ),
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-less:
