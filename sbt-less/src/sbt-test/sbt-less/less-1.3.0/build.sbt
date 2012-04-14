@@ -2,8 +2,6 @@ name := "less-1.3.0"
 
 scalaVersion := "2.9.1"
 
-libraryDependencies += "org.lesscss" % "lesscss" % "1.3.0"
-
 seq(lessSettings : _*)
 
 LessKeys.lessVersion in (Compile, LessKeys.less) := LessVersion.Less130

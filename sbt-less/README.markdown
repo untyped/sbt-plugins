@@ -1,5 +1,4 @@
-sbt-less: SBT Less CSS Plugin
-=============================
+#sbt-less: SBT Less CSS Plugin
 
 [Simple Build Tool] plugin for compiling [Less CSS] files.
 
@@ -10,10 +9,9 @@ Copyright 2011-12 [Dave Gurnell] of [Untyped]
 [Dave Gurnell]: http://boxandarrow.com
 [Untyped]: http://untyped.com
 
-Installation
-============
+##Installation
 
-For SBT 0.11:
+###For SBT 0.11.x:
 
 Create a `project/plugins.sbt` file and paste the following content into it:
 
@@ -34,16 +32,18 @@ In your build.sbt file, put:
 
     seq(lessSettings : _*)
 
-If you're using [xsbt-web-plugin](https://github.com/siasia/xsbt-web-plugin "xsbt-web-plugin"),
-add the output files to the webapp with:
+## Customize it
+
+### If you're using [xsbt-web-plugin](https://github.com/siasia/xsbt-web-plugin "xsbt-web-plugin"),
+    add the output files to the webapp with:
 
     (webappResources in Compile) <+= (resourceManaged in Compile)
 
-To change the directory that is scanned, use:
+### To change the directory that is scanned, use:
 
     (sourceDirectory in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile)(_ / "path" / "to" / "less-files")
 
-To specify multiple source directories, use:
+### To specify multiple source directories, use:
 
     (sourceDirectories in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile) {
       srcDir =>
@@ -55,28 +55,36 @@ To specify multiple source directories, use:
 
 When using multiple source directories, files in earlier directories will "shadow" similarly named files in later directories, allowing you you to override individual files in a library without destructively editing the whole thing.
 
-To change the destination directory to `src/main/webapp` in an `xsbt-web-plugin` project, use:
+### To change the destination directory to `src/main/webapp` in an `xsbt-web-plugin` project, use:
 
     (resourceManaged in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile)(_ / "webapp")
 
-To cause the `less` task to run automatically when you run `compile`:
+### To cause the `less` task to run automatically when you run `compile`:
 
     (compile in Compile) <<= compile in Compile dependsOn (LessKeys.less in Compile)
 
-To use pretty-printing instead of regular CSS minification:
+### To use pretty-printing instead of regular CSS minification:
 
     (LessKeys.prettyPrint in (Compile, LessKeys.less)) := true
 	
-To include, exclude (filter) less files:
+### To include, exclude (filter) less files:
 
     (includeFilter in (Compile, LessKeys.less)) := ("*.include.less": FileFilter)
 
     (excludeFilter in (Compile, LessKeys.less)) := ("*.exclude*": FileFilter)
 
+### To specify which version of the Less CSS compiler to use:
+####  Options:
+    * Less113
+    * Less115
+    * Less121
+    * Less130
+
+    LessKeys.lessVersion in (Compile, LessKeys.less) := LessVersion.Less130
+
 Take a look at the unit test for more details.
 
-Usage
-=====
+## Usage
 
 To compile Less CSS sources, use the `less` command in sbt. Read the installation instructions
 above to see how to include Less CSS compilation as part of the regular `compile` command.
@@ -87,8 +95,7 @@ extension `.less`.
 These files are compiled to CSS using Less CSS v1.1.3 and placed in equivalent locations under
 `target/scala-2.9.x/resource_managed`.
 
-Templating
-==========
+## Templating
 
 It is sometime useful to template Less files. For example, you might want scripts
 to refer to one value during development and another value once deployed to production.
@@ -104,8 +111,7 @@ See the [Lift documentation] for file formats and naming conventions.
 [Mustache]: http://mustache.github.com/
 [Lift documentation]: http://www.assembla.com/spaces/liftweb/wiki/Properties
 
-Acknowledgements
-================
+## Acknowledgements
 
 v0.2 for SBT 0.11 based on [less-sbt], Copyright (c) 2011 Doug Tangren.
 v0.1 for SBT 0.7 based on [Coffee Script SBT plugin], Copyright (c) 2010 Luke Amdor.
@@ -114,7 +120,7 @@ Heavily influenced by the [YUI Compressor SBT plugin] by Jon Hoffman.
 
 v0.1 used a tweaked version of the [Less for Java] wrapper by Asual.
 
-Thanks to:
+### Thanks to:
 
  - [Tim Nelson](https://github.com/eltimn) for his work on the SBT 0.11
    migration and dramatic improvements to this README.
@@ -122,20 +128,19 @@ Thanks to:
  - [Glade Diviney](https://github.com/gladed) for help producing test cases
    and debugging various issues.
 
+ - [Alexandre Richonnier]: http://www.hera.cc less 1.3 hack
+   
 [less-sbt]: https://github.com/softprops/less-sbt
 [Coffee Script SBT plugin]: https://github.com/rubbish/coffee-script-sbt-plugin
 [YUI Compressor SBT plugin]: https://github.com/hoffrocket/sbt-yui
 [Less for Java]: http://www.asual.com/lesscss/
 
-Licence
-=======
+## Licence
 
-Copyright 2011-12 [Dave Gurnell] of [Untyped]
-Modified by [Alexandre Richonnier] of [heirko]
+###Copyright 2011-12 [Dave Gurnell] of [Untyped]
 
 [Dave Gurnell]: http://boxandarrow.com
 [Untyped]: http://untyped.com
-[Alexandre Richonnier]: http://www.hera.cc
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
