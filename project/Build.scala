@@ -45,7 +45,7 @@ object Build extends Build {
            path    <- Option(System.getenv("DEFAULT_IVY_REPO_PATH"))
            user    <- Option(System.getenv("DEFAULT_IVY_REPO_USER"))
            keyfile <- Option(System.getenv("DEFAULT_IVY_REPO_KEYFILE"))
-         } yield Resolver.sftp("Untyped", host, path).as(user, file(keyfile))
+         } yield Resolver.sftp("Untyped", host, path)(Resolver.ivyStylePatterns).as(user, file(keyfile))
        } else {
          Some(Resolver.url(
             "sbt-plugin-releases",

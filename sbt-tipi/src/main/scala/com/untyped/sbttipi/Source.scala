@@ -6,7 +6,7 @@ import scala.util.parsing.combinator._
 import scala.util.parsing.input._
 import tipi.core._
 
-case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.Source {
+case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.Source with tipi.core.Implicits {
 
   type S = com.untyped.sbttipi.Source
   type G = com.untyped.sbttipi.Graph
@@ -31,39 +31,55 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
     }
   }
 
-  lazy val importTransform =
-    new Transform {
-      def isDefinedAt(in: (Env, Doc)): Boolean =
-        true
-
-      def apply(in: (Env, Doc)): (Env, Doc) = {
-        val (env, doc) = in
-        doc match {
-          case Block(_, StringArgument(Id("source"), name) :: Nil, Range.Empty) =>
-            val source = graph.getSource(name, Source.this)
-
-            // Execute the source in its own environment:
-            val (importedEnv, importedDoc) = graph.expand((source.env, source.doc))
-
-            // Import everything except "def", "bind", and "import" into the current environment:
-            val newEnv = env ++ (importedEnv -- Env.basic - Id("import"))
-
-            // Continue expanding the document:
-            (env ++ newEnv, importedDoc)
-
-          case other =>
-            sys.error("Bad import tag: " + other)
-        }
-      }
+  def loadEnv(name: String): Env = {
+    try {
+      Class.forName(name).newInstance.asInstanceOf[Env]
+    } catch {
+      case exn: ClassNotFoundException =>
+        sys.error("Could not import class: " + name + " not found")
     }
+  }
+
+  lazy val importTransform = Transform.Full {
+    case (env, Block(_, args, Range.Empty)) =>
+      if(args.contains[String]("source")) {
+        val source = graph.getSource(args[String]("source"), Source.this)
+        val prefix = args.get[String]("prefix").getOrElse("")
+
+        // Execute the source in its own environment:
+        val (importedEnv, importedDoc) = graph.expand((source.env, source.doc))
+
+        // Import everything except "def", "bind", and "import" into the current environment:
+        val newEnv = env ++ (importedEnv -- Env.basic - Id("import")).prefixWith(prefix)
+
+        // Continue expanding the document:
+        (env ++ newEnv, importedDoc)
+      } else if(args.contains[String]("class")) {
+        val prefix = args.get[String]("prefix").getOrElse("")
+        (env ++ loadEnv(args[String]("class")).prefixWith(prefix), Range.Empty)
+      } else {
+        sys.error("Bad import tag: no 'source' or 'class' parameter")
+      }
+
+    case other =>
+      sys.error("Bad import tag: " + other)
+  }
 
   lazy val imports = {
     def loop(doc: Doc): List[String] = {
       doc match {
-        case Block(Id("import"), StringArgument(Id("source"), filename) :: _, _) => List(filename)
-        case Block(Id("import"), UnitArgument(Id(filename)) :: _, _)             => List(filename)
-        case Range(children)                                                     => children.flatMap(loop _)
-        case _ => Nil
+        case Block(Id("import"), args, _) =>
+          if(args.contains[Any]("source")) {
+            List(args[String]("source"))
+          } else {
+            Nil
+          }
+        case Block(_, _, body) =>
+          loop(body)
+        case Range(children) =>
+          children.flatMap(loop _)
+        case _ =>
+          Nil
       }
     }
 
