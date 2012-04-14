@@ -32,10 +32,21 @@ In your build.sbt file, put:
 
     seq(lessSettings : _*)
 
+### To test your plugin repository
+Modify
+    
+    addSbtPlugin("com.untyped" %% "sbt-less" % "0.3")
+
+to
+
+    addSbtPlugin("com.untyped" %% "sbt-less" % "latest.integration")
+
+Clone your plugin repository, launch sbt and call `publish-local`
+
 ## Customize it
 
 ### If you're using [xsbt-web-plugin](https://github.com/siasia/xsbt-web-plugin "xsbt-web-plugin"),
-    add the output files to the webapp with:
+add the output files to the webapp with:
 
     (webappResources in Compile) <+= (resourceManaged in Compile)
 
@@ -75,12 +86,13 @@ When using multiple source directories, files in earlier directories will "shado
 
 ### To specify which version of the Less CSS compiler to use:
 ####  Options:
-    * Less113
-    * Less115
-    * Less121
-    * Less130
+* Less113
+* Less115
+* Less121
+* Less130
 
-    LessKeys.lessVersion in (Compile, LessKeys.less) := LessVersion.Less130
+
+        LessKeys.lessVersion in (Compile, LessKeys.less) := LessVersion.Less130
 
 Take a look at the unit test for more details.
 
@@ -128,7 +140,7 @@ v0.1 used a tweaked version of the [Less for Java] wrapper by Asual.
  - [Glade Diviney](https://github.com/gladed) for help producing test cases
    and debugging various issues.
 
- - [Alexandre Richonnier]: http://www.hera.cc less 1.3 hack
+ - [Alexandre Richonnier](http://www.hera.cc) less 1.3 hack
    
 [less-sbt]: https://github.com/softprops/less-sbt
 [Coffee Script SBT plugin]: https://github.com/rubbish/coffee-script-sbt-plugin
