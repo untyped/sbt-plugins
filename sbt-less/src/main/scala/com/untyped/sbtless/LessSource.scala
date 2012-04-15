@@ -74,57 +74,74 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
     src.toString.contains(".template")
 
   def compile: Option[File] =
-    withContext { ctx =>
-      val des = this.des getOrElse (throw new Exception("Could not determine destination filename for " + src))
+    withContext {
+      ctx =>
+        val des = this.des getOrElse (throw new Exception("Could not determine destination filename for " + src))
 
-      graph.log.info("Compiling %s source %s".format(graph.pluginName, des))
+        graph.log.info("Compiling %s source %s".format(graph.pluginName, des))
 
-      val scope = ShellEmulation.emulate(ctx.initStandardObjects())
+        val scope = ShellEmulation.emulate(ctx.initStandardObjects())
 
-      ctx.evaluateReader(
-        scope,
-        new InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.url), Charset.forName("utf-8")),
-        graph.lessVersion.filename,
-        1,
-        null)
 
-      val lessCompiler = scope.get("compile", scope).asInstanceOf[Callable]
+        try {
+          var css = ""
+          val minify =
+            !graph.prettyPrint
 
-      try {
-        val less =
-          if(isTemplated) {
-            renderTemplate(completeRawSource)
-          } else {
-            completeRawSource
+          graph.lessVersion match {
+            case Plugin.LessVersion.Less130 => css = getLess13(src, minify)
+            case _ =>
+
+              ctx.evaluateReader(
+                scope,
+                new InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.url), Charset.forName("utf-8")),
+                graph.lessVersion.filename,
+                1,
+                null)
+
+              val lessCompiler = scope.get("compile", scope).asInstanceOf[Callable]
+
+              val less =
+                if (isTemplated) {
+                  renderTemplate(completeRawSource)
+                } else {
+                  completeRawSource
+                }
+
+
+              css =
+                lessCompiler.call(
+                  ctx,
+                  scope,
+                  scope,
+                  Array(src.getPath, less, minify.asInstanceOf[AnyRef])
+                ).toString
           }
 
-        val minify =
-          !graph.prettyPrint
+          IO.write(des, css)
+          Some(des)
+        } catch {
+          case e: JavaScriptException =>
+            e.getValue match {
+              case value: Scriptable =>
+                graph.log.error("Less CSS error: " + ScriptableObject.getProperty(value, "message").toString)
+                graph.log.error("Stack trace: " + ScriptableObject.getProperty(value, "stack").toString)
 
-        val css =
-          lessCompiler.call(
-            ctx,
-            scope,
-            scope,
-            Array(src.getPath, less, minify.asInstanceOf[AnyRef])
-          ).toString
+              case value =>
+                graph.log.error("Unknown exception compiling Less CSS: " + value)
+            }
 
-        IO.write(des, css)
-        Some(des)
-      } catch {
-        case e : JavaScriptException =>
-          e.getValue match {
-            case value: Scriptable =>
-              graph.log.error("Less CSS error: " + ScriptableObject.getProperty(value, "message").toString)
-              graph.log.error("Stack trace: " + ScriptableObject.getProperty(value, "stack").toString)
-
-            case value =>
-              graph.log.error("Unknown exception compiling Less CSS: " + value)
-          }
-
-          None
-      }
+            None
+        }
     }
+
+  private def getLess13 (src: File, minify: Boolean) : String = {
+		val lessCompiler = new org.lesscss.LessCompiler
+		lessCompiler.setCompress(minify)
+    	lessCompiler.compile(
+			src
+		) 
+	}
 
   private def withContext[T](f: Context => T): T = {
     val ctx = Context.enter()
