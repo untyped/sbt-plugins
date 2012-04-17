@@ -79,6 +79,7 @@ When using multiple source directories, files in earlier directories will "shado
     * Less115
     * Less121
     * Less130
+    * Less130b (with less 1.3.0 bug fix: duplicate import files https://github.com/cloudhead/less.js/pull/431
 
     LessKeys.lessVersion in (Compile, LessKeys.less) := LessVersion.Less130
 
