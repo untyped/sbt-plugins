@@ -20,13 +20,16 @@ object Plugin extends sbt.Plugin {
   sealed trait LessVersion {
     val filename: String
     lazy val url = "/" + filename
+    var envjs = ""
+    lazy val envjsUrl = "/" + envjs
   }
 
   object LessVersion {
     val Less113 = new LessVersion { val filename = "less-rhino-1.1.3.js" }
     val Less115 = new LessVersion { val filename = "less-rhino-1.1.5.js" }
     val Less121 = new LessVersion { val filename = "less-rhino-1.2.1.js" } // Note: this version doesn't work yet.
-    val Less130 = new LessVersion { val filename = "less-1.3.0.js" } // don't care of js version, we use lesscss compiler 1.3
+    val Less130 = new LessVersion { val filename = "less-1.3.0.js" ; envjs = "env.rhino.1.2.js"}
+    val Less130b = new LessVersion { val filename = "less-1.3.0b.js" ; envjs = "env.rhino.1.2.js"} // use beta 1.3.0 with import duplicate fix  https://github.com/cloudhead/less.js/pull/431
   }
 
   import LessKeys._

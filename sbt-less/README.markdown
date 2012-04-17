@@ -90,6 +90,7 @@ When using multiple source directories, files in earlier directories will "shado
 * Less115
 * Less121
 * Less130
+    * Less130b (with less 1.3.0 bug fix: duplicate import files https://github.com/cloudhead/less.js/pull/431
 
 
         LessKeys.lessVersion in (Compile, LessKeys.less) := LessVersion.Less130
@@ -140,7 +141,7 @@ v0.1 used a tweaked version of the [Less for Java] wrapper by Asual.
  - [Glade Diviney](https://github.com/gladed) for help producing test cases
    and debugging various issues.
 
- - [Alexandre Richonnier](http://www.hera.cc) less 1.3 hack
+ - [Alexandre Richonnier](http://www.hera.cc) less 1.3 and less 1.3 fix duplicate import
    
 [less-sbt]: https://github.com/softprops/less-sbt
 [Coffee Script SBT plugin]: https://github.com/rubbish/coffee-script-sbt-plugin

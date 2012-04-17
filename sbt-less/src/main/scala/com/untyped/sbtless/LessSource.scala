@@ -54,6 +54,15 @@ object LessSource {
   def parseImport(line: String): Option[String] =
     importRegex.findAllIn(line).matchData.map(_.group(1)).toList.headOption
 
+   val compileJsFunction = """function compile(scriptName, code, min) {
+    name = scriptName;
+    var css = null;
+    new less.Parser().parse(code, function (e, root) {
+        if(e) { throw e; }
+        css = root.toCSS({ compress: min || false })
+    });
+    return css;
+}"""
 }
 
 /**
@@ -80,43 +89,31 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
 
         graph.log.info("Compiling %s source %s".format(graph.pluginName, des))
 
-        val scope = ShellEmulation.emulate(ctx.initStandardObjects())
-
-
         try {
-          var css = ""
-          val minify =
-            !graph.prettyPrint
+          val minify = !graph.prettyPrint
 
-          graph.lessVersion match {
-            case Plugin.LessVersion.Less130 => css = getLess13(src, minify)
-            case _ =>
-
-              ctx.evaluateReader(
-                scope,
-                new InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.url), Charset.forName("utf-8")),
-                graph.lessVersion.filename,
-                1,
-                null)
-
-              val lessCompiler = scope.get("compile", scope).asInstanceOf[Callable]
-
-              val less =
-                if (isTemplated) {
-                  renderTemplate(completeRawSource)
-                } else {
-                  completeRawSource
-                }
-
-
-              css =
-                lessCompiler.call(
-                  ctx,
-                  scope,
-                  scope,
-                  Array(src.getPath, less, minify.asInstanceOf[AnyRef])
-                ).toString
+          val scope = graph.lessVersion match {
+            case Plugin.LessVersion.Less130 => getLess130(ctx, src, minify)
+            case Plugin.LessVersion.Less130b => getLess130(ctx, src, minify)
+            case _ => getOldLess(ctx)
           }
+          val lessCompiler = scope.get("compile", scope).asInstanceOf[Callable]
+
+          val less =
+            if (isTemplated) {
+              renderTemplate(completeRawSource)
+            } else {
+              completeRawSource
+            }
+
+          val css =
+            lessCompiler.call(
+              ctx,
+              scope,
+              scope,
+              Array(src.getPath, less, minify.asInstanceOf[AnyRef])
+            ).toString
+
 
           IO.write(des, css)
           Some(des)
@@ -135,18 +132,44 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
         }
     }
 
-  private def getLess13 (src: File, minify: Boolean) : String = {
-		val lessCompiler = new org.lesscss.LessCompiler
-		lessCompiler.setCompress(minify)
-    	lessCompiler.compile(
-			src
-		) 
-	}
+  private def getOldLess(ctx: Context): ScriptableObject = {
+    val scope = ShellEmulation.emulate(ctx.initStandardObjects())
+
+    ctx.evaluateReader(
+      scope,
+      new InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.url), Charset.forName("utf-8")),
+      graph.lessVersion.filename,
+      1,
+      null)
+
+    scope
+  }
+
+  private def getLess130(ctx: Context, src: File, minify: Boolean) = {
+    val global = new Global();
+    global.init(ctx);
+    val scope = ctx.initStandardObjects(global);
+
+    ctx.evaluateReader(scope,
+      new InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.envjsUrl), Charset.forName("utf-8")),
+      "env.rhino.js", 1, null);
+
+    ctx.evaluateReader(
+      scope,
+      new InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.url), Charset.forName("utf-8")),
+      graph.lessVersion.filename,
+      1,
+      null)
+
+    ctx.evaluateString(scope, LessSource.compileJsFunction.format(minify), "compile.js", 1, null);
+    scope
+  }
 
   private def withContext[T](f: Context => T): T = {
     val ctx = Context.enter()
     try {
       ctx.setOptimizationLevel(-1) // Do not compile to byte code (max 64kb methods)
+      ctx.setLanguageVersion(Context.VERSION_1_7);
       f(ctx)
     } finally {
       Context.exit()
