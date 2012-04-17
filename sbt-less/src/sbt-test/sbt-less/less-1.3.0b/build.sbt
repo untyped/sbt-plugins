@@ -6,7 +6,7 @@ seq(lessSettings : _*)
 
 LessKeys.lessVersion in (Compile, LessKeys.less) := LessVersion.Less130b
 
-(includeFilter in (Compile, LessKeys.less)) := ("bootstrap.less": FileFilter)
+(includeFilter in (Compile, LessKeys.less)) := ("styles.less": FileFilter)
 
 InputKey[Unit]("contents") <<= inputTask { (argsTask: TaskKey[Seq[String]]) =>
   (argsTask, streams) map { (args, out) =>

@@ -146,7 +146,6 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
   }
 
   private def getLess130(ctx: Context, src: File, minify: Boolean) = {
-    graph.log.info("JS Version14: " + ctx.getLanguageVersion())
     val global = new Global();
     global.init(ctx);
     val scope = ctx.initStandardObjects(global);
