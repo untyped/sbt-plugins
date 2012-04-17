@@ -54,6 +54,16 @@ object LessSource {
   def parseImport(line: String): Option[String] =
     importRegex.findAllIn(line).matchData.map(_.group(1)).toList.headOption
 
+  //val  compileJsFunction = "var result; var parser = new(less.Parser); parser.parse(input, function (e, tree) { if (e instanceof Object) { throw e } result = tree.toCSS({compress: %b}) });"
+  val compileJsFunction = """function compile(scriptName, code, min) {
+    name = scriptName;
+    var css = null;
+    new less.Parser().parse(code, function (e, root) {
+        if(e) { throw e; }
+        css = root.toCSS({ compress: min || false })
+    });
+    return css;
+}"""
 }
 
 /**
@@ -73,15 +83,12 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
   def isTemplated: Boolean =
     src.toString.contains(".template")
 
-  def compile: Option[File] =
+   def compile: Option[File] =
     withContext {
       ctx =>
         val des = this.des getOrElse (throw new Exception("Could not determine destination filename for " + src))
 
         graph.log.info("Compiling %s source %s".format(graph.pluginName, des))
-
-        val scope = ShellEmulation.emulate(ctx.initStandardObjects())
-
 
         try {
           var css = ""
@@ -89,9 +96,12 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
             !graph.prettyPrint
 
           graph.lessVersion match {
-            case Plugin.LessVersion.Less130 => css = getLess13(src, minify)
+            case Plugin.LessVersion.Less130 => css = getLess130(ctx,  src, minify)
+            case Plugin.LessVersion.Less130b => css = getLess130(ctx,  src, minify)
             case _ =>
 
+              val scope = ShellEmulation.emulate(ctx.initStandardObjects())
+            
               ctx.evaluateReader(
                 scope,
                 new InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.url), Charset.forName("utf-8")),
@@ -135,18 +145,46 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
         }
     }
 
-  private def getLess13 (src: File, minify: Boolean) : String = {
-		val lessCompiler = new org.lesscss.LessCompiler
-		lessCompiler.setCompress(minify)
-    	lessCompiler.compile(
-			src
-		) 
-	}
+  private def getLess130 (ctx: Context,  src: File, minify: Boolean) : String = {
+    graph.log.info("JS Version14: " + ctx.getLanguageVersion())
+    val global = new Global();
+            global.init(ctx);
+    val scope = ctx.initStandardObjects(global);
+   
+    ctx.evaluateReader(scope,
+      new InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.envjsUrl), Charset.forName("utf-8")),
+      "env.rhino.js", 1, null);
+
+    ctx.evaluateReader(
+      scope,
+      new InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.url), Charset.forName("utf-8")),
+      graph.lessVersion.filename,
+      1,
+      null)
+
+    ctx.evaluateString(scope, LessSource.compileJsFunction.format(minify), "compile.js", 1, null);
+    val lessCompiler = scope.get("compile", scope).asInstanceOf[Callable]
+
+    val less =
+      if (isTemplated) {
+        renderTemplate(completeRawSource)
+      } else {
+        completeRawSource
+      }
+
+      lessCompiler.call(
+        ctx,
+        scope,
+        scope,
+        Array(src.getPath, less, minify.asInstanceOf[AnyRef])
+      ).toString
+  }
 
   private def withContext[T](f: Context => T): T = {
     val ctx = Context.enter()
     try {
       ctx.setOptimizationLevel(-1) // Do not compile to byte code (max 64kb methods)
+      ctx.setLanguageVersion(Context.VERSION_1_7);
       f(ctx)
     } finally {
       Context.exit()
