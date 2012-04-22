@@ -9,7 +9,7 @@ This repo contains source for three SBT plugins:
  - [sbt-js] - Javascript and Coffeescript compilation, minification, and templating;
  - [sbt-runmode] - specification of Lift run modes using custom jetty-web.xml files.
 
-See the `README` files in the relevant subdirectories for more information.
+See the `README` files in the relevant subdirectories for more information and acknowledgements.
 
 Version 0.4
 ===========
@@ -91,9 +91,9 @@ These versions work with SBT 0.11.0 and SBT 0.11.2. Sample `plugins.sbt` file:
 
     addSbtPlugin("com.untyped" % "sbt-runmode" % "0.3")
 
-Snapshots are published on [repo.untyped.com]:
+Snapshots are published on [ivy.untyped.com]:
 
-    resolvers ++= "Untyped" at "http://repo.untyped.com"
+    resolvers ++= Resolver.url("Untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
 
     addSbtPlugin("com.untyped" % "sbt-js"      % "0.4-SNAPSHOT")
 

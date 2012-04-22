@@ -11,7 +11,7 @@ seq(lessSettings : _*)
 
 LessKeys.templateProperties in Compile := {
   val props = new java.util.Properties
-  props.setProperty("test.user.name", "Mustache")
+  props.setProperty("test.user.name", "mustache")
   props
 }
 

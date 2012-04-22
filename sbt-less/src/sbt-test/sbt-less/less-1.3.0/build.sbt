@@ -6,7 +6,7 @@ seq(lessSettings : _*)
 
 LessKeys.lessVersion in (Compile, LessKeys.less) := LessVersion.Less130
 
-(includeFilter in (Compile, LessKeys.less)) := ("bootstrap.less": FileFilter)
+(includeFilter in (Compile, LessKeys.less)) := "bootstrap.less"
 
 InputKey[Unit]("contents") <<= inputTask { (argsTask: TaskKey[Seq[String]]) =>
   (argsTask, streams) map { (args, out) =>
@@ -18,7 +18,7 @@ InputKey[Unit]("contents") <<= inputTask { (argsTask: TaskKey[Seq[String]]) =>
           error("\nContents of %s\n%s\ndoes not match %s\n%s\n".format(
                 actual,
                 IO.read(file(actual)),
-                expected, 
+                expected,
                 IO.read(file(expected))))
         }
     }
