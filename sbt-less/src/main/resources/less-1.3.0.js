@@ -1,7 +1,7 @@
 //
 // LESS - Leaner CSS v1.3.0
 // http://lesscss.org
-// 
+//
 // Copyright (c) 2009-2011, Alexis Sellier
 // Licensed under the Apache 2.0 License.
 //
@@ -226,11 +226,15 @@ less.Parser = function Parser(env) {
             //
             less.Parser.importer(path, this.paths, function (e, root, contents) {
                 that.queue.splice(that.queue.indexOf(path), 1); // Remove the path from the queue
+
+                var imported = path in that.files;
+
                 that.files[path] = root;                        // Store the root
                 that.contents[path] = contents;
 
                 if (e && !that.error) { that.error = e }
-                callback(e, root);
+
+                callback(e, root, imported);
 
                 if (that.queue.length === 0) { finish() }       // Call `finish` if we're done importing
             }, env);
@@ -679,7 +683,7 @@ less.Parser = function Parser(env) {
                 keyword: function () {
                     var k;
 
-                    if (k = $(/^[_A-Za-z-][_A-Za-z0-9-]*/)) { 
+                    if (k = $(/^[_A-Za-z-][_A-Za-z0-9-]*/)) {
                         if (tree.colors.hasOwnProperty(k)) {
                             // detect named color
                             return new(tree.Color)(tree.colors[k].slice(1));
@@ -1192,11 +1196,12 @@ less.Parser = function Parser(env) {
             //
             "import": function () {
                 var path, features, index = i;
-                if ($(/^@import\s+/) &&
-                    (path = $(this.entities.quoted) || $(this.entities.url))) {
+                var dir = $(/^@import(?:-(once))?\s+/);
+
+                if (dir && (path = $(this.entities.quoted) || $(this.entities.url))) {
                     features = $(this.mediaFeatures);
                     if ($(';')) {
-                        return new(tree.Import)(path, imports, features, index);
+                        return new(tree.Import)(path, imports, features, (dir[1] === 'once'), index);
                     }
                 }
             },
@@ -1229,7 +1234,7 @@ less.Parser = function Parser(env) {
 
             mediaFeatures: function () {
                 var e, features = [];
-                
+
                 do {
                   if (e = $(this.mediaFeature)) {
                       features.push(e);
@@ -1239,7 +1244,7 @@ less.Parser = function Parser(env) {
                       if (! $(',')) { break }
                   }
                 } while (e);
-                
+
                 return features.length > 0 ? features : null;
             },
 
@@ -2241,9 +2246,10 @@ tree.Expression.prototype = {
 // `import,push`, we also pass it a callback, which it'll call once
 // the file has been fetched, and parsed.
 //
-tree.Import = function (path, imports, features, index) {
+tree.Import = function (path, imports, features, once, index) {
     var that = this;
 
+    this.once = once;
     this.index = index;
     this._path = path;
     this.features = features && new(tree.Value)(features);
@@ -2259,8 +2265,9 @@ tree.Import = function (path, imports, features, index) {
 
     // Only pre-compile .less files
     if (! this.css) {
-        imports.push(this.path, function (e, root) {
+        imports.push(this.path, function (e, root, imported) {
             if (e) { e.index = index }
+            if (imported && that.once) that.skip = imported;
             that.root = root || new(tree.Ruleset)([], []);
         });
     }
@@ -2287,6 +2294,8 @@ tree.Import.prototype = {
     },
     eval: function (env) {
         var ruleset, features = this.features && this.features.eval(env);
+
+        if (this.skip) return [];
 
         if (this.css) {
             return this;
@@ -2401,18 +2410,18 @@ tree.Media.prototype = {
             env.mediaBlocks = [];
             env.mediaPath = [];
         }
-        
+
         var blockIndex = env.mediaBlocks.length;
         env.mediaPath.push(this);
         env.mediaBlocks.push(this);
 
         var media = new(tree.Media)([], []);
         media.features = this.features.eval(env);
-        
+
         env.frames.unshift(this.ruleset);
         media.ruleset = this.ruleset.eval(env);
         env.frames.shift();
-        
+
         env.mediaBlocks[blockIndex] = media;
         env.mediaPath.pop();
 
@@ -2861,6 +2870,7 @@ tree.Ruleset.prototype = {
     toCSS: function (context, env) {
         var css = [],      // The CSS output
             rules = [],    // node.Rule instances
+           _rules = [],    //
             rulesets = [], // node.Ruleset instances
             paths = [],    // Current selectors
             selector,      // The fully rendered selector
@@ -2895,7 +2905,7 @@ tree.Ruleset.prototype = {
                     rules.push(rule.value.toString());
                 }
             }
-        } 
+        }
 
         rulesets = rulesets.join('');
 
@@ -2910,7 +2920,15 @@ tree.Ruleset.prototype = {
                     return p.map(function (s) {
                         return s.toCSS(env);
                     }).join('').trim();
-                }).join( env.compress ? ',' : ',\n');
+                }).join(env.compress ? ',' : ',\n');
+
+                // Remove duplicates
+                for (var i = rules.length - 1; i >= 0; i--) {
+                    if (_rules.indexOf(rules[i]) === -1) {
+                        _rules.unshift(rules[i]);
+                    }
+                }
+                rules = _rules;
 
                 css.push(selector,
                         (env.compress ? '{' : ' {\n  ') +
