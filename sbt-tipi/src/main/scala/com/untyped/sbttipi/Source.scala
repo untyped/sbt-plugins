@@ -87,7 +87,6 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
   }
 
   lazy val parents: List[Source] = {
-    println("DOC " + src + "\n" + doc)
     imports.map(graph.getSource(_, this))
   }
 

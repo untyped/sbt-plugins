@@ -15,7 +15,7 @@ object Build extends Build {
   val mustache      = "com.samskivert" % "jmustache" % "1.3"
   val rhino         = "rhino" % "js" % "1.7R2"
   val scalatest     = "org.scalatest" %% "scalatest" % "1.6.1"
-  val tipi          = "com.untyped" %% "tipi" % "0.1-SNAPSHOT"
+  val tipi          = "com.untyped" %% "tipi" % "0.1-SNAPSHOT" % "compile" changing()
 
   def webPlugin(sbtVersion: String) =
     sbtVersion match {
