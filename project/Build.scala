@@ -9,11 +9,11 @@ object Build extends Build {
 
   // Libraries ----------------------------------
 
-  val untyped       = Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
+  val untyped       = Resolver.url("Untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
 
   val closure       = "com.google.javascript" % "closure-compiler" % "r1592"
   val mustache      = "com.samskivert" % "jmustache" % "1.3"
-  val rhino         = "rhino" % "js" % "1.7R2"
+  val rhino         = "org.mozilla" % "rhino" % "1.7R3"
   val scalatest     = "org.scalatest" %% "scalatest" % "1.6.1"
   val tipi          = "com.untyped" %% "tipi" % "0.1-SNAPSHOT" % "compile" changing()
 
@@ -38,6 +38,7 @@ object Build extends Build {
       version      := pluginsVersion,
       scalaVersion := "2.9.1",
       resolvers    += untyped,
+      // resolvers += untyped,
       publishTo <<= (version) { version: String =>
        if (isSnapshot(version)) {
          for {
@@ -48,8 +49,8 @@ object Build extends Build {
          } yield Resolver.sftp("Untyped", host, path)(Resolver.ivyStylePatterns).as(user, file(keyfile))
        } else {
          Some(Resolver.url(
-            "sbt-plugin-releases",
-            new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases"
+           "sbt-plugin-releases",
+           new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases"
          ))(Resolver.ivyStylePatterns))
        }
       },

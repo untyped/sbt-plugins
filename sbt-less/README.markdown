@@ -13,7 +13,7 @@ Copyright 2011-12 [Dave Gurnell] of [Untyped]
 Installation
 ============
 
-For SBT 0.11:
+For SBT 0.11.x:
 
 Create a `project/plugins.sbt` file and paste the following content into it:
 
@@ -67,6 +67,22 @@ To use pretty-printing instead of regular CSS minification:
 
     (LessKeys.prettyPrint in (Compile, LessKeys.less)) := true
 
+To include, exclude (filter) less files:
+
+    (includeFilter in (Compile, LessKeys.less)) := "*.include.less"
+
+    (excludeFilter in (Compile, LessKeys.less)) := "*.exclude*"
+
+To specify which version of the Less CSS compiler to use:
+
+    LessKeys.lessVersion in (Compile, LessKeys.less) := LessVersion.Less130
+
+valid Less versions include:
+
+ - `LessVersion.Less113`
+ - `LessVersion.Less115`
+ - `LessVersion.Less130` (the default)
+
 Usage
 =====
 
@@ -113,6 +129,8 @@ Thanks to:
 
  - [Glade Diviney](https://github.com/gladed) for help producing test cases
    and debugging various issues.
+
+ - [Alexandre Richonnier](http://www.hera.cc) for Less CSS 1.3 support.
 
 [less-sbt]: https://github.com/softprops/less-sbt
 [Coffee Script SBT plugin]: https://github.com/rubbish/coffee-script-sbt-plugin

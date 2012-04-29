@@ -1,6 +1,6 @@
 package com.untyped.sbttipi
 
-import sbt.{ File, IO }
+import sbt.{ File, IO, file }
 import scala.collection._
 import scala.util.parsing.combinator._
 import scala.util.parsing.input._
@@ -31,9 +31,18 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
     }
   }
 
+  def findFile(path: String): File =
+    file(src, path)
+
   def loadEnv(name: String): Env = {
     try {
-      Class.forName(name).newInstance.asInstanceOf[Env]
+      val clazz = Class.forName(name)
+      try {
+        clazz.getConstructor(classOf[Source]).newInstance(Source.this).asInstanceOf[Env]
+      } catch {
+        case exn: NoSuchMethodException =>
+          clazz.newInstance.asInstanceOf[Env]
+      }
     } catch {
       case exn: ClassNotFoundException =>
         sys.error("Could not import class: " + name + " not found")

@@ -20,12 +20,14 @@ object Plugin extends sbt.Plugin {
   sealed trait LessVersion {
     val filename: String
     lazy val url = "/" + filename
+    lazy val envjsFilename = "env.rhino.1.2.js"
+    lazy val envjsUrl = "/" + envjsFilename
   }
 
   object LessVersion {
     val Less113 = new LessVersion { val filename = "less-rhino-1.1.3.js" }
     val Less115 = new LessVersion { val filename = "less-rhino-1.1.5.js" }
-    val Less121 = new LessVersion { val filename = "less-rhino-1.2.1.js" } // Note: this version doesn't work yet.
+    val Less130 = new LessVersion { val filename = "less-1.3.0.js" }
   }
 
   import LessKeys._
@@ -101,12 +103,12 @@ object Plugin extends sbt.Plugin {
         graph.sources.foreach(_.clean)
     }
 
-  def lessSettingsIn(conf: Configuration): Seq[Setting[_]] =
+  def lessSettingsIn(conf: Configuration): Seq[Setting[_]] = {
     inConfig(conf)(Seq(
       prettyPrint                  :=  false,
       includeFilter in less        :=  "*.less",
       excludeFilter in less        :=  (".*" - ".") || "_*" || HiddenFileFilter,
-      lessVersion in less          :=  LessVersion.Less115,
+      lessVersion in less          :=  LessVersion.Less130,
       sourceDirectory in less      <<= (sourceDirectory in conf),
       sourceDirectories in less    <<= (sourceDirectory in (conf, less)) { Seq(_) },
       unmanagedSources in less     <<= unmanagedSourcesTask,
@@ -122,6 +124,7 @@ object Plugin extends sbt.Plugin {
       cleanFiles                   <+=  (resourceManaged in less in conf),
       watchSources                 <++= (watchSources in less in conf)
     )
+  }
 
   def lessSettings: Seq[Setting[_]] =
     lessSettingsIn(Compile) ++
