@@ -32,7 +32,7 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
   }
 
   def findFile(path: String): File =
-    file(src, path)
+    new File(srcDirectory, path).getCanonicalFile
 
   def loadEnv(name: String): Env = {
     try {
