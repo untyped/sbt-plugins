@@ -7,6 +7,7 @@ This repo contains source for three SBT plugins:
 
  - [sbt-less] - Less CSS compilation, minification, and templating;
  - [sbt-js] - Javascript and Coffeescript compilation, minification, and templating;
+ - [sbt-tipi] - wrapper for the [Tipi] templating language;
  - [sbt-runmode] - specification of Lift run modes using custom jetty-web.xml files.
 
 See the `README` files in the relevant subdirectories for more information and acknowledgements.
@@ -30,7 +31,7 @@ Development snapshots are published with milestone suffixes (`"0.5-M1"` and so o
 
 New features:
 
-Added the `sbt-tipi` plugin for the [Tipi] templating language.
+Added the [sbt-tipi] plugin for the [Tipi] templating language.
 
 Version 0.4 (current stable release)
 ====================================
