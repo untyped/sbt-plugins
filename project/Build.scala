@@ -5,7 +5,7 @@ object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.4-M1"
+  val pluginsVersion = "0.4"
 
   // Libraries ----------------------------------
 
@@ -15,7 +15,6 @@ object Build extends Build {
   val mustache  = "com.samskivert" % "jmustache" % "1.3"
   val rhino     = "org.mozilla" % "rhino" % "1.7R3"
   val scalatest = "org.scalatest" %% "scalatest" % "1.6.1"
-  val tipi      = "com.untyped" %% "tipi" % "0.1-M1" % "compile" changing()
 
   def webPlugin(sbtVersion: String) =
     sbtVersion match {
@@ -76,7 +75,6 @@ object Build extends Build {
     sbtJs,
     sbtLess,
     sbtMustache,
-    sbtTipi,
     sbtRunmode
   )
 
@@ -130,20 +128,6 @@ object Build extends Build {
     base = file("sbt-mustache"),
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Seq(
-        mustache,
-        scalatest % "test"
-      ),
-      // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-mustache:
-      unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
-    )
-  )// .dependsOn(sbtGraph)
-
-  lazy val sbtTipi = Project(
-    id = "sbt-tipi",
-    base = file("sbt-tipi"),
-    settings = defaultSettings ++ Seq(
-      libraryDependencies ++= Seq(
-        tipi,
         mustache,
         scalatest % "test"
       ),
