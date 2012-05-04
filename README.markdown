@@ -14,6 +14,19 @@ See the `README` files in the relevant subdirectories for more information and a
 Version 0.4
 ===========
 
+This version works with SBT SBT 0.11.2. Sample `plugins.sbt` file:
+
+    resolvers ++= Resolver.url(
+      "sbt-plugin-releases",
+      url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/"
+    ))(Resolver.ivyStylePatterns)
+
+    addSbtPlugin("com.untyped" % "sbt-js"      % "0.4")
+
+    addSbtPlugin("com.untyped" % "sbt-less"    % "0.4")
+
+    addSbtPlugin("com.untyped" % "sbt-runmode" % "0.4")
+
 New features:
 
 You can now specify multiple `sourceDirectories` in `sbt-js` and `sbt-less`,
