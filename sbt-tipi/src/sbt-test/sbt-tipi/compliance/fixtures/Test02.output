@@ -1,0 +1,20 @@
+Block Scoped Import test:
+
+Define main:
+
+
+
+GlobalAuthor = '' (should be nothing)
+
+Main: 
+	Include file:
+
+
+
+
+
+	
+	<author>Dave</author>
+	<url>http://untyped.com</url>
+
+

@@ -19,10 +19,8 @@ case class Graph(
     Source(this, src.getCanonicalFile)
   }
 
-  def srcFilenameToDesFilename(filename: String) = {
-    log.debug("Graph.srcFilenameToDesFilename " + filename)
+  def srcFilenameToDesFilename(filename: String) =
     filename
-  }
 
   val pluginName = "sbt-mustache"
 

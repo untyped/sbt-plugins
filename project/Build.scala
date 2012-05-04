@@ -5,7 +5,7 @@ object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.4-SNAPSHOT"
+  val pluginsVersion = "0.4-M1"
 
   // Libraries ----------------------------------
 
@@ -33,10 +33,11 @@ object Build extends Build {
     Project.defaultSettings ++
     scriptedSettings ++
     Seq(
-      sbtPlugin := true,
+      sbtPlugin    := true,
       organization := "com.untyped",
-      version := pluginsVersion,
+      version      := pluginsVersion,
       scalaVersion := "2.9.1",
+      resolvers    += untyped,
       // resolvers += untyped,
       publishTo <<= (version) { version: String =>
        if (isSnapshot(version)) {
@@ -75,6 +76,7 @@ object Build extends Build {
     sbtJs,
     sbtLess,
     sbtMustache,
+    sbtTipi,
     sbtRunmode
   )
 
@@ -128,6 +130,20 @@ object Build extends Build {
     base = file("sbt-mustache"),
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Seq(
+        mustache,
+        scalatest % "test"
+      ),
+      // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-mustache:
+      unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
+    )
+  )// .dependsOn(sbtGraph)
+
+  lazy val sbtTipi = Project(
+    id = "sbt-tipi",
+    base = file("sbt-tipi"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Seq(
+        tipi,
         mustache,
         scalatest % "test"
       ),
