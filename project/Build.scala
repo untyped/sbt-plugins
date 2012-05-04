@@ -5,7 +5,7 @@ object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.4-M1"
+  val pluginsVersion = "0.5-M1"
 
   // Libraries ----------------------------------
 

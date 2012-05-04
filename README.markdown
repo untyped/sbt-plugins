@@ -11,8 +11,29 @@ This repo contains source for three SBT plugins:
 
 See the `README` files in the relevant subdirectories for more information and acknowledgements.
 
-Version 0.4
-===========
+Version 0.5 (current development release)
+=========================================
+
+This version works with SBT SBT 0.11.2. Sample `plugins.sbt` file:
+
+    resolvers ++= Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
+
+    addSbtPlugin("com.untyped" % "sbt-js"      % <<VERSION>>)
+
+    addSbtPlugin("com.untyped" % "sbt-less"    % <<VERSION>>)
+
+    addSbtPlugin("com.untyped" % "sbt-runmode" % <<VERSION>>)
+
+    addSbtPlugin("com.untyped" % "sbt-tipi"    % <<VERSION>>)
+
+Development snapshots are published with milestone suffixes (`"0.5-M1"` and so on). See [Build.scala] for the latest version number.
+
+New features:
+
+Added the `sbt-tipi` plugin for the [Tipi] templating language.
+
+Version 0.4 (current stable release)
+====================================
 
 This version works with SBT SBT 0.11.2. Sample `plugins.sbt` file:
 
@@ -160,4 +181,8 @@ limitations under the License.
 [sbt-less]: https://github.com/untyped/sbt-plugins/tree/master/sbt-less
 [sbt-js]: https://github.com/untyped/sbt-plugins/tree/master/sbt-js
 [sbt-runmode]: https://github.com/untyped/sbt-plugins/tree/master/sbt-runmode
+[sbt-tipi]: https://github.com/untyped/sbt-plugins/tree/master/sbt-tipi
+[Tipi]: https://github.com/davegurnell/tipi
+[ivy.untyped.com]: http://ivy.untyped.com/com.untyped
+[Build.scala]: https://github.com/untyped/sbt-plugins/blob/master/project/Build.scala
 [Denis Bardadym]: https://github.com/btd
