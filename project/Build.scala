@@ -9,12 +9,13 @@ object Build extends Build {
 
   // Libraries ----------------------------------
 
-  val untyped       = Resolver.url("Untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
+  val untyped   = Resolver.url("Untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
 
-  val closure       = "com.google.javascript" % "closure-compiler" % "r1592"
-  val mustache      = "com.samskivert" % "jmustache" % "1.3"
-  val rhino         = "org.mozilla" % "rhino" % "1.7R3"
-  val scalatest     = "org.scalatest" %% "scalatest" % "1.6.1"
+  val closure   = "com.google.javascript" % "closure-compiler" % "r1592"
+  val mustache  = "com.samskivert" % "jmustache" % "1.3"
+  val rhino     = "org.mozilla" % "rhino" % "1.7R3"
+  val scalatest = "org.scalatest" %% "scalatest" % "1.6.1"
+  val tipi      = "com.untyped" %% "tipi" % "0.1-M1" % "compile" changing()
 
   def webPlugin(sbtVersion: String) =
     sbtVersion match {
@@ -44,7 +45,7 @@ object Build extends Build {
            path    <- Option(System.getenv("DEFAULT_IVY_REPO_PATH"))
            user    <- Option(System.getenv("DEFAULT_IVY_REPO_USER"))
            keyfile <- Option(System.getenv("DEFAULT_IVY_REPO_KEYFILE"))
-         } yield Resolver.sftp("Untyped", host, path)(Resolver.ivyStylePatterns).as(user, file(keyfile))
+         } yield Resolver.sftp("UntypedPublish", host, path)(Resolver.ivyStylePatterns).as(user, file(keyfile))
        } else {
          Some(Resolver.url(
            "sbt-plugin-releases",
