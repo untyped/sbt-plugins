@@ -31,6 +31,8 @@ Development snapshots are published with milestone suffixes (`"0.5-M1"` and so o
 
 New features:
 
+Support for SBT 0.11.3 - thanks to [Shikhar Bhushan] for this fix.
+
 Added the [sbt-tipi] plugin for the [Tipi] templating language.
 
 Version 0.4 (current stable release)
@@ -187,3 +189,4 @@ limitations under the License.
 [ivy.untyped.com]: http://ivy.untyped.com/com.untyped
 [Build.scala]: https://github.com/untyped/sbt-plugins/blob/master/project/Build.scala
 [Denis Bardadym]: https://github.com/btd
+[Shikhar Bhushan]: https://github.com/shikhar
