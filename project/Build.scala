@@ -5,7 +5,8 @@ object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.5-M1"
+  val pluginsVersion = "0.5-M2"
+  val tipiVersion = "0.1-M2"
 
   // Libraries ----------------------------------
 
@@ -15,7 +16,7 @@ object Build extends Build {
   val mustache  = "com.samskivert" % "jmustache" % "1.3"
   val rhino     = "org.mozilla" % "rhino" % "1.7R3"
   val scalatest = "org.scalatest" %% "scalatest" % "1.6.1"
-  val tipi      = "com.untyped" %% "tipi" % "0.1-M1" % "compile" changing()
+  val tipi      = "com.untyped" %% "tipi" % tipiVersion % "compile" changing()
 
   def webPlugin(sbtVersion: String) =
     sbtVersion match {

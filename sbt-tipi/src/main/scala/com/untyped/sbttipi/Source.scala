@@ -1,6 +1,7 @@
 package com.untyped.sbttipi
 
-import sbt.{ File, IO, file }
+// Need to be specific here because sbt.Doc conflicts with tipi.core.Doc:
+import sbt.{ File, IO, file, singleFileFinder, globFilter }
 import scala.collection._
 import scala.util.parsing.combinator._
 import scala.util.parsing.input._
@@ -34,6 +35,9 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
   def findFile(path: String): File =
     new File(srcDirectory, path).getCanonicalFile
 
+  def findFiles(pattern: String): Seq[File] =
+    (srcDirectory ** pattern) get
+
   def loadEnv(name: String): Env = {
     try {
       val clazz = Class.forName(name)
@@ -51,9 +55,9 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
 
   lazy val importTransform = Transform.Full {
     case (env, Block(_, args, Range.Empty)) =>
-      if(args.contains[String]("source")) {
-        val source = graph.getSource(args[String]("source"), Source.this)
-        val prefix = args.get[String]("prefix").getOrElse("")
+      if(args.contains[String](env, "source")) {
+        val source = graph.getSource(args[String](env, "source"), Source.this)
+        val prefix = args.get[String](env, "prefix").getOrElse("")
 
         // Execute the source in its own environment:
         val (importedEnv, importedDoc) = graph.expand((source.env, source.doc))
@@ -63,9 +67,9 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
 
         // Continue expanding the document:
         (env ++ newEnv, importedDoc)
-      } else if(args.contains[String]("class")) {
-        val prefix = args.get[String]("prefix").getOrElse("")
-        (env ++ loadEnv(args[String]("class")).prefixWith(prefix), Range.Empty)
+      } else if(args.contains[String](env, "class")) {
+        val prefix = args.get[String](env, "prefix").getOrElse("")
+        (env ++ loadEnv(args[String](env, "class")).prefixWith(prefix), Range.Empty)
       } else {
         sys.error("Bad import tag: no 'source' or 'class' parameter")
       }
@@ -78,8 +82,8 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
     def loop(doc: Doc): List[String] = {
       doc match {
         case Block(Id("import"), args, _) =>
-          if(args.contains[Any]("source")) {
-            List(args[String]("source"))
+          if(args.contains[Any](env, "source")) {
+            List(args[String](env, "source"))
           } else {
             Nil
           }
