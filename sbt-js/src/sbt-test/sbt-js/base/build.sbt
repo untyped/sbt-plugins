@@ -6,7 +6,7 @@ seq(jsSettings : _*)
 
 JsKeys.templateProperties in Compile := {
   val props = new java.util.Properties
-  props.setProperty("test.user.name", "mustache")
+  props.setProperty("test.user.name", "Mustache")
   props
 }
 
