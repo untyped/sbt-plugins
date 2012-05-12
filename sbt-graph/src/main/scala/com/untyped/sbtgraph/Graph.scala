@@ -112,6 +112,41 @@ trait Graph {
 
   def srcFilenameToDesFilename(filename: String): String
 
+  // Compiling files ----------------------------
+
+  /**
+   * Compile the specified files (where they appear in this graph).
+   * Return a list of the generated files.
+   *
+   * This method is provided as an immediate convenience to plugins
+   * using Graph functionality. It obeys the contract set out for
+   * SBT resource generators.
+   */
+  def compileAll(files: Seq[File]): Seq[File] = {
+    log.debug("Source files for %s:".format(pluginName))
+    files.foreach { file =>
+      log.debug("  " + file)
+    }
+
+    dump
+
+    val sources = files.flatMap(findSource _)
+
+    sources.filter(_.requiresRecompilation) match {
+      case Nil =>
+        log.info("No %s sources requiring compilation".format(pluginName))
+
+      case toCompile =>
+        val compiled = toCompile.flatMap(_.compile)
+
+        if (compiled.length < toCompile.length) {
+          sys.error("Some %s sources could not be compiled".format(pluginName))
+        }
+    }
+
+    sources.flatMap(_.des)
+  }
+
   // Downloading and caching URLs ---------------
 
   def downloadAndCache(url: URL): File = {

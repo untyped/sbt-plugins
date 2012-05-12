@@ -57,23 +57,7 @@ object Plugin extends sbt.Plugin {
   def compileTask =
     (streams, unmanagedSources in tipi, sourceGraph in tipi) map {
       (out, sourceFiles, graph: Graph) =>
-        out.log.debug("sourceFiles for sbt-tipi:")
-        sourceFiles.foreach { file =>
-          out.log.debug("  " + file)
-        }
-
-        graph.dump
-
-        val graphedSourceFiles = sourceFiles.flatMap(graph.findSource _)
-        graphedSourceFiles.filter(_.requiresRecompilation) match {
-          case Nil =>
-            out.log.info("No Tipi sources requiring compilation")
-          case toCompile =>
-            val compiled = toCompile.flatMap(_.compile)
-            if (compiled.length < toCompile.length)
-              sys.error("Some Tipi sources could not be compiled")
-        }
-        graphedSourceFiles.flatMap(_.des)
+        graph.compileAll(sourceFiles)
     }
 
   def cleanTask =
