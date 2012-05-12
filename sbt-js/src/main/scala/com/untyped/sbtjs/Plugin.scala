@@ -78,19 +78,16 @@ object Plugin extends sbt.Plugin {
 
         graph.dump
 
-        sourceFiles.flatMap(graph.findSource _).filter(_.requiresRecompilation) match {
+        val graphedSourceFiles = sourceFiles.flatMap(graph.findSource _)
+        graphedSourceFiles.filter(_.requiresRecompilation) match {
           case Nil =>
             out.log.info("No Javascript sources requiring compilation")
-            Nil
-
           case toCompile =>
-            var compiled = toCompile.flatMap(_.compile)
-            if(compiled.length < toCompile.length) {
+            val compiled = toCompile.flatMap(_.compile)
+            if (compiled.length < toCompile.length)
               sys.error("Some Javascript sources could not be compiled")
-            } else {
-              compiled
-            }
         }
+        graphedSourceFiles.flatMap(_.des)
     }
 
   def cleanTask =
