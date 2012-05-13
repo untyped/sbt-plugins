@@ -55,23 +55,26 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
 
   lazy val importTransform = Transform.Full {
     case (env, Block(_, args, Range.Empty)) =>
-      if(args.contains[String](env, "source")) {
-        val source = graph.getSource(args[String](env, "source"), Source.this)
-        val prefix = args.get[String](env, "prefix").getOrElse("")
+      val prefix = args.string(env, "prefix").getOrElse("")
 
-        // Execute the source in its own environment:
-        val (importedEnv, importedDoc) = graph.expand((source.env, source.doc))
+      (args.string(env, "source"), args.string(env, "class")) match {
+        case (Some(filename), _) =>
+          val source = graph.getSource(filename, Source.this)
 
-        // Import everything except "def", "bind", and "import" into the current environment:
-        val newEnv = env ++ (importedEnv -- Env.basic - Id("import")).prefixWith(prefix)
+          // Execute the source in its own environment:
+          val (importedEnv, importedDoc) = graph.expand((source.env, source.doc))
 
-        // Continue expanding the document:
-        (env ++ newEnv, importedDoc)
-      } else if(args.contains[String](env, "class")) {
-        val prefix = args.get[String](env, "prefix").getOrElse("")
-        (env ++ loadEnv(args[String](env, "class")).prefixWith(prefix), Range.Empty)
-      } else {
-        sys.error("Bad import tag: no 'source' or 'class' parameter")
+          // Import everything except "def", "bind", and "import" into the current environment:
+          val newEnv = env ++ (importedEnv -- Env.basic - Id("import")).prefixWith(prefix)
+
+          // Continue expanding the document:
+          (env ++ newEnv, importedDoc)
+
+        case (_, Some(classname)) =>
+          (env ++ loadEnv(classname).prefixWith(prefix), Range.Empty)
+
+        case _ =>
+          sys.error("Bad import tag: no 'source' or 'class' parameter")
       }
 
     case other =>
@@ -82,17 +85,15 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
     def loop(doc: Doc): List[String] = {
       doc match {
         case Block(Id("import"), args, _) =>
-          if(args.contains[Any](env, "source")) {
-            List(args[String](env, "source"))
-          } else {
-            Nil
-          }
+          args.string(env, "source").map(List(_)).getOrElse(Nil)
+
         case Block(_, _, body) =>
           loop(body)
+
         case Range(children) =>
           children.flatMap(loop _)
-        case _ =>
-          Nil
+
+        case _ => Nil
       }
     }
 
