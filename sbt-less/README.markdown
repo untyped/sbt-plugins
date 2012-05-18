@@ -59,6 +59,10 @@ To change the destination directory to `src/main/webapp` in an `xsbt-web-plugin`
 
     (resourceManaged in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile)(_ / "webapp")
 
+To automatically add generated CSS files to the application JAR:
+
+    (resourceGenerators in Compile) <+= (LessKeys.less in Compile)
+
 To cause the `less` task to run automatically when you run `compile`:
 
     (compile in Compile) <<= compile in Compile dependsOn (LessKeys.less in Compile)
