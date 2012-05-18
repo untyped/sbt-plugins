@@ -15,7 +15,7 @@ See the `README` files in the relevant subdirectories for more information and a
 Version 0.5 (current development release)
 =========================================
 
-This version works with SBT SBT 0.11.2. Sample `plugins.sbt` file:
+This version works with SBT 0.11.2 and SBT 0.11.3. Sample `plugins.sbt` file:
 
     resolvers ++= Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
 
