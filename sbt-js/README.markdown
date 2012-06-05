@@ -61,6 +61,10 @@ To change the destination directory to `src/main/webapp` in an `xsbt-web-plugin`
 
     (resourceManaged in (Compile, JsKeys.js)) <<= (sourceDirectory in Compile)(_ / "webapp")
 
+To automatically add generated Javascript files to the application JAR:
+
+    (resourceGenerators in Compile) <+= (JsKeys.js in Compile)
+
 To cause the `js` task to run automatically when you run `compile`:
 
     (compile in Compile) <<= compile in Compile dependsOn (JsKeys.js in Compile)
