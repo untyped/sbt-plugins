@@ -15,7 +15,7 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
   def isTemplated = true
 
   lazy val env: Env =
-    graph.environment ++ Env(immutable.Map(Id("import") -> importTransform))
+    graph.environment ++ Env(Id("import") -> importTransform)
 
   lazy val doc: Doc = {
     val source = io.Source.fromFile(src)
@@ -65,13 +65,13 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
           val (importedEnv, importedDoc) = graph.expand((source.env, source.doc))
 
           // Import everything except "def", "bind", and "import" into the current environment:
-          val newEnv = env ++ (importedEnv -- Env.basic - Id("import")).prefixWith(prefix)
+          val newEnv = env ++ importedEnv.except(Id("def"), Id("bind"), Id("import")).prefix(prefix)
 
           // Continue expanding the document:
           (env ++ newEnv, importedDoc)
 
         case (_, Some(classname)) =>
-          (env ++ loadEnv(classname).prefixWith(prefix), Range.Empty)
+          (env ++ loadEnv(classname).prefix(prefix), Range.Empty)
 
         case _ =>
           sys.error("Bad import tag: no 'source' or 'class' parameter")
