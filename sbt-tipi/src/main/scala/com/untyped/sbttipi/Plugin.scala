@@ -75,7 +75,7 @@ object Plugin extends sbt.Plugin {
       sourceDirectories in tipi <<=  (sourceDirectory in (conf, tipi)) { Seq(_) },
       unmanagedSources in tipi  <<=  unmanagedSourcesTask,
       resourceManaged in tipi   <<=  (resourceManaged in conf),
-      environment               :=   Env.basic,
+      environment               :=   Env.Basic,
       // templateProperties        :=   new Properties,
       downloadDirectory         <<=  (target in conf) { _ / "sbt-tipi" / "downloads" },
       sourceGraph               <<=  sourceGraphTask,
