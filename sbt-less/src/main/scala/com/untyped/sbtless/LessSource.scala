@@ -2,11 +2,11 @@ package com.untyped.sbtless
 
 import org.mozilla.javascript.{ Callable, Context, Function, FunctionObject, JavaScriptException, NativeArray, NativeObject, Scriptable, ScriptableObject }
 import org.mozilla.javascript.tools.shell.{ Environment, Global }
-import java.io.InputStreamReader
 import java.nio.charset.Charset
 import org.mozilla.javascript._
 import sbt._
 import scala.collection._
+import scala.sys.process.Process
 
 /**
  * Stub out a basic environment for Rhino that emulates running it on the command line.
@@ -54,7 +54,6 @@ object LessSource {
   def parseImport(line: String): Option[String] =
     importRegex.findAllIn(line).matchData.map(_.group(1)).toList.headOption
 
-
   val compileFunction: String =
     """
     |function compile(scriptName, code, min) {
@@ -98,28 +97,49 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
         completeRawSource
       }
 
-    val minify = !graph.prettyPrint
+    if(graph.useCommandLine) {
+      val temp = java.io.File.createTempFile(src.getName, ".less")
+      val out = new java.io.PrintWriter(new java.io.FileWriter(temp))
+      out.println(less)
+      out.close()
 
-    withContext { ctx =>
-      val scope =
-        graph.lessVersion match {
-          case Plugin.LessVersion.Less130 => less130Scope(ctx)
-          case _                          => earlyLessScope(ctx)
+      (Process(Seq("lessc", temp.getCanonicalPath, des.getCanonicalPath)) !) match {
+        case 0 => Some(des)
+        case n => sys.error("Could not compile %s source %s".format(graph.pluginName, des))
+      }
+    } else {
+      val minify = !graph.prettyPrint
+
+      withContext { ctx =>
+        try {
+          val scope =
+            graph.lessVersion match {
+              case Plugin.LessVersion.Less130 => less130Scope(ctx)
+              case _                          => earlyLessScope(ctx)
+            }
+
+          val lessCompiler =
+            scope.get("compile", scope).asInstanceOf[Callable]
+
+          val css =
+            lessCompiler.call(
+              ctx,
+              scope,
+              scope,
+              Array(src.getPath, less, minify.asInstanceOf[AnyRef])
+            ).toString
+
+          IO.write(des, css)
+          Some(des)
+        } catch {
+          case e: JavaScriptException =>
+            val error   = e.getValue.asInstanceOf[Scriptable]
+            val line    = ScriptableObject.getProperty(error, "line"   ).asInstanceOf[Double].intValue
+            val column  = ScriptableObject.getProperty(error, "column" ).asInstanceOf[Double].intValue
+            val message = ScriptableObject.getProperty(error, "message").asInstanceOf[String]
+            sys.error("%s error: %s [%s,%s]: %s".format(graph.pluginName, src.getName, line, column, message))
         }
-
-      val lessCompiler =
-        scope.get("compile", scope).asInstanceOf[Callable]
-
-      val css =
-        lessCompiler.call(
-          ctx,
-          scope,
-          scope,
-          Array(src.getPath, less, minify.asInstanceOf[AnyRef])
-        ).toString
-
-      IO.write(des, css)
-      Some(des)
+      }
     }
   }
 
@@ -131,14 +151,14 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
 
     ctx.evaluateReader(
       scope,
-      new InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.envjsUrl), Charset.forName("utf-8")),
+      new java.io.InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.envjsUrl), Charset.forName("utf-8")),
       graph.lessVersion.envjsFilename,
       1,
       null)
 
     ctx.evaluateReader(
       scope,
-      new InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.url), Charset.forName("utf-8")),
+      new java.io.InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.url), Charset.forName("utf-8")),
       graph.lessVersion.filename,
       1,
       null)
@@ -158,7 +178,7 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
 
     ctx.evaluateReader(
       scope,
-      new InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.url), Charset.forName("utf-8")),
+      new java.io.InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.url), Charset.forName("utf-8")),
       graph.lessVersion.filename,
       1,
       null)

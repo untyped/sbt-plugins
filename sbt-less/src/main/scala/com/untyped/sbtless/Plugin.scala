@@ -15,6 +15,7 @@ object Plugin extends sbt.Plugin {
     val downloadDirectory   = SettingKey[File]("less-download-directory", "Temporary directory to download Less CSS files to")
     val prettyPrint         = SettingKey[Boolean]("less-pretty-print", "Whether to pretty print CSS (default false)")
     val lessVersion         = SettingKey[LessVersion]("less-version", "The version of the Less CSS compiler to use")
+    val useCommandLine      = SettingKey[Boolean]("less-use-command-line", "Use the Less CSS command line script instead of Rhino")
   }
 
   sealed trait LessVersion {
@@ -32,37 +33,50 @@ object Plugin extends sbt.Plugin {
 
   import LessKeys._
 
+  def time[T](out: TaskStreams, msg: String)(func: => T): T = {
+    val startTime = java.lang.System.currentTimeMillis
+    val result = func
+    val endTime = java.lang.System.currentTimeMillis
+    out.log.debug("TIME sbt-less " + msg + ": " + (endTime - startTime) + "ms")
+    result
+  }
+
   def unmanagedSourcesTask: Initialize[Task[Seq[File]]] =
     (streams, sourceDirectories in less, includeFilter in less, excludeFilter in less) map {
       (out, sourceDirs, includeFilter, excludeFilter) =>
-        out.log.debug("sourceDirectories: " + sourceDirs)
-        out.log.debug("includeFilter: " + includeFilter)
-        out.log.debug("excludeFilter: " + excludeFilter)
+        time(out, "unmanagedSourcesTask") {
+          out.log.debug("sourceDirectories: " + sourceDirs)
+          out.log.debug("includeFilter: " + includeFilter)
+          out.log.debug("excludeFilter: " + excludeFilter)
 
-        sourceDirs.foldLeft(Seq[File]()) {
-          (accum, sourceDir) =>
-            accum ++ sourceDir.descendentsExcept(includeFilter, excludeFilter).get
+          sourceDirs.foldLeft(Seq[File]()) {
+            (accum, sourceDir) =>
+              accum ++ sourceDir.descendentsExcept(includeFilter, excludeFilter).get
+          }
         }
     }
 
   def sourceGraphTask: Initialize[Task[Graph]] =
-    (streams, sourceDirectories in less, resourceManaged in less, unmanagedSources in less, templateProperties in less, downloadDirectory in less, prettyPrint in less, lessVersion in less) map {
-      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, prettyPrint, lessVersion) =>
-        out.log.debug("sbt-less template properties " + templateProperties)
+    (streams, sourceDirectories in less, resourceManaged in less, unmanagedSources in less, templateProperties in less, downloadDirectory in less, prettyPrint in less, lessVersion in less, useCommandLine in less) map {
+      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, prettyPrint, lessVersion, useCommandLine) =>
+        time(out, "sourceGraphTask") {
+          out.log.debug("sbt-less template properties " + templateProperties)
 
-        val graph = Graph(
-          log                = out.log,
-          sourceDirs         = sourceDirs,
-          targetDir          = targetDir,
-          templateProperties = templateProperties,
-          downloadDir        = downloadDir,
-          lessVersion        = lessVersion,
-          prettyPrint        = prettyPrint
-        )
+          val graph = Graph(
+            log                = out.log,
+            sourceDirs         = sourceDirs,
+            targetDir          = targetDir,
+            templateProperties = templateProperties,
+            downloadDir        = downloadDir,
+            lessVersion        = lessVersion,
+            prettyPrint        = prettyPrint,
+            useCommandLine     = useCommandLine
+          )
 
-        sourceFiles.foreach(graph += _)
+          sourceFiles.foreach(graph += _)
 
-        graph
+          graph
+        }
     }
 
   def watchSourcesTask: Initialize[Task[Seq[File]]] =
@@ -74,7 +88,9 @@ object Plugin extends sbt.Plugin {
   def compileTask =
     (streams, unmanagedSources in less, sourceGraph in less) map {
       (out, sourceFiles, graph: Graph) =>
-        graph.compileAll(sourceFiles)
+        time(out, "compileTask") {
+          graph.compileAll(sourceFiles)
+        }
     }
 
   def cleanTask =
@@ -89,6 +105,7 @@ object Plugin extends sbt.Plugin {
       includeFilter in less        :=  "*.less",
       excludeFilter in less        :=  (".*" - ".") || "_*" || HiddenFileFilter,
       lessVersion in less          :=  LessVersion.Less130,
+      useCommandLine in less       :=  false,
       sourceDirectory in less      <<= (sourceDirectory in conf),
       sourceDirectories in less    <<= (sourceDirectory in (conf, less)) { Seq(_) },
       unmanagedSources in less     <<= unmanagedSourcesTask,

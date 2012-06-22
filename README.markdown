@@ -35,6 +35,23 @@ Support for SBT 0.11.3 - thanks to [Shikhar Bhushan] for this fix.
 
 Added the [sbt-tipi] plugin for the [Tipi] templating language.
 
+Removed features:
+
+Reverted to the original placement of Less/CSS `@import` statements.
+Imports are once again inlined before the top of the file rather than at
+the point of the import. There are two reasons for this change:
+
+ 1. By inlining before the top of the file, the plugin can ensure that
+    each Less/CSS library is included once and once only in the output file.
+    This ensures efficient compilation of complex libraries such as Twitter
+    Bootstrap, producing several 100% speedup.
+
+ 2. The [W3C specification] for `@import` statements states that they are
+    only allowed at the top of a file. The two inlining behaviours of sbt-less
+    are consistent if this restriction is applied by the stylesheet author.
+
+[W3C specification]: http://www.w3.org/TR/CSS21/cascade.html#at-import
+
 Version 0.4 (current stable release)
 ====================================
 

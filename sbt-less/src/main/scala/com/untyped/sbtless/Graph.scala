@@ -11,7 +11,8 @@ case class Graph(
     val templateProperties: Properties,
     val downloadDir: File,
     val lessVersion: Plugin.LessVersion,
-    val prettyPrint: Boolean
+    val prettyPrint: Boolean,
+    val useCommandLine: Boolean = false
   ) extends com.untyped.sbtgraph.Graph {
 
   type S = com.untyped.sbtless.Source
