@@ -80,7 +80,7 @@ likely to work without care):
 
 Or to turn variable renaming off altogether:
 
-    (JsKeys.variableRenamingPolicy in (Compile, JsKeys.js)) := VariableRenamingPolicy.NONE
+    (JsKeys.variableRenamingPolicy in (Compile, JsKeys.js)) := VariableRenamingPolicy.OFF
 
 Usage
 =====
