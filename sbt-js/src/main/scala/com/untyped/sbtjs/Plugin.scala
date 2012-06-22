@@ -30,16 +30,26 @@ object Plugin extends sbt.Plugin {
 
   import JsKeys._
 
+  def time[T](out: TaskStreams, msg: String)(func: => T): T = {
+    val startTime = java.lang.System.currentTimeMillis
+    val result = func
+    val endTime = java.lang.System.currentTimeMillis
+    out.log.debug("TIME sbt-js " + msg + ": " + (endTime - startTime) + "ms")
+    result
+  }
+
   def unmanagedSourcesTask: Initialize[Task[Seq[File]]] =
     (streams, sourceDirectories in js, includeFilter in js, excludeFilter in js) map {
       (out, sourceDirs, includeFilter, excludeFilter) =>
-        out.log.debug("sourceDirectories: " + sourceDirs)
-        out.log.debug("includeFilter: " + includeFilter)
-        out.log.debug("excludeFilter: " + excludeFilter)
+        time(out, "unmanagedSourcesTask") {
+          out.log.debug("sourceDirectories: " + sourceDirs)
+          out.log.debug("includeFilter: " + includeFilter)
+          out.log.debug("excludeFilter: " + excludeFilter)
 
-        sourceDirs.foldLeft(Seq[File]()) {
-          (accum, sourceDir) =>
-            accum ++ sourceDir.descendentsExcept(includeFilter, excludeFilter).get
+          sourceDirs.foldLeft(Seq[File]()) {
+            (accum, sourceDir) =>
+              accum ++ sourceDir.descendentsExcept(includeFilter, excludeFilter).get
+          }
         }
     }
 
@@ -48,18 +58,20 @@ object Plugin extends sbt.Plugin {
       (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, compilerOptions) =>
         out.log.debug("sbt-js template properties " + templateProperties)
 
-        val graph = Graph(
-          log                = out.log,
-          sourceDirs         = sourceDirs,
-          targetDir          = targetDir,
-          templateProperties = templateProperties,
-          downloadDir        = downloadDir,
-          compilerOptions    = compilerOptions
-        )
+        time(out, "sourceGraphTask") {
+          val graph = Graph(
+            log                = out.log,
+            sourceDirs         = sourceDirs,
+            targetDir          = targetDir,
+            templateProperties = templateProperties,
+            downloadDir        = downloadDir,
+            compilerOptions    = compilerOptions
+          )
 
-        sourceFiles.foreach(graph += _)
+          sourceFiles.foreach(graph += _)
 
-        graph
+          graph
+        }
     }
 
   def watchSourcesTask: Initialize[Task[Seq[File]]] =
@@ -71,7 +83,9 @@ object Plugin extends sbt.Plugin {
   def compileTask =
     (streams, unmanagedSources in js, sourceGraph in js) map {
       (out, sourceFiles, graph: Graph) =>
-        graph.compileAll(sourceFiles)
+        time(out, "compileTask") {
+          graph.compileAll(sourceFiles)
+        }
     }
 
   def cleanTask =
