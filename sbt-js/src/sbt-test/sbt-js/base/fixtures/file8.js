@@ -1,1 +1,1 @@
-var name="Dave";alert("Hello "+name);alert("Hello Mustache");
+var name="Dave";alert("Hello "+name);alert("Hello mustache");
