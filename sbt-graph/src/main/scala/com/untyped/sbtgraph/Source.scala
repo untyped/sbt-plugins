@@ -51,13 +51,18 @@ trait Source {
 
   def isTemplated: Boolean
 
-  def requiresRecompilation: Boolean =
+  def requiresRecompilation: Boolean = {
     des map { des =>
-      !des.exists ||
-      (src newerThan des) ||
-      isTemplated ||
-      parents.exists(_.requiresRecompilation)
+      requiresRecompilationFor(des)
     } getOrElse false
+  }
+
+  def requiresRecompilationFor(des: File): Boolean = {
+    !des.exists ||
+    (src newerThan des) ||
+    isTemplated ||
+    parents.exists(_.requiresRecompilationFor(des))
+  }
 
   def compile: Option[File]
 
