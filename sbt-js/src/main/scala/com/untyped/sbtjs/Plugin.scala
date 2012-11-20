@@ -48,7 +48,7 @@ object Plugin extends sbt.Plugin {
 
           sourceDirs.foldLeft(Seq[File]()) {
             (accum, sourceDir) =>
-              accum ++ sourceDir.descendentsExcept(includeFilter, excludeFilter).get
+              accum ++ sourceDir.descendantsExcept(includeFilter, excludeFilter).get
           }
         }
     }

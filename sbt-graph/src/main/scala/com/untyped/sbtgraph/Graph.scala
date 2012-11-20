@@ -178,7 +178,7 @@ trait Graph {
   def ancestors(a: S): List[S] =
     postorder(a, parents _)
 
-  def descendents(a: S): List[S] =
+  def descendants(a: S): List[S] =
     postorder(a, children _)
 
   def postorder(node: S, succ: (S) => List[S]): List[S] = {
@@ -236,8 +236,8 @@ trait Graph {
     log.debug("    ancestors:")
     ancestors(source).foreach(src => log.debug("      " + src))
 
-    log.debug("    descendents:")
-    descendents(source).foreach(src => log.debug("      " + src))
+    log.debug("    descendants:")
+    descendants(source).foreach(src => log.debug("      " + src))
   }
 
 }
