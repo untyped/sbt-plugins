@@ -14,7 +14,8 @@ See the `README` files in the relevant subdirectories for more information and a
 Version 0.5 (current stable release)
 ====================================
 
-This version works with SBT 0.12.1 and Scala 2.9.2. Sample `plugins.sbt` file:
+This is a dual-release for Scala 2.9.2 / SBT 0.11.3 and Scala 2.9.1 / SBT 0.12.1.
+Sample `plugins.sbt` file:
 
     resolvers ++= Resolver.url(
       "sbt-plugin-releases",
