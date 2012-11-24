@@ -2,7 +2,7 @@
 -> run-test
 
 # Check that the JS file does not exist:
--$ exists target/scala-2.9.1/resource_managed/main/resources/file1.js
+-$ exists target/scala-2.9.2/resource_managed/main/resources/file1.js
 
 # Check that the body of the run-test task did not execute:
 -$ exists target/run-test-task-completed

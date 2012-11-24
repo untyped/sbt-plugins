@@ -1,6 +1,6 @@
 name := "less-1.3.0"
 
-scalaVersion := "2.9.1"
+scalaVersion := "2.9.2"
 
 seq(lessSettings : _*)
 

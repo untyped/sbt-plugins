@@ -15,7 +15,7 @@ See the `README` files in the relevant subdirectories for more information and a
 Version 0.5 (current development release)
 =========================================
 
-This version works with SBT 0.11.2 and SBT 0.11.3. Sample `plugins.sbt` file:
+This version works with SBT 0.12.1 and Scala 2.9.2. Sample `plugins.sbt` file:
 
     resolvers ++= Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
 
@@ -31,9 +31,19 @@ Development snapshots are published with milestone suffixes (`"0.5-M1"` and so o
 
 New features:
 
-Support for SBT 0.11.3 - thanks to [Shikhar Bhushan] for this fix.
+Support for SBT 0.12.1 and Scala 2.9.2.
 
 Added the [sbt-tipi] plugin for the [Tipi] templating language.
+
+Added the experimental `useCommandLine` key for `sbt-less`, allowing you to
+use command line `lessc` instead of Rhino (defaults to `false`).
+
+Better reporting of line/column numbers for Less CSS compilation errors.
+
+Bug fixes:
+
+Fixed a bug that caused unnecessary recompilation of multi-file JS/Less builds
+when `includeFilter` was used.
 
 Removed features:
 

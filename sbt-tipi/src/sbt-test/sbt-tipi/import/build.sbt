@@ -1,4 +1,7 @@
-logLevel := Level.Debug
+logLevel := {
+  println("WOOOOOOOOOOOOOO " + Class.forName("project.Echo"))
+  Level.Debug
+}
 
 seq(tipiSettings : _*)
 
@@ -24,3 +27,4 @@ InputKey[Unit]("contents") <<= inputTask { (argsTask: TaskKey[Seq[String]]) =>
     }
   }
 }
+

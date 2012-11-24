@@ -5,11 +5,11 @@ $ sleep 1000
 > tipi
 
 # Check that the files exist:
-$ exists target/scala-2.9.1/resource_managed/main/a.html
-$ exists target/scala-2.9.1/resource_managed/main/b.html
-$ exists target/scala-2.9.1/resource_managed/main/all.html
+$ exists target/scala-2.9.2/resource_managed/main/a.html
+$ exists target/scala-2.9.2/resource_managed/main/b.html
+$ exists target/scala-2.9.2/resource_managed/main/all.html
 
 # Check that the files have the correct content:
-> contents target/scala-2.9.1/resource_managed/main/a.html   fixtures/a.html
-> contents target/scala-2.9.1/resource_managed/main/b.html   fixtures/b.html
-> contents target/scala-2.9.1/resource_managed/main/all.html fixtures/all.html
+> contents target/scala-2.9.2/resource_managed/main/a.html   fixtures/a.html
+> contents target/scala-2.9.2/resource_managed/main/b.html   fixtures/b.html
+> contents target/scala-2.9.2/resource_managed/main/all.html fixtures/all.html

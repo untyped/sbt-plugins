@@ -5,44 +5,44 @@ $ sleep 1000
 > js
 
 # Check that the JS files exist:
-$ exists target/scala-2.9.1/resource_managed/main/resources/file1.js
-$ exists target/scala-2.9.1/resource_managed/main/scala/file2.js
-$ exists target/scala-2.9.1/resource_managed/main/resources/dir1/file3.js
-$ exists target/scala-2.9.1/resource_managed/main/scala/dir2/file4.js
-$ exists target/scala-2.9.1/resource_managed/main/resources/file5.js
-$ exists target/scala-2.9.1/resource_managed/main/resources/file6.js
-$ exists target/scala-2.9.1/resource_managed/main/resources/file7.notemplate.js
-$ exists target/scala-2.9.1/resource_managed/main/resources/file8.js
-$ exists target/scala-2.9.1/resource_managed/main/resources/file9.js
+$ exists target/scala-2.9.2/resource_managed/main/resources/file1.js
+$ exists target/scala-2.9.2/resource_managed/main/scala/file2.js
+$ exists target/scala-2.9.2/resource_managed/main/resources/dir1/file3.js
+$ exists target/scala-2.9.2/resource_managed/main/scala/dir2/file4.js
+$ exists target/scala-2.9.2/resource_managed/main/resources/file5.js
+$ exists target/scala-2.9.2/resource_managed/main/resources/file6.js
+$ exists target/scala-2.9.2/resource_managed/main/resources/file7.notemplate.js
+$ exists target/scala-2.9.2/resource_managed/main/resources/file8.js
+$ exists target/scala-2.9.2/resource_managed/main/resources/file9.js
 
 # Check that the temporary downloads exist but have not been compiled:
 $ exists target/sbt-js/downloads/http___code.jquery.com_jquery-1.7.js
--$ exists target/scala-2.9.1/resource_managed/http___code.jquery.com_jquery-1.7.js
+-$ exists target/scala-2.9.2/resource_managed/http___code.jquery.com_jquery-1.7.js
 
 # Check that the JS files have the correct content:
-> contents target/scala-2.9.1/resource_managed/main/resources/file1.js            fixtures/file1.js
-> contents target/scala-2.9.1/resource_managed/main/scala/file2.js                fixtures/file2.js
-> contents target/scala-2.9.1/resource_managed/main/resources/dir1/file3.js       fixtures/file3.js
-> contents target/scala-2.9.1/resource_managed/main/scala/dir2/file4.js           fixtures/file4.js
-> contents target/scala-2.9.1/resource_managed/main/resources/file5.js            fixtures/file5.js
-> contents target/scala-2.9.1/resource_managed/main/resources/file6.js            fixtures/file6.js
-> contents target/scala-2.9.1/resource_managed/main/resources/file7.notemplate.js fixtures/file7.notemplate.js
-> contents target/scala-2.9.1/resource_managed/main/resources/file8.js            fixtures/file8.js
-> contents target/scala-2.9.1/resource_managed/main/resources/file9.js            fixtures/file9.js
+> contents target/scala-2.9.2/resource_managed/main/resources/file1.js            fixtures/file1.js
+> contents target/scala-2.9.2/resource_managed/main/scala/file2.js                fixtures/file2.js
+> contents target/scala-2.9.2/resource_managed/main/resources/dir1/file3.js       fixtures/file3.js
+> contents target/scala-2.9.2/resource_managed/main/scala/dir2/file4.js           fixtures/file4.js
+> contents target/scala-2.9.2/resource_managed/main/resources/file5.js            fixtures/file5.js
+> contents target/scala-2.9.2/resource_managed/main/resources/file6.js            fixtures/file6.js
+> contents target/scala-2.9.2/resource_managed/main/resources/file7.notemplate.js fixtures/file7.notemplate.js
+> contents target/scala-2.9.2/resource_managed/main/resources/file8.js            fixtures/file8.js
+> contents target/scala-2.9.2/resource_managed/main/resources/file9.js            fixtures/file9.js
 
 # Check that the temporary downloads have the correct content:
 > contents target/sbt-js/downloads/http___code.jquery.com_jquery-1.7.js           fixtures/jquery-1.7.js
 
 # Check that the JS files were updated by the last compile task:
-$ newer target/scala-2.9.1/resource_managed/main/resources/file1.js            fixtures/last-compile-time
-$ newer target/scala-2.9.1/resource_managed/main/scala/file2.js                fixtures/last-compile-time
-$ newer target/scala-2.9.1/resource_managed/main/resources/dir1/file3.js       fixtures/last-compile-time
-$ newer target/scala-2.9.1/resource_managed/main/scala/dir2/file4.js           fixtures/last-compile-time
-$ newer target/scala-2.9.1/resource_managed/main/resources/file5.js            fixtures/last-compile-time
-$ newer target/scala-2.9.1/resource_managed/main/resources/file6.js            fixtures/last-compile-time
-$ newer target/scala-2.9.1/resource_managed/main/resources/file7.notemplate.js fixtures/last-compile-time
-$ newer target/scala-2.9.1/resource_managed/main/resources/file8.js            fixtures/last-compile-time
-$ newer target/scala-2.9.1/resource_managed/main/resources/file9.js            fixtures/last-compile-time
+$ newer target/scala-2.9.2/resource_managed/main/resources/file1.js            fixtures/last-compile-time
+$ newer target/scala-2.9.2/resource_managed/main/scala/file2.js                fixtures/last-compile-time
+$ newer target/scala-2.9.2/resource_managed/main/resources/dir1/file3.js       fixtures/last-compile-time
+$ newer target/scala-2.9.2/resource_managed/main/scala/dir2/file4.js           fixtures/last-compile-time
+$ newer target/scala-2.9.2/resource_managed/main/resources/file5.js            fixtures/last-compile-time
+$ newer target/scala-2.9.2/resource_managed/main/resources/file6.js            fixtures/last-compile-time
+$ newer target/scala-2.9.2/resource_managed/main/resources/file7.notemplate.js fixtures/last-compile-time
+$ newer target/scala-2.9.2/resource_managed/main/resources/file8.js            fixtures/last-compile-time
+$ newer target/scala-2.9.2/resource_managed/main/resources/file9.js            fixtures/last-compile-time
 
 # Touch some (but not all) of the source files:
 $ touch src/main/resources/file1.js
@@ -56,30 +56,30 @@ $ sleep 1000
 > js
 
 # Check that the files still have the correct content:
-> contents target/scala-2.9.1/resource_managed/main/resources/file1.js            fixtures/file1.js
-> contents target/scala-2.9.1/resource_managed/main/scala/file2.js                fixtures/file2.js
-> contents target/scala-2.9.1/resource_managed/main/resources/dir1/file3.js       fixtures/file3.js
-> contents target/scala-2.9.1/resource_managed/main/scala/dir2/file4.js           fixtures/file4.js
-> contents target/scala-2.9.1/resource_managed/main/resources/file5.js            fixtures/file5.js
-> contents target/scala-2.9.1/resource_managed/main/resources/file6.js            fixtures/file6.js
-> contents target/scala-2.9.1/resource_managed/main/resources/file7.notemplate.js fixtures/file7.notemplate.js
-> contents target/scala-2.9.1/resource_managed/main/resources/file8.js            fixtures/file8.js
-> contents target/scala-2.9.1/resource_managed/main/resources/file9.js            fixtures/file9.js
+> contents target/scala-2.9.2/resource_managed/main/resources/file1.js            fixtures/file1.js
+> contents target/scala-2.9.2/resource_managed/main/scala/file2.js                fixtures/file2.js
+> contents target/scala-2.9.2/resource_managed/main/resources/dir1/file3.js       fixtures/file3.js
+> contents target/scala-2.9.2/resource_managed/main/scala/dir2/file4.js           fixtures/file4.js
+> contents target/scala-2.9.2/resource_managed/main/resources/file5.js            fixtures/file5.js
+> contents target/scala-2.9.2/resource_managed/main/resources/file6.js            fixtures/file6.js
+> contents target/scala-2.9.2/resource_managed/main/resources/file7.notemplate.js fixtures/file7.notemplate.js
+> contents target/scala-2.9.2/resource_managed/main/resources/file8.js            fixtures/file8.js
+> contents target/scala-2.9.2/resource_managed/main/resources/file9.js            fixtures/file9.js
 
 # Check that only the touched files were updated:
-$ newer target/scala-2.9.1/resource_managed/main/resources/file1.js      fixtures/last-compile-time
-$ newer fixtures/last-compile-time                                       target/scala-2.9.1/resource_managed/main/scala/file2.js
-$ newer target/scala-2.9.1/resource_managed/main/resources/dir1/file3.js fixtures/last-compile-time
-$ newer target/scala-2.9.1/resource_managed/main/scala/dir2/file4.js     fixtures/last-compile-time
-$ newer target/scala-2.9.1/resource_managed/main/resources/file5.js      fixtures/last-compile-time
-$ newer fixtures/last-compile-time                                       target/scala-2.9.1/resource_managed/main/resources/file6.js
-$ newer fixtures/last-compile-time                                       target/scala-2.9.1/resource_managed/main/resources/file7.notemplate.js
-$ newer target/scala-2.9.1/resource_managed/main/resources/file8.js      fixtures/last-compile-time
-$ newer target/scala-2.9.1/resource_managed/main/resources/file9.js      fixtures/last-compile-time
+$ newer target/scala-2.9.2/resource_managed/main/resources/file1.js      fixtures/last-compile-time
+$ newer fixtures/last-compile-time                                       target/scala-2.9.2/resource_managed/main/scala/file2.js
+$ newer target/scala-2.9.2/resource_managed/main/resources/dir1/file3.js fixtures/last-compile-time
+$ newer target/scala-2.9.2/resource_managed/main/scala/dir2/file4.js     fixtures/last-compile-time
+$ newer target/scala-2.9.2/resource_managed/main/resources/file5.js      fixtures/last-compile-time
+$ newer fixtures/last-compile-time                                       target/scala-2.9.2/resource_managed/main/resources/file6.js
+$ newer fixtures/last-compile-time                                       target/scala-2.9.2/resource_managed/main/resources/file7.notemplate.js
+$ newer target/scala-2.9.2/resource_managed/main/resources/file8.js      fixtures/last-compile-time
+$ newer target/scala-2.9.2/resource_managed/main/resources/file9.js      fixtures/last-compile-time
 
 # Clean everything:
 > clean
 
 # Check the target and temporary downloads directories have been deleted:
-$ absent target/scala-2.9.1/resource_managed
+$ absent target/scala-2.9.2/resource_managed
 $ absent target/sbt-js/downloads

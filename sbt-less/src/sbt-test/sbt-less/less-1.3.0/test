@@ -2,10 +2,10 @@
 > less
 
 # Check that only the relevant files exist in the target directory:
-$ exists target/scala-2.9.1/resource_managed/main/less/bootstrap.css
--$ exists target/scala-2.9.1/resource_managed/main/less/2.css
--$ exists target/scala-2.9.1/resource_managed/main/less/3.css
+$ exists target/scala-2.9.2/resource_managed/main/less/bootstrap.css
+-$ exists target/scala-2.9.2/resource_managed/main/less/2.css
+-$ exists target/scala-2.9.2/resource_managed/main/less/3.css
 
 # Check that the contents of the generated files is correct:
-> contents target/scala-2.9.1/resource_managed/main/less/bootstrap.css fixtures/bootstrap.min.css
+> contents target/scala-2.9.2/resource_managed/main/less/bootstrap.css fixtures/bootstrap.min.css
 

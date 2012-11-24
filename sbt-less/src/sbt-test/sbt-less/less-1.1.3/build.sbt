@@ -1,6 +1,6 @@
 name := "less-1.1.3"
 
-scalaVersion := "2.9.1"
+scalaVersion := "2.9.2"
 
 seq(lessSettings : _*)
 
@@ -16,7 +16,7 @@ InputKey[Unit]("contents") <<= inputTask { (argsTask: TaskKey[Seq[String]]) =>
           error("\nContents of %s\n%s\ndoes not match %s\n%s\n".format(
                 actual,
                 IO.read(file(actual)),
-                expected, 
+                expected,
                 IO.read(file(expected))))
         }
     }
