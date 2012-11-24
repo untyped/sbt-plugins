@@ -7,33 +7,29 @@ This repo contains source for three SBT plugins:
 
  - [sbt-less] - Less CSS compilation, minification, and templating;
  - [sbt-js] - Javascript and Coffeescript compilation, minification, and templating;
- - [sbt-tipi] - wrapper for the [Tipi] templating language;
  - [sbt-runmode] - specification of Lift run modes using custom jetty-web.xml files.
 
 See the `README` files in the relevant subdirectories for more information and acknowledgements.
 
-Version 0.5 (current development release)
-=========================================
+Version 0.5 (current stable release)
+====================================
 
 This version works with SBT 0.12.1 and Scala 2.9.2. Sample `plugins.sbt` file:
 
-    resolvers ++= Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
+    resolvers ++= Resolver.url(
+      "sbt-plugin-releases",
+      url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/"
+    ))(Resolver.ivyStylePatterns)
 
-    addSbtPlugin("com.untyped" % "sbt-js"      % <<VERSION>>)
+    addSbtPlugin("com.untyped" % "sbt-js"      % "0.5")
 
-    addSbtPlugin("com.untyped" % "sbt-less"    % <<VERSION>>)
+    addSbtPlugin("com.untyped" % "sbt-less"    % "0.5")
 
-    addSbtPlugin("com.untyped" % "sbt-runmode" % <<VERSION>>)
-
-    addSbtPlugin("com.untyped" % "sbt-tipi"    % <<VERSION>>)
-
-Development snapshots are published with milestone suffixes (`"0.5-M1"` and so on). See [Build.scala] for the latest version number.
+    addSbtPlugin("com.untyped" % "sbt-runmode" % "0.5")
 
 New features:
 
-Support for SBT 0.12.1 and Scala 2.9.2.
-
-Added the [sbt-tipi] plugin for the [Tipi] templating language.
+Supports SBT 0.12.1 and Scala 2.9.2.
 
 Added the experimental `useCommandLine` key for `sbt-less`, allowing you to
 use command line `lessc` instead of Rhino (defaults to `false`).
@@ -54,16 +50,17 @@ the point of the import. There are two reasons for this change:
  1. By inlining before the top of the file, the plugin can ensure that
     each Less/CSS library is included once and once only in the output file.
     This ensures efficient compilation of complex libraries such as Twitter
-    Bootstrap, producing several 100% speedup.
+    Bootstrap, producing a several hundred percent speedup.
 
  2. The [W3C specification] for `@import` statements states that they are
     only allowed at the top of a file. The two inlining behaviours of sbt-less
-    are consistent if this restriction is applied by the stylesheet author.
+    are consistent if this restriction is applied by the stylesheet author
+    (i.e. most people should be unaffected by this regression).
 
 [W3C specification]: http://www.w3.org/TR/CSS21/cascade.html#at-import
 
-Version 0.4 (current stable release)
-====================================
+Version 0.4
+===========
 
 This version works with SBT SBT 0.11.2. Sample `plugins.sbt` file:
 
@@ -211,8 +208,6 @@ limitations under the License.
 [sbt-less]: https://github.com/untyped/sbt-plugins/tree/master/sbt-less
 [sbt-js]: https://github.com/untyped/sbt-plugins/tree/master/sbt-js
 [sbt-runmode]: https://github.com/untyped/sbt-plugins/tree/master/sbt-runmode
-[sbt-tipi]: https://github.com/untyped/sbt-plugins/tree/master/sbt-tipi
-[Tipi]: https://github.com/davegurnell/tipi
 [ivy.untyped.com]: http://ivy.untyped.com/com.untyped
 [Build.scala]: https://github.com/untyped/sbt-plugins/blob/master/project/Build.scala
 [Denis Bardadym]: https://github.com/btd

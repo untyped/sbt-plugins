@@ -1,8 +1,0 @@
-Include file:
-
-{{def InlineAuthor="Dave" InlineURL="http://untyped.com"}}
-
-{{#def InlineDefineAuthor author="" url=""}}
-	<author>{{author}}</author>
-	<url>{{url}}</url>
-{{/def}}
