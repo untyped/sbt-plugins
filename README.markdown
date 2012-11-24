@@ -12,7 +12,7 @@ This repo contains source for three SBT plugins:
 
 See the `README` files in the relevant subdirectories for more information and acknowledgements.
 
-Version 0.5 (current development release)
+Version 0.6 (current development release)
 =========================================
 
 This version works with SBT 0.12.1 and Scala 2.9.2. Sample `plugins.sbt` file:
@@ -27,13 +27,31 @@ This version works with SBT 0.12.1 and Scala 2.9.2. Sample `plugins.sbt` file:
 
     addSbtPlugin("com.untyped" % "sbt-tipi"    % <<VERSION>>)
 
-Development snapshots are published with milestone suffixes (`"0.5-M1"` and so on). See [Build.scala] for the latest version number.
+Development snapshots are published with milestone suffixes (`"0.6-M1"` and so on). See [Build.scala] for the latest version number.
 
 New features:
 
-Support for SBT 0.12.1 and Scala 2.9.2.
-
 Added the [sbt-tipi] plugin for the [Tipi] templating language.
+
+Version 0.5 (current stable release)
+====================================
+
+This version works with SBT 0.12.1 and Scala 2.9.2. Sample `plugins.sbt` file:
+
+    resolvers ++= Resolver.url(
+      "sbt-plugin-releases",
+      url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/"
+    ))(Resolver.ivyStylePatterns)
+
+    addSbtPlugin("com.untyped" % "sbt-js"      % "0.5")
+
+    addSbtPlugin("com.untyped" % "sbt-less"    % "0.5")
+
+    addSbtPlugin("com.untyped" % "sbt-runmode" % "0.5")
+
+New features:
+
+Supports SBT 0.12.1 and Scala 2.9.2.
 
 Added the experimental `useCommandLine` key for `sbt-less`, allowing you to
 use command line `lessc` instead of Rhino (defaults to `false`).
@@ -54,16 +72,17 @@ the point of the import. There are two reasons for this change:
  1. By inlining before the top of the file, the plugin can ensure that
     each Less/CSS library is included once and once only in the output file.
     This ensures efficient compilation of complex libraries such as Twitter
-    Bootstrap, producing several 100% speedup.
+    Bootstrap, producing a several hundred percent speedup.
 
  2. The [W3C specification] for `@import` statements states that they are
     only allowed at the top of a file. The two inlining behaviours of sbt-less
-    are consistent if this restriction is applied by the stylesheet author.
+    are consistent if this restriction is applied by the stylesheet author
+    (i.e. most people should be unaffected by this regression).
 
 [W3C specification]: http://www.w3.org/TR/CSS21/cascade.html#at-import
 
-Version 0.4 (current stable release)
-====================================
+Version 0.4
+===========
 
 This version works with SBT SBT 0.11.2. Sample `plugins.sbt` file:
 
