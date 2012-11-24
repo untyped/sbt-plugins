@@ -6,6 +6,7 @@ import scala.collection._
 import scala.util.parsing.combinator._
 import scala.util.parsing.input._
 import tipi.core._
+import tipi.core.Implicits._
 
 case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.Source with tipi.core.Implicits {
 
@@ -15,7 +16,7 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
   def isTemplated = true
 
   lazy val env: Env =
-    graph.environment ++ Env(Id("import") -> importTransform)
+    graph.environment ++ ImportEnv
 
   lazy val doc: Doc = {
     val source = io.Source.fromFile(src)
@@ -38,47 +39,52 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
   def findFiles(pattern: String): Seq[File] =
     (srcDirectory ** pattern) get
 
-  def loadEnv(name: String): Env = {
+  private def inClassLoader[T](cls: Class[_])(fn: => T): T = {
+    val prev = Thread.currentThread.getContextClassLoader
     try {
-      val clazz = Class.forName(name)
-      try {
-        clazz.getConstructor(classOf[Source]).newInstance(Source.this).asInstanceOf[Env]
-      } catch {
-        case exn: NoSuchMethodException =>
-          clazz.newInstance.asInstanceOf[Env]
-      }
-    } catch {
-      case exn: ClassNotFoundException =>
-        sys.error("Could not import class: " + name + " not found")
+      Thread.currentThread.setContextClassLoader(cls.getClassLoader)
+      fn
+    } finally {
+      Thread.currentThread.setContextClassLoader(prev)
     }
   }
 
-  lazy val importTransform = Transform.Full {
-    case (env, Block(_, args, Range.Empty)) =>
-      val prefix = args.string(env, "prefix").getOrElse("")
+  object ImportEnv extends Env.Custom {
+    def `import`(envIn: Env, docIn: Doc): (Env, Doc) = docIn match {
+      case Block(_, args, Range.Empty) =>
+        args.string(env, "source") match {
+          case Some(filename) =>
+            val source = graph.getSource(filename, Source.this)
+            val prefix = args.string(envIn, "prefix").getOrElse("")
 
-      (args.string(env, "source"), args.string(env, "class")) match {
-        case (Some(filename), _) =>
-          val source = graph.getSource(filename, Source.this)
+            // Execute the source in its own environment:
+            val (importedEnv, importedDoc) = graph.expand((source.env, source.doc))
 
-          // Execute the source in its own environment:
-          val (importedEnv, importedDoc) = graph.expand((source.env, source.doc))
+            // Import everything except "def", "bind", and "import" into the current environment:
+            val newEnv = env ++ importedEnv.except("def", "bind", "import").prefix(prefix)
 
-          // Import everything except "def", "bind", and "import" into the current environment:
-          val newEnv = env ++ importedEnv.except(Id("def"), Id("bind"), Id("import")).prefix(prefix)
+            // Continue expanding the document:
+            (env ++ newEnv, importedDoc)
 
-          // Continue expanding the document:
-          (env ++ newEnv, importedDoc)
+          case _ =>
+            try {
+              // Default to the built-in definition of import in Tipi:
+              inClassLoader(Source.this.getClass) {
+                Env.Basic.`import`(envIn, docIn)
+              }
+            } catch {
+              case exn =>
+                // Provide an informative error mesage:
+                args.string(envIn, Id("class")) match {
+                  case None => sys.error("Bad import tag: no 'source' or 'class' parameter")
+                  case _    => sys.error("Bad import tag: " + docIn + ": " + exn.toString)
+                }
+            }
+        }
 
-        case (_, Some(classname)) =>
-          (env ++ loadEnv(classname).prefix(prefix), Range.Empty)
-
-        case _ =>
-          sys.error("Bad import tag: no 'source' or 'class' parameter")
-      }
-
-    case other =>
-      sys.error("Bad import tag: " + other)
+      case _ =>
+        sys.error("Bad import tag: " + docIn)
+    }
   }
 
   lazy val imports = {
