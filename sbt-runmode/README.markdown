@@ -34,6 +34,11 @@ In your build.sbt file, put:
 
     seq(runModeSettings : _*)
 
+Configure Jetty Version:
+    In Production or Pilot configuration, set jettyVersion to match jetty-web.xml generation.
+    RunModeKeys.jettyVersion.in(Production) := JettyVersion.Jetty6 // (default)
+    RunModeKeys.jettyVersion.in(Production) := JettyVersion.Jetty7Plus
+
 Organising your project
 =======================
 

@@ -5,3 +5,24 @@ project/plugins/target
 */project/boot
 */target
 
+
+
+# eclipse conf file
+.settings
+.classpath
+.project
+.manager
+.externalToolBuilders
+
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea
+.idea_modules
+.history
+*.*___jb_old___
+*.*___jb_bak___
+.idea/libraries/
+.idea/artifacts/
