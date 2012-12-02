@@ -16,10 +16,40 @@ object Plugin extends sbt.Plugin {
   object RunModeKeys {
     lazy val updateRunMode  = TaskKey[Unit]("update-run-mode", "Install/remove a custom jetty-web.xml file to reflect the current run mode")
     lazy val jettyWebPath   = SettingKey[File]("run-mode-jetty-web-path", "Path of jetty-web.xml")
+    lazy val jettyVersion   = SettingKey[JettyVersion]("jetty-version", "The version of jetty used")
     lazy val propertiesPath = SettingKey[File]("run-mode-properties-path", "Base path to search for properties files")
     lazy val runMode        = SettingKey[RunMode]("run-mode", "Desired Lift run-mode")
     lazy val properties     = SettingKey[Properties]("run-mode-properties", "System properties with the run mode set correctly")
     lazy val charset        = SettingKey[Charset]("run-mode-charset", "Character set to use for jetty-web.xml")
+  }
+
+
+  sealed trait JettyVersion {
+    def template: String
+  }
+
+  object JettyVersion {
+    val Jetty6 = new JettyVersion {
+      val template =  """|<?xml version="1.0"?>
+                        |<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+                        |<Configure class="org.mortbay.jetty.webapp.WebAppContext">
+                        |  <Call class="java.lang.System" name="setProperty">
+                        |    <Arg>run.mode</Arg>
+                        |    <Arg>%s</Arg>
+                        |  </Call>
+                        |</Configure>"""
+    }
+    val Jetty7Plus = new JettyVersion {
+      val template =  """|<?xml version="1.0"  encoding="UTF-8"?>
+                        |<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+                        |
+                        |<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+                        |    <Call class="java.lang.System" name="setProperty">
+                        |        <Arg>run.mode</Arg>
+                        |        <Arg>%s</Arg>
+                        |    </Call>
+                        |</Configure>"""
+    }
   }
 
   import RunModeKeys._
@@ -38,8 +68,8 @@ object Plugin extends sbt.Plugin {
     }
 
   def updateRunModeTask: Initialize[Task[Unit]] =
-    (streams, runMode, jettyWebPath, charset) map {
-      (out, runMode, jettyWebPath, charset) =>
+    (streams, runMode, jettyWebPath, charset, jettyVersion) map {
+      (out, runMode, jettyWebPath, charset, jettyVersion) =>
         runMode match {
           case RunMode.Development =>
             out.log.info("Removing jetty-web.xml - setting run.mode = <blank> (i.e. development)")
@@ -47,19 +77,12 @@ object Plugin extends sbt.Plugin {
 
           case mode =>
             out.log.info("Creating jetty-web.xml - setting run.mode = " + mode.name)
-            IO.write(jettyWebPath, jettyWebXml(mode), charset, false)
+            IO.write(jettyWebPath, jettyWebXml(mode, jettyVersion), charset, false)
         }
     }
 
-  def jettyWebXml(mode: RunMode) =
-    """|<?xml version="1.0"?>
-       |<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
-       |<Configure class="org.mortbay.jetty.webapp.WebAppContext">
-       |  <Call class="java.lang.System" name="setProperty">
-       |    <Arg>run.mode</Arg>
-       |    <Arg>%s</Arg>
-       |  </Call>
-       |</Configure>""".stripMargin.format(mode.name)
+  def jettyWebXml(mode: RunMode, jettyVersion : JettyVersion) : String =
+    jettyVersion.template.stripMargin.format(mode.name)
 
   /**
    * Generate the settings for a run-mode configuration containing the following wrapper tasks:
@@ -80,6 +103,7 @@ object Plugin extends sbt.Plugin {
         charset                                    :=  Charset.forName("utf-8"),
         propertiesPath                             <<= (sourceDirectory in Compile)(_ / "resources"),
         jettyWebPath                               <<= (sourceDirectory in Compile)(_ / "webapp" / "WEB-INF" / "jetty-web.xml"),
+        jettyVersion                               := JettyVersion.Jetty6,
         runMode                                    :=  mode,
         properties                                 <<= propertiesSetting,
         updateRunMode                              <<= updateRunModeTask,
@@ -116,6 +140,7 @@ object Plugin extends sbt.Plugin {
         charset                             :=  Charset.forName("utf-8"),
         propertiesPath                      <<= (sourceDirectory in Compile)(_ / "resources"),
         jettyWebPath                        <<= (sourceDirectory in Compile)(_ / "webapp" / "WEB-INF" / "jetty-web.xml"),
+        jettyVersion                        := JettyVersion.Jetty6,
         runMode                             :=  mode,
         properties                          <<= propertiesSetting,
         updateRunMode                       <<= updateRunModeTask,
