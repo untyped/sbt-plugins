@@ -115,6 +115,7 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
           val scope =
             graph.lessVersion match {
               case Plugin.LessVersion.Less130 => less130Scope(ctx)
+	          case Plugin.LessVersion.Less133 => less130Scope(ctx)
               case _                          => earlyLessScope(ctx)
             }
 
