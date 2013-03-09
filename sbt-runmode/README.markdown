@@ -40,7 +40,38 @@ Configure Jetty Version:
 
     RunModeKeys.jettyVersion.in(Production) := JettyVersion.Jetty6 // (default)
     RunModeKeys.jettyVersion.in(Production) := JettyVersion.Jetty7Plus
+    RunModeKeys.jettyVersion.in(Production) := {
+        val customJetty = new JettyVersion {
+                          val template =  """|<?xml version="1.0"  encoding="UTF-8"?>
+                                            |<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+                                            |
+                                            |<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+                                            |    <Call class="java.lang.System" name="setProperty">
+                                            |        <Arg>run.mode</Arg>
+                                            |        <Arg>%s</Arg>
+                                            |    </Call>
+                                            |</Configure>"""
+                        }
+       customJetty
+    }
 
+Configuration example:
+
+    (compile in Production) <<= compile in Production dependsOn (JsKeys.js in Production)
+
+    (resourceManaged in (Production, JsKeys.js)) <<= (resourceManaged in Compile)(_ / "js" )
+
+    excludeFilter in (Production, JsKeys.js)) := ("*.d.*" : FileFilter)
+
+    (includeFilter in (Production,  JsKeys.js)) := ("*.a.js*" || "*.a.p.js*" || "*.a.coffee*" || "*.a.p.coffee*")
+
+    (JsKeys.strictMode in (Production, JsKeys.js)) := false
+
+    LessKeys.less.in(Production) <<=  LessKeys.less.in(Production) dependsOn (someCustomTask in  Production)
+
+    (compile in Development) <<= compile in Development dependsOn (LessKeys.less in Development)
+
+    (excludeFilter in (Development, LessKeys.less)) := ("*.p.less" )
 
 Organising your project
 =======================
@@ -111,6 +142,10 @@ Now you've set everything up, you will have access to the following SBT commands
     - `production:start` - compiles all sources and starts an embedded Jetty with Lift in `production` run mode;
     - `production:stop` - stops the embedded Jetty;
     - `production:package` - compiles all sources and packages the app as a WAR with Lift in `production` run mode.
+
+Thanks to:
+
+ - [Alexandre Richonnier](http://www.hera.cc) for Jetty Version support.
 
 Licence
 =======

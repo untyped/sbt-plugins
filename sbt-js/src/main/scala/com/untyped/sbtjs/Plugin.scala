@@ -18,6 +18,9 @@ object Plugin extends sbt.Plugin {
     val downloadDirectory      = SettingKey[File]("js-download-directory", "Temporary directory to download Javascript files to")
     val variableRenamingPolicy = SettingKey[VariableRenamingPolicy]("js-variable-renaming-policy", "Options for the Google Closure compiler")
     val prettyPrint            = SettingKey[Boolean]("js-pretty-print", "Whether to pretty print Javascript (default false)")
+    val strictMode             = SettingKey[Boolean]("js-strict-mode", "Whether to strict mode Javascript (default false)")
+    val optimisationLevel      = SettingKey[Int]("js-optimisation-level",  "optimisation Javascript level (default SIMPLE_OPTIMIZATIONS => WHITESPACE_ONLY=0, SIMPLE_OPTIMIZATIONS=1, ADVANCED_OPTIMIZATIONS=2")
+    val warningLevel           = SettingKey[Int]("js-warning-level", "warning Javascript level (default QUIET => QUIET=0, DEFAULT=1, VERBOSE=2")
     val compilerOptions        = SettingKey[CompilerOptions]("js-compiler-options", "Options for the Google Closure compiler")
   }
 
@@ -96,17 +99,31 @@ object Plugin extends sbt.Plugin {
     }
 
   def compilerOptionsSetting: Initialize[CompilerOptions] =
-    (streams, variableRenamingPolicy in js, prettyPrint in js) apply {
-      (out, variableRenamingPolicy, prettyPrint) =>
+    (streams, variableRenamingPolicy in js, prettyPrint in js,
+      strictMode in js,
+      warningLevel in js,
+      optimisationLevel in js) apply {
+      (out, variableRenamingPolicy, prettyPrint, strictMode, warningLevel, optimisationLevel) =>
         val options = new CompilerOptions
         options.variableRenaming = variableRenamingPolicy
-        //        options.prettyPrint = prettyPrint
 
-        //CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
-        CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
-        WarningLevel.QUIET.setOptionsForWarningLevel(options)
+        optimisationLevel match {
+          case 0 => CompilationLevel.WHITESPACE_ONLY.setOptionsForCompilationLevel(options)
+          case 1 => CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
+          case 2 => CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
+          case _ => CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
+        }
+        warningLevel match {
+          case 0 => WarningLevel.QUIET.setOptionsForWarningLevel(options)
+          case 1 => WarningLevel.DEFAULT.setOptionsForWarningLevel(options)
+          case 2 => WarningLevel.VERBOSE.setOptionsForWarningLevel(options)
+          case _ => WarningLevel.DEFAULT.setOptionsForWarningLevel(options)
+        }
         options.prettyPrint = prettyPrint
-        options.setLanguageIn(LanguageMode.ECMASCRIPT5)
+        if (strictMode)
+          options.setLanguageIn(LanguageMode.ECMASCRIPT5_STRICT)
+        else
+          options.setLanguageIn(LanguageMode.ECMASCRIPT5)
         options
     }
 
@@ -126,6 +143,9 @@ object Plugin extends sbt.Plugin {
       watchSources in js           <<=  watchSourcesTask,
       variableRenamingPolicy       :=   VariableRenamingPolicy.LOCAL,
       prettyPrint                  :=   false,
+      strictMode                   :=   false,
+      warningLevel                 :=   0,
+      optimisationLevel            :=   1,
       compilerOptions              <<=  compilerOptionsSetting,
       clean in js                  <<=  cleanTask,
       js                           <<=  compileTask
