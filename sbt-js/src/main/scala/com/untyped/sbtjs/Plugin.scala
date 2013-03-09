@@ -99,13 +99,13 @@ object Plugin extends sbt.Plugin {
     (streams, variableRenamingPolicy in js, prettyPrint in js) apply {
       (out, variableRenamingPolicy, prettyPrint) =>
         val options = new CompilerOptions
-        //options.variableRenaming = variableRenamingPolicy
-        //options.prettyPrint = prettyPrint
+        options.variableRenaming = variableRenamingPolicy
+        //        options.prettyPrint = prettyPrint
 
         //CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
         CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
         WarningLevel.QUIET.setOptionsForWarningLevel(options)
-        //options.prettyPrint = true
+        options.prettyPrint = prettyPrint
         options.setLanguageIn(LanguageMode.ECMASCRIPT5)
         options
     }
