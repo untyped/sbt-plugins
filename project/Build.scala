@@ -5,14 +5,14 @@ object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.6-M2"
+  val pluginsVersion = "0.6-M3"
   val tipiVersion = "0.1-M4"
 
   // Libraries ----------------------------------
 
   val untyped   = Resolver.url("Untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
 
-  val closure   = "com.google.javascript" % "closure-compiler" % "r1592"
+  val closure   = "com.google.javascript" % "closure-compiler" % "v20130227"
   val mustache  = "com.samskivert" % "jmustache" % "1.3"
   val rhino     = "org.mozilla" % "rhino" % "1.7R3"
   val scalatest = "org.scalatest" %% "scalatest" % "1.6.1"

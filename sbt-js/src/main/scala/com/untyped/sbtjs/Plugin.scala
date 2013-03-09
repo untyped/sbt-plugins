@@ -6,6 +6,7 @@ import java.util.Properties
 import sbt._
 import sbt.Keys._
 import sbt.Project.Initialize
+import com.google.javascript.jscomp.CompilerOptions.LanguageMode
 
 object Plugin extends sbt.Plugin {
 
@@ -98,8 +99,14 @@ object Plugin extends sbt.Plugin {
     (streams, variableRenamingPolicy in js, prettyPrint in js) apply {
       (out, variableRenamingPolicy, prettyPrint) =>
         val options = new CompilerOptions
-        options.variableRenaming = variableRenamingPolicy
-        options.prettyPrint = prettyPrint
+        //options.variableRenaming = variableRenamingPolicy
+        //options.prettyPrint = prettyPrint
+
+        //CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
+        CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
+        WarningLevel.QUIET.setOptionsForWarningLevel(options)
+        //options.prettyPrint = true
+        options.setLanguageIn(LanguageMode.ECMASCRIPT5)
         options
     }
 
