@@ -24,7 +24,7 @@ object Plugin extends sbt.Plugin {
   }
 
 
-  sealed trait JettyVersion {
+ trait JettyVersion {
     def template: String
   }
 

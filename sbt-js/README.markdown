@@ -82,6 +82,18 @@ Or to turn variable renaming off altogether:
 
     (JsKeys.variableRenamingPolicy in (Compile, JsKeys.js)) := VariableRenamingPolicy.OFF
 
+To use ECMASCRIPT5_STRICT instead of regular ECMASCRIPT5 Language mode:
+
+    (JsKeys.strictMode in (Compile, JsKeys.js)) := true
+
+To set google closure warning level (default QUIET => QUIET=0, DEFAULT=1, VERBOSE=2"):
+
+    (JsKeys.warningLevel in (Compile, JsKeys.js)) := 0
+
+To set google closure optimisation level (default SIMPLE_OPTIMIZATIONS => WHITESPACE_ONLY=0, SIMPLE_OPTIMIZATIONS=1, ADVANCED_OPTIMIZATIONS=2"):
+
+    (JsKeys.optimisationLevel in (Compile, JsKeys.js)) := 1
+
 Usage
 =====
 
@@ -196,6 +208,8 @@ Thanks to:
 
  - [Glade Diviney](https://github.com/gladed) for help producing test cases
    and debugging various issues.
+
+ - [Alexandre Richonnier](http://www.hera.cc) for some compiler options.
 
 [Coffee Script SBT plugin]: https://github.com/rubbish/coffee-script-sbt-plugin
 [YUI Compressor SBT plugin]: https://github.com/hoffrocket/sbt-yui
