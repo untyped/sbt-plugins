@@ -1,9 +1,13 @@
 package com.untyped.sbtjs
 
-import com.google.javascript.jscomp
-import com.google.javascript.jscomp._
+import com.google.javascript.jscomp.{
+  SourceFile => ClosureSource,
+  Compiler => ClosureCompiler,
+  _
+}
 import sbt._
 import scala.collection._
+import scala.collection.JavaConversions._
 
 trait Source extends com.untyped.sbtgraph.Source {
 
@@ -15,9 +19,9 @@ trait Source extends com.untyped.sbtgraph.Source {
 
     graph.log.info("Compiling %s source %s".format(graph.pluginName, des))
 
-    val compiler = new jscomp.Compiler
+    val compiler = new ClosureCompiler
 
-    jscomp.Compiler.setLoggingLevel(graph.closureLogLevel)
+    ClosureCompiler.setLoggingLevel(graph.closureLogLevel)
 
     val myExterns = graph.closureExterns(this)
     val mySources = graph.closureSources(this)
@@ -30,9 +34,9 @@ trait Source extends com.untyped.sbtgraph.Source {
 
     val result =
       compiler.compile(
-        myExterns.toArray,
-        mySources.toArray,
-        graph.compilerOptions)
+        myExterns,
+        mySources,
+        graph.closureOptions)
 
     val errors = result.errors.toList
     val warnings = result.warnings.toList
@@ -58,10 +62,10 @@ trait Source extends com.untyped.sbtgraph.Source {
   // Helpers ------------------------------------
 
   /** Closure externs for this file (not its parents). */
-  def closureExterns: List[JSSourceFile] = Nil
+  def closureExterns: List[ClosureSource] = Nil
 
   /** Closure sources for this file (not its parents). */
-  def closureSources: List[JSSourceFile]
+  def closureSources: List[ClosureSource]
 
 
 }

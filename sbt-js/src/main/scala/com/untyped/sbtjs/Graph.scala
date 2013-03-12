@@ -1,7 +1,12 @@
 package com.untyped.sbtjs
 
-import com.google.javascript.jscomp._
+import com.google.javascript.jscomp.{
+  SourceFile => ClosureSource,
+  CompilerOptions => ClosureOptions,
+  _
+}
 import java.util.Properties
+import org.jcoffeescript.{ Option => CoffeeOption }
 import sbt._
 import scala.collection._
 
@@ -11,7 +16,8 @@ case class Graph(
     val targetDir: File,
     val templateProperties: Properties,
     val downloadDir: File,
-    val compilerOptions: CompilerOptions
+    val coffeeOptions: List[CoffeeOption] = List(CoffeeOption.BARE),
+    val closureOptions: ClosureOptions
   ) extends com.untyped.sbtgraph.Graph {
 
   type S = com.untyped.sbtjs.Source
@@ -33,10 +39,10 @@ case class Graph(
   def closureLogLevel: java.util.logging.Level =
     java.util.logging.Level.OFF
 
-  def closureExterns(a: Source): List[JSSourceFile] =
+  def closureExterns(a: Source): List[ClosureSource] =
     ancestors(a).flatMap(_.closureExterns)
 
-  def closureSources(a: Source): List[JSSourceFile] =
+  def closureSources(a: Source): List[ClosureSource] =
     ancestors(a).flatMap(_.closureSources)
 
 }

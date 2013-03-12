@@ -5,7 +5,7 @@ object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.6-M3"
+  val pluginsVersion = "0.6-M4"
   val tipiVersion = "0.1-M4"
 
   // Libraries ----------------------------------
@@ -77,7 +77,6 @@ object Build extends Build {
       publishTo := None
     )
   ) aggregate (
-    // sbtGraph,
     sbtJs,
     sbtLess,
     sbtMustache,
@@ -112,7 +111,7 @@ object Build extends Build {
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-less:
       unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
     )
-  )// .dependsOn(sbtGraph)
+  )
 
   lazy val sbtJs = Project(
     id = "sbt-js",
@@ -121,14 +120,13 @@ object Build extends Build {
       libraryDependencies ++= Seq(
         closure,
         rhino,
-        // jCoffeescript,
         mustache,
         scalatest % "test"
       ),
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-js:
       unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
     )
-  )// .dependsOn(sbtGraph)
+  )
 
   lazy val sbtMustache = Project(
     id = "sbt-mustache",
@@ -141,7 +139,7 @@ object Build extends Build {
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-mustache:
       unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
     )
-  )// .dependsOn(sbtGraph)
+  )
 
   lazy val sbtTipi = Project(
     id = "sbt-tipi",
@@ -155,7 +153,7 @@ object Build extends Build {
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-mustache:
       unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
     )
-  )// .dependsOn(sbtGraph)
+  )
 
   lazy val sbtRunmode = Project(
     id = "sbt-runmode",

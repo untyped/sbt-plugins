@@ -1,6 +1,6 @@
 package com.untyped.sbtjs
 
-import com.google.javascript.jscomp.JSSourceFile
+import com.google.javascript.jscomp.{ SourceFile => ClosureSource }
 import sbt._
 import scala.collection._
 
@@ -17,26 +17,26 @@ object JsSource {
 }
 
 case class JsSource(val graph: Graph, val src: File) extends Source {
-  
+
   lazy val parents: List[Source] =
     for {
       line <- IO.readLines(src).map(_.trim).toList
       name <- JsSource.parseRequire(line)
     } yield graph.getSource(name, this)
-  
+
   /** Closure sources for this file (not its parents). */
-  def closureSources: List[JSSourceFile] =
+  def closureSources: List[ClosureSource] =
     if(this.isTemplated) {
-      List(JSSourceFile.fromCode(src.toString, renderTemplate(src)))
+      List(ClosureSource.fromCode(src.toString, renderTemplate(src)))
     } else {
-      List(JSSourceFile.fromFile(src))
+      List(ClosureSource.fromFile(src))
     }
-  
+
   /** Is the source file templated? It's templated if the file name contains ".template", e.g. "foo.template.js" */
   def isTemplated: Boolean =
     src.toString.contains(".template")
-  
+
   override def toString =
     "JsSource(" + src + ")"
-  
+
 }

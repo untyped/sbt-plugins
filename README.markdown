@@ -32,6 +32,10 @@ Development snapshots are published with milestone suffixes (`"0.6-M1"` and so o
 
 New features:
 
+Updated to Google Closure Compiler v20130227 and added the *strict mode*, *optimisation level* and *warning level* options. Thanks to [Alexandre Richonnier] for these features.
+
+Updated to Coffee Script Compiler v1.6.1 and added the *bare* option.
+
 Added the [sbt-tipi] plugin for the [Tipi] templating language.
 
 Version 0.5 (current stable release)
@@ -238,3 +242,4 @@ limitations under the License.
 [Build.scala]: https://github.com/untyped/sbt-plugins/blob/master/project/Build.scala
 [Denis Bardadym]: https://github.com/btd
 [Shikhar Bhushan]: https://github.com/shikhar
+[Alexandre Richonnier]: https://github.com/heralight

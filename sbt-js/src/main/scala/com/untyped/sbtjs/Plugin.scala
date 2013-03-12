@@ -1,12 +1,15 @@
 package com.untyped.sbtjs
 
-import com.google.javascript.jscomp._
+import com.google.javascript.jscomp.{
+  CompilerOptions => ClosureOptions,
+  _
+}
+import org.jcoffeescript.{ Option => CoffeeOption }
 import java.nio.charset.Charset
 import java.util.Properties
 import sbt._
 import sbt.Keys._
 import sbt.Project.Initialize
-import com.google.javascript.jscomp.CompilerOptions.LanguageMode
 
 object Plugin extends sbt.Plugin {
 
@@ -16,12 +19,16 @@ object Plugin extends sbt.Plugin {
     val charset                = SettingKey[Charset]("js-charset", "Sets the character encoding used in Javascript files (default utf-8)")
     val templateProperties     = SettingKey[Properties]("js-template-properties", "Properties to use in Javascript templates")
     val downloadDirectory      = SettingKey[File]("js-download-directory", "Temporary directory to download Javascript files to")
-    val variableRenamingPolicy = SettingKey[VariableRenamingPolicy]("js-variable-renaming-policy", "Options for the Google Closure compiler")
+    // Coffee Script options:
+    val coffeeBare             = SettingKey[Boolean]("js-coffee-bare", "Whether to omit the top-level function wrappers in coffee script (default true)")
+    val coffeeOptions          = SettingKey[List[CoffeeOption]]("js-coffee-options", "Options for the Coffee Script compiler")
+    // Closure Compiler options:
+    val variableRenamingPolicy = SettingKey[VariableRenamingPolicy]("js-variable-renaming-policy", "Javascript variable renaming policy (default local only)")
     val prettyPrint            = SettingKey[Boolean]("js-pretty-print", "Whether to pretty print Javascript (default false)")
     val strictMode             = SettingKey[Boolean]("js-strict-mode", "Whether to strict mode Javascript (default false)")
-    val optimisationLevel      = SettingKey[Int]("js-optimisation-level",  "optimisation Javascript level (default SIMPLE_OPTIMIZATIONS => WHITESPACE_ONLY=0, SIMPLE_OPTIMIZATIONS=1, ADVANCED_OPTIMIZATIONS=2")
-    val warningLevel           = SettingKey[Int]("js-warning-level", "warning Javascript level (default QUIET => QUIET=0, DEFAULT=1, VERBOSE=2")
-    val compilerOptions        = SettingKey[CompilerOptions]("js-compiler-options", "Options for the Google Closure compiler")
+    val optimisationLevel      = SettingKey[Int]("js-optimisation-level",  "optimisation Javascript level (0 = whitespace only, simple = 1, advanced = 2, default 1)")
+    val warningLevel           = SettingKey[Int]("js-warning-level", "warning Javascript level (0 = quiet, 1 = default, 2 = verbose, default quiet)")
+    val closureOptions         = SettingKey[ClosureOptions]("js-closure-options", "Options for the Google Closure compiler")
   }
 
   /** Provide quick access to the enum values in com.google.javascript.jscomp.VariableRenamingPolicy */
@@ -58,8 +65,8 @@ object Plugin extends sbt.Plugin {
     }
 
   def sourceGraphTask: Initialize[Task[Graph]] =
-    (streams, sourceDirectories in js, resourceManaged in js, unmanagedSources in js, templateProperties, downloadDirectory, compilerOptions) map {
-      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, compilerOptions) =>
+    (streams, sourceDirectories in js, resourceManaged in js, unmanagedSources in js, templateProperties, downloadDirectory, closureOptions) map {
+      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, closureOptions) =>
         out.log.debug("sbt-js template properties " + templateProperties)
 
         time(out, "sourceGraphTask") {
@@ -69,7 +76,7 @@ object Plugin extends sbt.Plugin {
             targetDir          = targetDir,
             templateProperties = templateProperties,
             downloadDir        = downloadDir,
-            compilerOptions    = compilerOptions
+            closureOptions    = closureOptions
           )
 
           sourceFiles.foreach(graph += _)
@@ -98,14 +105,25 @@ object Plugin extends sbt.Plugin {
         graph.sources.foreach(_.clean)
     }
 
-  def compilerOptionsSetting: Initialize[CompilerOptions] =
-    (streams, variableRenamingPolicy in js, prettyPrint in js,
+  def coffeeOptionsSetting: Initialize[List[CoffeeOption]] =
+    (streams, coffeeBare in js) apply {
+      (out, bare) =>
+        if(bare) List(CoffeeOption.BARE) else Nil
+    }
+
+  def closureOptionsSetting: Initialize[ClosureOptions] =
+    (streams,
+      variableRenamingPolicy in js,
+      prettyPrint in js,
       strictMode in js,
       warningLevel in js,
-      optimisationLevel in js) apply {
+      optimisationLevel in js
+    ) apply {
       (out, variableRenamingPolicy, prettyPrint, strictMode, warningLevel, optimisationLevel) =>
-        val options = new CompilerOptions
+        val options = new ClosureOptions
+
         options.variableRenaming = variableRenamingPolicy
+        options.prettyPrint = prettyPrint
 
         optimisationLevel match {
           case 0 => CompilationLevel.WHITESPACE_ONLY.setOptionsForCompilationLevel(options)
@@ -113,45 +131,50 @@ object Plugin extends sbt.Plugin {
           case 2 => CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
           case _ => CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
         }
+
         warningLevel match {
           case 0 => WarningLevel.QUIET.setOptionsForWarningLevel(options)
           case 1 => WarningLevel.DEFAULT.setOptionsForWarningLevel(options)
           case 2 => WarningLevel.VERBOSE.setOptionsForWarningLevel(options)
           case _ => WarningLevel.DEFAULT.setOptionsForWarningLevel(options)
         }
-        options.prettyPrint = prettyPrint
-        if (strictMode)
-          options.setLanguageIn(LanguageMode.ECMASCRIPT5_STRICT)
-        else
-          options.setLanguageIn(LanguageMode.ECMASCRIPT5)
+
+        if(strictMode) {
+          options.setLanguageIn(ClosureOptions.LanguageMode.ECMASCRIPT5_STRICT)
+        } else {
+          options.setLanguageIn(ClosureOptions.LanguageMode.ECMASCRIPT5)
+        }
+
         options
     }
 
   def jsSettingsIn(conf: Configuration): Seq[Setting[_]] =
     inConfig(conf)(Seq(
-      charset                      :=   Charset.forName("utf-8"),
-      includeFilter in js          :=   "*.js" || "*.jsm" || "*.jsmanifest" || "*.coffee",
-      excludeFilter in js          :=   (".*" - ".") || "_*" || HiddenFileFilter,
-      sourceDirectory in js        <<=  (sourceDirectory in conf),
-      sourceDirectories in js      <<=  (sourceDirectory in (conf, js)) { Seq(_) },
-      unmanagedSources in js       <<=  unmanagedSourcesTask,
-      resourceManaged in js        <<=  (resourceManaged in conf),
-      templateProperties           :=   new Properties,
-      downloadDirectory            <<=  (target in conf) { _ / "sbt-js" / "downloads" },
-      sourceGraph                  <<=  sourceGraphTask,
-      sources in js                <<=  watchSourcesTask,
-      watchSources in js           <<=  watchSourcesTask,
-      variableRenamingPolicy       :=   VariableRenamingPolicy.LOCAL,
-      prettyPrint                  :=   false,
-      strictMode                   :=   false,
-      warningLevel                 :=   0,
-      optimisationLevel            :=   1,
-      compilerOptions              <<=  compilerOptionsSetting,
-      clean in js                  <<=  cleanTask,
-      js                           <<=  compileTask
+      charset                  := Charset.forName("utf-8"),
+      includeFilter in js      := "*.js" || "*.jsm" || "*.jsmanifest" || "*.coffee",
+      excludeFilter in js      := (".*" - ".") || "_*" || HiddenFileFilter,
+      sourceDirectory in js   <<= (sourceDirectory in conf),
+      sourceDirectories in js <<= (sourceDirectory in (conf, js)) { Seq(_) },
+      unmanagedSources in js  <<= unmanagedSourcesTask,
+      resourceManaged in js   <<= (resourceManaged in conf),
+      templateProperties       := new Properties,
+      downloadDirectory       <<= (target in conf) { _ / "sbt-js" / "downloads" },
+      sourceGraph             <<= sourceGraphTask,
+      sources in js           <<= watchSourcesTask,
+      watchSources in js      <<= watchSourcesTask,
+      coffeeBare               := false,
+      coffeeOptions           <<= coffeeOptionsSetting,
+      variableRenamingPolicy   := VariableRenamingPolicy.LOCAL,
+      prettyPrint              := false,
+      strictMode               := false,
+      warningLevel             := 0,
+      optimisationLevel        := 1,
+      closureOptions          <<= closureOptionsSetting,
+      clean in js             <<= cleanTask,
+      js                      <<= compileTask
     )) ++ Seq(
-      cleanFiles                   <+=  (resourceManaged in js in conf),
-      watchSources                 <++= (watchSources in js in conf)
+      cleanFiles              <+= (resourceManaged in js in conf),
+      watchSources           <++= (watchSources in js in conf)
     )
 
   def jsSettings: Seq[Setting[_]] =
