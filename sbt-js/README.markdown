@@ -15,18 +15,16 @@ Copyright 2011-12 [Dave Gurnell] of [Untyped]
 Installation
 ============
 
-For SBT 0.11:
-
-Create a `project/plugins.sbt` file and paste the following content into it:
+For SBT 0.12, create a `project/plugins.sbt` file and paste the following content into it:
 
     resolvers += Resolver.url(
       "sbt-plugin-releases",
       url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/")
     )(Resolver.ivyStylePatterns)
 
-    addSbtPlugin("com.untyped" %% "sbt-js" % "0.3")
+    addSbtPlugin("com.untyped" %% "sbt-js" % "0.5")
 
-Note that, as of version 0.3, certain things have changed:
+For SBT 0.11 use version "0.3". Note that, as of version 0.3, certain things have changed:
 
  - the plugin has moved from `repo.untyped.com` to `scalasbt.artifactoryonline.com`;
  - the group ID has changed from `untyped` to `com.untyped`;
