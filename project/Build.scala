@@ -5,7 +5,7 @@ object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.6-M4"
+  val pluginsVersion = "0.6-M5"
   val tipiVersion = "0.1-M4"
 
   // Libraries ----------------------------------
@@ -70,11 +70,7 @@ object Build extends Build {
     id = "root",
     base = file("."),
     settings = defaultSettings ++ Seq(
-      publishArtifact in (Compile) := false,
-      publishArtifact in (Compile, packageBin) := false,
-      publishArtifact in (Compile, packageSrc) := false,
-      publishArtifact in (Compile, packageDoc) := false,
-      publishTo := None
+      publish := {}
     )
   ) aggregate (
     sbtJs,

@@ -1,9 +1,6 @@
 package com.untyped.sbtjs
 
-import com.google.javascript.jscomp.{
-  CompilerOptions => ClosureOptions,
-  _
-}
+import com.google.javascript.jscomp.{ CompilerOptions => ClosureOptions, _ }
 import org.jcoffeescript.{ Option => CoffeeOption }
 import java.nio.charset.Charset
 import java.util.Properties
@@ -20,15 +17,23 @@ object Plugin extends sbt.Plugin {
     val templateProperties     = SettingKey[Properties]("js-template-properties", "Properties to use in Javascript templates")
     val downloadDirectory      = SettingKey[File]("js-download-directory", "Temporary directory to download Javascript files to")
     // Coffee Script options:
+    val coffeeVersion          = SettingKey[CoffeeVersion]("coffee-version", "The version of the Coffeescript compiler to use")
     val coffeeBare             = SettingKey[Boolean]("js-coffee-bare", "Whether to omit the top-level function wrappers in coffee script (default true)")
     val coffeeOptions          = SettingKey[List[CoffeeOption]]("js-coffee-options", "Options for the Coffee Script compiler")
     // Closure Compiler options:
     val variableRenamingPolicy = SettingKey[VariableRenamingPolicy]("js-variable-renaming-policy", "Javascript variable renaming policy (default local only)")
     val prettyPrint            = SettingKey[Boolean]("js-pretty-print", "Whether to pretty print Javascript (default false)")
     val strictMode             = SettingKey[Boolean]("js-strict-mode", "Whether to strict mode Javascript (default false)")
-    val optimisationLevel      = SettingKey[Int]("js-optimisation-level",  "optimisation Javascript level (0 = whitespace only, simple = 1, advanced = 2, default 1)")
-    val warningLevel           = SettingKey[Int]("js-warning-level", "warning Javascript level (0 = quiet, 1 = default, 2 = verbose, default quiet)")
+    val compilationLevel       = SettingKey[CompilationLevel]("js-compilation-level",  "Closure Compiler compilation level")
+    val warningLevel           = SettingKey[WarningLevel]("js-warning-level", "Closure Compiler warning level")
     val closureOptions         = SettingKey[ClosureOptions]("js-closure-options", "Options for the Google Closure compiler")
+  }
+
+  sealed trait CoffeeVersion { def url: String }
+
+  object CoffeeVersion {
+    val Coffee110 = new CoffeeVersion { val url = "org/jcoffeescript/coffee-script-1.1.0.js" }
+    val Coffee161 = new CoffeeVersion { val url = "org/jcoffeescript/coffee-script-1.6.1.js" }
   }
 
   /** Provide quick access to the enum values in com.google.javascript.jscomp.VariableRenamingPolicy */
@@ -37,6 +42,18 @@ object Plugin extends sbt.Plugin {
     val LOCAL       = com.google.javascript.jscomp.VariableRenamingPolicy.LOCAL
     val OFF         = com.google.javascript.jscomp.VariableRenamingPolicy.OFF
     val UNSPECIFIED = com.google.javascript.jscomp.VariableRenamingPolicy.UNSPECIFIED
+  }
+
+  object WarningLevel {
+    val QUIET   = com.google.javascript.jscomp.WarningLevel.QUIET
+    val DEFAULT = com.google.javascript.jscomp.WarningLevel.DEFAULT
+    val VERBOSE = com.google.javascript.jscomp.WarningLevel.VERBOSE
+  }
+
+  object CompilationLevel {
+    val WHITESPACE_ONLY        = com.google.javascript.jscomp.CompilationLevel.WHITESPACE_ONLY
+    val SIMPLE_OPTIMIZATIONS   = com.google.javascript.jscomp.CompilationLevel.SIMPLE_OPTIMIZATIONS
+    val ADVANCED_OPTIMIZATIONS = com.google.javascript.jscomp.CompilationLevel.ADVANCED_OPTIMIZATIONS
   }
 
   import JsKeys._
@@ -65,8 +82,8 @@ object Plugin extends sbt.Plugin {
     }
 
   def sourceGraphTask: Initialize[Task[Graph]] =
-    (streams, sourceDirectories in js, resourceManaged in js, unmanagedSources in js, templateProperties, downloadDirectory, closureOptions) map {
-      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, closureOptions) =>
+    (streams, sourceDirectories in js, resourceManaged in js, unmanagedSources in js, templateProperties, downloadDirectory, coffeeVersion, coffeeOptions, closureOptions) map {
+      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, coffeeVersion, coffeeOptions, closureOptions) =>
         out.log.debug("sbt-js template properties " + templateProperties)
 
         time(out, "sourceGraphTask") {
@@ -76,7 +93,9 @@ object Plugin extends sbt.Plugin {
             targetDir          = targetDir,
             templateProperties = templateProperties,
             downloadDir        = downloadDir,
-            closureOptions    = closureOptions
+            coffeeVersion      = coffeeVersion,
+            coffeeOptions      = coffeeOptions,
+            closureOptions     = closureOptions
           )
 
           sourceFiles.foreach(graph += _)
@@ -117,27 +136,16 @@ object Plugin extends sbt.Plugin {
       prettyPrint in js,
       strictMode in js,
       warningLevel in js,
-      optimisationLevel in js
+      compilationLevel in js
     ) apply {
-      (out, variableRenamingPolicy, prettyPrint, strictMode, warningLevel, optimisationLevel) =>
+      (out, variableRenamingPolicy, prettyPrint, strictMode, warningLevel, compilationLevel) =>
         val options = new ClosureOptions
 
         options.variableRenaming = variableRenamingPolicy
         options.prettyPrint = prettyPrint
 
-        optimisationLevel match {
-          case 0 => CompilationLevel.WHITESPACE_ONLY.setOptionsForCompilationLevel(options)
-          case 1 => CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
-          case 2 => CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
-          case _ => CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(options)
-        }
-
-        warningLevel match {
-          case 0 => WarningLevel.QUIET.setOptionsForWarningLevel(options)
-          case 1 => WarningLevel.DEFAULT.setOptionsForWarningLevel(options)
-          case 2 => WarningLevel.VERBOSE.setOptionsForWarningLevel(options)
-          case _ => WarningLevel.DEFAULT.setOptionsForWarningLevel(options)
-        }
+        compilationLevel.setOptionsForCompilationLevel(options)
+        warningLevel.setOptionsForWarningLevel(options)
 
         if(strictMode) {
           options.setLanguageIn(ClosureOptions.LanguageMode.ECMASCRIPT5_STRICT)
@@ -162,13 +170,14 @@ object Plugin extends sbt.Plugin {
       sourceGraph             <<= sourceGraphTask,
       sources in js           <<= watchSourcesTask,
       watchSources in js      <<= watchSourcesTask,
+      coffeeVersion            := CoffeeVersion.Coffee161,
       coffeeBare               := false,
       coffeeOptions           <<= coffeeOptionsSetting,
       variableRenamingPolicy   := VariableRenamingPolicy.LOCAL,
       prettyPrint              := false,
       strictMode               := false,
-      warningLevel             := 0,
-      optimisationLevel        := 1,
+      warningLevel             := WarningLevel.QUIET,
+      compilationLevel         := CompilationLevel.SIMPLE_OPTIMIZATIONS,
       closureOptions          <<= closureOptionsSetting,
       clean in js             <<= cleanTask,
       js                      <<= compileTask

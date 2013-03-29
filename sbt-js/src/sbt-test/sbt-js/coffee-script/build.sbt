@@ -4,7 +4,9 @@ logLevel := Level.Debug
 
 seq(jsSettings : _*)
 
-JsKeys.coffeeBare := true
+JsKeys.coffeeBare in Compile := true
+
+JsKeys.coffeeVersion in Compile := CoffeeVersion.Coffee110
 
 InputKey[Unit]("contents") <<= inputTask { (argsTask: TaskKey[Seq[String]]) =>
   (argsTask, streams) map { (args, out) =>

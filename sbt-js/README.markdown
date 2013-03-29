@@ -41,7 +41,8 @@ add the output files to the webapp with:
 
 To change the directory that is scanned, use:
 
-    (sourceDirectory in (Compile, JsKeys.js)) <<= (sourceDirectory in Compile)(_ / "path" / "to" / "js-and-coffee-files")
+    (sourceDirectory in (Compile, JsKeys.js)) <<=
+      (sourceDirectory in Compile)(_ / "path" / "to" / "js-and-coffee-files")
 
 To specify multiple source directories, use:
 
@@ -67,30 +68,38 @@ To cause the `js` task to run automatically when you run `compile`:
 
     (compile in Compile) <<= compile in Compile dependsOn (JsKeys.js in Compile)
 
+To switch to Coffeescript 1.1.0 (default 1.6.1):
+
+    (JsKeys.coffeeVersion in (Compile)) := CoffeeVersion.Coffee110
+
+To tell the Coffeescript compiler not to wrap code in an anonymous function wrapper:
+
+    (JsKeys.coffeeBare in (Compile)) := true
+
 To use pretty-printing instead of regular Javascript minification:
 
-    (JsKeys.prettyPrint in (Compile, JsKeys.js)) := true
+    (JsKeys.prettyPrint in (Compile)) := true
 
 To use more aggressive variable renaming (producing smaller output files that are less
 likely to work without care):
 
-    (JsKeys.variableRenamingPolicy in (Compile, JsKeys.js)) := VariableRenamingPolicy.ALL
+    (JsKeys.variableRenamingPolicy in (Compile)) := VariableRenamingPolicy.ALL
 
 Or to turn variable renaming off altogether:
 
-    (JsKeys.variableRenamingPolicy in (Compile, JsKeys.js)) := VariableRenamingPolicy.OFF
+    (JsKeys.variableRenamingPolicy in (Compile)) := VariableRenamingPolicy.OFF
 
 To use ECMASCRIPT5_STRICT instead of regular ECMASCRIPT5 Language mode:
 
-    (JsKeys.strictMode in (Compile, JsKeys.js)) := true
+    (JsKeys.strictMode in (Compile)) := true
 
-To set google closure warning level (default QUIET => QUIET=0, DEFAULT=1, VERBOSE=2"):
+To make Closure Compiler verbose (levels are `QUIET`, `DEFAULT`, `VERBOSE`, default `QUIET`):
 
-    (JsKeys.warningLevel in (Compile, JsKeys.js)) := 0
+    (JsKeys.warningLevel in (Compile)) := WarningLevel.VERBOSE
 
-To set google closure optimisation level (default SIMPLE_OPTIMIZATIONS => WHITESPACE_ONLY=0, SIMPLE_OPTIMIZATIONS=1, ADVANCED_OPTIMIZATIONS=2"):
+To disable Closure Compiler optimisations (levels are `WHITESPACE_ONLY`, `SIMPLE_OPTIMIZATIONS`, `ADVANCED_OPTIMIZATIONS`, default `SIMPLE_OPTIMIZATIONS`):
 
-    (JsKeys.optimisationLevel in (Compile, JsKeys.js)) := 1
+    (JsKeys.compilationLevel in (Compile, JsKeys.js)) := CompilationLevel.WHITESPACE_ONLY
 
 Usage
 =====
@@ -207,7 +216,8 @@ Thanks to:
  - [Glade Diviney](https://github.com/gladed) for help producing test cases
    and debugging various issues.
 
- - [Alexandre Richonnier](http://www.hera.cc) for some compiler options.
+ - [Alexandre Richonnier](http://www.hera.cc) for extra options for Closure
+   Compiler and Coffeescript.
 
 [Coffee Script SBT plugin]: https://github.com/rubbish/coffee-script-sbt-plugin
 [YUI Compressor SBT plugin]: https://github.com/hoffrocket/sbt-yui

@@ -27,7 +27,8 @@ case class CoffeeSource(val graph: Graph, val src: File) extends Source {
   def coffeeCompile(in: String): String =
     try {
       import scala.collection.JavaConversions._
-      new JCoffeeScriptCompiler(graph.coffeeOptions).compile(in)
+      graph.log.debug("Compiling %s with Coffeescript %s and options %s".format(src, graph.coffeeVersion.url, graph.coffeeOptions))
+      new JCoffeeScriptCompiler(graph.coffeeVersion.url, graph.coffeeOptions).compile(in)
     } catch {
       case exn: JCoffeeScriptCompileException =>
         sys.error("Error compiling Coffeescript: " + this.src + ": " + exn.getMessage)

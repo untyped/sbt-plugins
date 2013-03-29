@@ -34,7 +34,7 @@ public class Main {
     public void execute(String[] args, PrintStream out, InputStream in) {
         final Collection<Option> options = readOptionsFrom(args);
         try {
-            out.print(new JCoffeeScriptCompiler(options).compile(readSourceFrom(in)));
+            out.print(new JCoffeeScriptCompiler("org/jcoffeescript/coffee-script-1.6.1.js", options).compile(readSourceFrom(in)));
         } catch (JCoffeeScriptCompileException e) {
             System.err.println(e.getMessage());
         }

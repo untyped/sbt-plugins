@@ -16,6 +16,7 @@ case class Graph(
     val targetDir: File,
     val templateProperties: Properties,
     val downloadDir: File,
+    val coffeeVersion: Plugin.CoffeeVersion,
     val coffeeOptions: List[CoffeeOption] = List(CoffeeOption.BARE),
     val closureOptions: ClosureOptions
   ) extends com.untyped.sbtgraph.Graph {

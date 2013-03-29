@@ -33,13 +33,13 @@ public class JCoffeeScriptCompiler {
     private final Scriptable globalScope;
     private final Options options;
 
-	 public JCoffeeScriptCompiler() {
-        this(Collections.<Option>emptyList());
+    public JCoffeeScriptCompiler(String compilerUrl) {
+        this(compilerUrl, Collections.<Option>emptyList());
     }
 
-	public JCoffeeScriptCompiler(Collection<Option> options) {
+	public JCoffeeScriptCompiler(String compilerUrl, Collection<Option> options) {
         ClassLoader classLoader = getClass().getClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream("org/jcoffeescript/coffee-script.js");
+        InputStream inputStream = classLoader.getResourceAsStream(compilerUrl);
         try {
             try {
                 Reader reader = new InputStreamReader(inputStream, "UTF-8");

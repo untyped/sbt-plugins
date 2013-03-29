@@ -34,7 +34,7 @@ New features:
 
 Updated to Google Closure Compiler v20130227 and added the *strict mode*, *optimisation level* and *warning level* options. Thanks to [Alexandre Richonnier] for these features.
 
-Updated to Coffee Script Compiler v1.6.1 and added the *bare* option.
+Added the option to change the Coffee Script compiler version, changed the default version to v1.6.1, and added the *bare* option.
 
 Added the [sbt-tipi] plugin for the [Tipi] templating language.
 
