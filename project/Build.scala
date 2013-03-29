@@ -77,7 +77,8 @@ object Build extends Build {
     sbtLess,
     sbtMustache,
     sbtTipi,
-    sbtRunmode
+    sbtRunmode,
+    sbtAssets
   )
 
   lazy val sbtGraph = Project(
@@ -121,6 +122,21 @@ object Build extends Build {
       ),
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-js:
       unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
+    )
+  )
+
+  lazy val sbtAssets = Project(
+    id = "sbt-assets",
+    base = file("sbt-assets"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Seq(
+        // closure,
+        // rhino,
+        // mustache,
+        scalatest % "test"
+      )
+      // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-js:
+      // unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
     )
   )
 
