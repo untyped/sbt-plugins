@@ -1,6 +1,5 @@
 package com.untyped.sbtassets
 
-import java.io.FileNotFoundException
 import org.scalatest._
 import org.scalatest.matchers._
 import sbt._
@@ -22,7 +21,7 @@ class ResolverSuite extends FunSuite with MustMatchers {
 
   val cwd = file(".")
 
-  test("relativize") {
+  test("Resolvers.relativize") {
     Resolvers.relativize("a", "") must equal (Some("a"))
     Resolvers.relativize("/a", "") must equal (Some("a"))
     Resolvers.relativize("b", "a") must equal (Some("a/b"))
@@ -31,19 +30,15 @@ class ResolverSuite extends FunSuite with MustMatchers {
     Resolvers.relativize("/c/d", "a/b") must equal (Some("c/d"))
   }
 
-  test("root") {
-    import Resolvers._
-
-    val resolver = root(cwd)
+  test("Resolvers.root") {
+    val resolver = Resolvers.root(cwd)
 
     resolver("README.markdown", "") must equal (Some(cwd / "README.markdown"))
-    resolver("DONEREADME.markdown", "") must equal (None)
+    resolver("DONTREADME.markdown", "") must equal (None)
   }
 
-  test("fake") {
-    import Resolvers._
-
-    val resolver = fake(file("/foo"), "bar.*".r)
+  test("Resolvers.fake") {
+    val resolver = Resolvers.fake(file("/foo"), "bar.*".r)
 
     resolver("bar", "") must equal (Some(file("/foo/bar")))
     resolver("baz", "") must equal (None)
@@ -51,12 +46,10 @@ class ResolverSuite extends FunSuite with MustMatchers {
     resolver("abc", "baz") must equal (None)
   }
 
-  test("or") {
-    import Resolvers._
-
-    var resolver = or(
-      fake(file("/foo"), "a".r),
-      fake(file("/bar"), "b".r)
+  test("Resolvers.or") {
+    var resolver = Resolvers.or(
+      Resolvers.fake(file("/foo"), "a".r),
+      Resolvers.fake(file("/bar"), "b".r)
     )
 
     resolver("a", "") must equal (Some(file("/foo/a")))
@@ -64,12 +57,10 @@ class ResolverSuite extends FunSuite with MustMatchers {
     resolver("c", "") must equal (None)
   }
 
-  test("extensions") {
-    import Resolvers._
-
-    var resolver = extensions(".js", ".coffee")(or(
-      fake(file("/foo"), "a[.]coffee".r),
-      fake(file("/bar"), "b[.]js".r)
+  test("Resolvers.extensions") {
+    var resolver = Resolvers.extensions(".js", ".coffee")(Resolvers.or(
+      Resolvers.fake(file("/foo"), "a[.]coffee".r),
+      Resolvers.fake(file("/bar"), "b[.]js".r)
     ))
 
     resolver("a", "") must equal (Some(file("/foo/a.coffee")))

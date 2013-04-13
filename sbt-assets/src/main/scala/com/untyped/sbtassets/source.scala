@@ -7,25 +7,8 @@ case class Source(
   val file: File,
   val dependencies: List[String]
 ) {
-  def filename: String = path.getName
-
-  def filenameStem = {
-    if(filename.indexOf('.') < 0) {
-      filename
-    } else {
-      filename.substring(0, filename.lastIndexOf('.'))
-    }
-  }
-
-  def filenameExtension = {
-    if(filename.indexOf('.') < 0) {
-      ""
-    } else {
-      filename.substring(filename.lastIndexOf('.') + 1)
-    }
-  }
-
-  def relativePath: File = new File(name).getParentFile
+  val name = sbt.file(path).name
+  val (base, ext) = sbt.file(path).baseAndExt
 }
 
 case class Sources(val sources: Seq[Source]) {
@@ -41,13 +24,16 @@ case class Sources(val sources: Seq[Source]) {
   def ++ (that: Sources) =
     Sources(this.sources ++ that.sources)
 
-  def orderedSources = sources
+  def orderedSources = sources.sortBy(_.path)
 }
 
 object Sources {
-  def apply(sources: Source *): Sources =
-    Sources(sources.toList)
-
-  def apply(root: File, finder: PathFinder, reader: SourceReader): Sources =
-    Sources(finder.get.map(reader(root, _)))
+  def apply(
+    main: String,
+    resolver: Resolver,
+    dependencyReader: DependencyReader
+  ): Sources = {
+    val files = finder(root).files
+    Sources()
+  }
 }
