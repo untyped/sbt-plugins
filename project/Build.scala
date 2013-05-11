@@ -15,7 +15,7 @@ object Build extends Build {
   val closure   = "com.google.javascript" % "closure-compiler" % "v20130227"
   val mustache  = "com.samskivert" % "jmustache" % "1.3"
   val rhino     = "org.mozilla" % "rhino" % "1.7R3"
-  val scalatest = "org.scalatest" %% "scalatest" % "1.6.1"
+  val scalatest = "org.scalatest" %% "scalatest" % "1.9.1"
   val tipi      = "com.untyped" %% "tipi" % tipiVersion % "compile" changing()
 
   def webPlugin(sbtVersion: String) =
