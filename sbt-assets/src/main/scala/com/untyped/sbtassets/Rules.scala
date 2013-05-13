@@ -5,23 +5,29 @@ import sbt._
 object Rules extends Rules
 
 trait Rules {
-  case class Coffee(val target: File, val prereq: Rule ) extends Rule {
+  case class Append(val prereqs: List[Rule]) extends Rule {
+    def sources = prereqs.map(_.sources).flatten
+    def compile = prereqs.map(_.compile).flatten
+  }
+
+  case class Coffee(val target: File, val prereq: Rule) extends Rule {
     def translate(in: Source) =
       Source(in.path, target / (in.path withExtension ".js").toString, in.dependencies)
 
     def sources =
       prereq.sources map (translate _)
 
-    def compile =
+    def compile = {
+      prereq.compile
       for {
-        in  <- prereq.compile
+        in  <- prereq.sources
         out <- List(translate(in)) if requiresRecompilation(in, out)
       } yield {
-        println("coffee " + in.file + " => " + out.file)
         IO.createDirectory(out.file.getParentFile)
         ((List("coffee", "-bcp", in.file.getPath) #> out.file) !)
         out
       }
+    }
   }
 
   case class Cat(val target: File, val prereq: Rule) extends Rule {
@@ -31,16 +37,43 @@ trait Rules {
     val sources =
       List(targetSource)
 
-    def compile =
-      if(prereq.compile.find(requiresRecompilation(_, targetSource)).isDefined) {
-        println("cat " + prereq.sources.map(_.file).mkString(" ") + " => " + target)
+    def compile = {
+      prereq.compile
+      if(prereq.sources.find(requiresRecompilation(_, targetSource)).isDefined) {
         IO.createDirectory(target.getParentFile)
         ((("cat" :: prereq.sources.map(_.file.getPath)) #> target) !)
         sources
-      } else {
-        println("cat NOOP")
-        Nil
+      } else Nil
+    }
+  }
+
+  case class Filter(val prereq: Rule, val pred: Source => Boolean) extends Rule {
+    def sources = prereq.sources.filter(pred)
+    def compile = prereq.compile.filter(pred)
+  }
+
+  case class Rewrite(
+    val target: File,
+    val rewrite: (Source, String) => String,
+    val prereq: Rule
+  ) extends Rule {
+    def translate(in: Source) =
+      Source(in.path, target / (in.path withExtension ("." + in.file.ext)).toString, in.dependencies)
+
+    def sources =
+      prereq.sources map (translate _)
+
+    def compile = {
+      prereq.compile
+      for {
+        in  <- prereq.sources
+        out <- List(translate(in)) if requiresRecompilation(in, out)
+      } yield {
+        IO.createDirectory(out.file.getParentFile)
+        IO.write(out.file, rewrite(in, IO.read(in.file)))
+        out
       }
+    }
   }
 
   case class UglifyJs(val target: File, val prereq: Rule) extends Rule {
@@ -50,42 +83,13 @@ trait Rules {
     val sources =
       List(targetSource)
 
-    def compile =
-      if(prereq.compile.find(requiresRecompilation(_, targetSource)).isDefined) {
-        println("uglify " + prereq.sources.map(_.file).mkString(" ") + " => " + target)
+    def compile = {
+      prereq.compile
+      if(prereq.sources.find(requiresRecompilation(_, targetSource)).isDefined) {
         IO.createDirectory(target.getParentFile)
         ((("uglifyjs" :: prereq.sources.map(_.file.getPath)) #> target) !)
         sources
-      } else {
-        println("uglify NOOP")
-        Nil
-      }
-  }
-
-  case class Append(val prereqs: Seq[Rule]) extends Rule {
-    def sources = {
-      val ans = prereqs.foldLeft[List[Source]](Nil)((accum, rule) => accum ++ rule.sources)
-      ans
-    }
-
-    def compile = {
-      val ans = prereqs.foldLeft[List[Source]](Nil)((accum, rule) => accum ++ rule.compile)
-      println("append " + ans.map(_.file).mkString(" "))
-      ans
-    }
-  }
-
-  case class Filter(val prereq: Rule, val pred: Source => Boolean) extends Rule {
-    def sources = {
-      val ans = prereq.sources.filter(pred)
-      ans
-    }
-
-    def compile = {
-      val in = prereq.compile
-      val out = in.filter(pred)
-      println("filter " + in.map(_.file).mkString(" ") + " => " + out.map(_.file).mkString(" "))
-      out
+      } else Nil
     }
   }
 }

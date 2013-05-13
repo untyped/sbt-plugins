@@ -5,22 +5,24 @@ import scala.collection.mutable
 
 /** Rule that gets its sources straight from the filesystem. */
 trait Selector extends Rule {
-  /** Cache of last modified timestamps. */
-  val cache = mutable.HashMap[Path, Long]()
+  def compile = sources
+}
 
-  def compile = {
-    val ans =
-      sources
-      // .filter { source =>
-      //   val modified = source.file.lastModified
-      //   if(modified > cache.getOrElse(source.path, 0L)) {
-      //     cache.put(source.path, modified)
-      //     true
-      //   } else {
-      //     false
-      //   }
-      // }
-    println("selector " + ans.mkString(" "))
-    ans
+/** Rule that gets its sources straight from the filesystem. */
+trait SimpleSelector extends Selector {
+  def format: Format
+
+  val cachedDependencies = mutable.HashMap[File, (Long, List[Path])]()
+
+  def dependencies(dir: Path, file: File) = {
+    cachedDependencies.get(file) match {
+      case Some((modified, deps)) if modified == file.lastModified =>
+        deps
+
+      case _ =>
+        val deps = format.dependencies(dir, file)
+        cachedDependencies.put(file, (file.lastModified, deps))
+        deps
+    }
   }
 }

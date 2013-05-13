@@ -66,11 +66,11 @@ class RulesSpec extends BaseSpec {
         Source(Path("/c"), outDir / "c.js", Nil)
       ))
 
-    val coffee =
+    val rule =
       Rules.Coffee(outDir, inSources)
 
     it("should return sources") {
-      coffee.sources must equal (outSources.sources)
+      rule.sources must equal (outSources.sources)
       outSources.sources.map(_.file.exists).foldLeft(false)(_ || _) must equal (false)
     }
 
@@ -78,7 +78,7 @@ class RulesSpec extends BaseSpec {
       outSources.sources.foreach(_.file.delete)
       outSources.sources.map(_.file.exists).foldLeft(false)(_ || _) must equal (false)
 
-      coffee.compile must equal (outSources.sources)
+      rule.compile must equal (outSources.sources)
       outSources.sources.map(_.file.exists).foldLeft(true)(_ && _) must equal (true)
       IO.read(outDir / "a.js") must equal {
         """
@@ -88,7 +88,54 @@ class RulesSpec extends BaseSpec {
         """.trim.stripMargin
       }
 
-      coffee.compile must equal (Nil)
+      rule.compile must equal (Nil)
+    }
+  }
+
+  describe("Rewrite") {
+    val inDir =
+      createTemporaryFiles(
+        "a.txt" -> "a",
+        "b.txt" -> "b",
+        "c.txt" -> "c"
+      )
+
+    val inSources =
+      Selectors.Const(List(
+        Source(Path("/a"), inDir / "a.txt", Nil),
+        Source(Path("/b"), inDir / "b.txt", Nil),
+        Source(Path("/c"), inDir / "c.txt", Nil)
+      ))
+
+    val outDir =
+      IO.createTemporaryDirectory
+
+    val outSources =
+      Selectors.Const(List(
+        Source(Path("/a"), outDir / "a.txt", Nil),
+        Source(Path("/b"), outDir / "b.txt", Nil),
+        Source(Path("/c"), outDir / "c.txt", Nil)
+      ))
+
+    val rule =
+      Rules.Rewrite(
+        outDir,
+        (in: Source, contents: String) =>
+          "[header " + in.path + "]" + contents + "[footer " + in.path + "]",
+        inSources
+      )
+
+    it("should return sources") {
+      rule.sources must equal (outSources.sources)
+      (outDir / "out.txt").exists must equal (false)
+    }
+
+    it("should compile sources") {
+      rule.compile must equal (outSources.sources)
+      outSources.sources.map(_.file.exists).foldLeft(true)(_ && _) must equal (true)
+      IO.read(outDir / "a.txt") must equal ("[header /a]a[footer /a]")
+
+      rule.compile must equal (Nil)
     }
   }
 
@@ -110,11 +157,11 @@ class RulesSpec extends BaseSpec {
         Source(Path("/c"), inDir / "c.txt", Nil)
       ))
 
-    val concat =
+    val rule =
       Rules.UglifyJs(outDir / "out.txt", sources)
 
     it("should return sources") {
-      concat.sources must equal (List(Source(Path.Root, outDir / "out.txt", Nil)))
+      rule.sources must equal (List(Source(Path.Root, outDir / "out.txt", Nil)))
       (outDir / "out.txt").exists must equal (false)
     }
 
@@ -122,11 +169,11 @@ class RulesSpec extends BaseSpec {
       (outDir / "out.txt").delete
       (outDir / "out.txt").exists must equal (false)
 
-      concat.compile must equal (List(Source(Path.Root, outDir / "out.txt", Nil)))
+      rule.compile must equal (List(Source(Path.Root, outDir / "out.txt", Nil)))
       (outDir / "out.txt").exists must equal (true)
       IO.read(outDir / "out.txt") must equal ("a;b;c;")
 
-      concat.compile must equal (Nil)
+      rule.compile must equal (Nil)
     }
   }
 }
