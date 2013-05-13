@@ -61,7 +61,8 @@ object Build extends Build {
       publishMavenStyle := false,
       scriptedBufferLog := false,
       scalacOptions += "-deprecation",
-      scalacOptions += "-unchecked"
+      scalacOptions += "-unchecked",
+      parallelExecution in Test := false
     )
 
   // Projects -----------------------------------

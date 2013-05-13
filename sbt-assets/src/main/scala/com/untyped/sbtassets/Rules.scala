@@ -6,90 +6,61 @@ object Rules extends Rules
 
 trait Rules {
   case class Append(val prereqs: List[Rule]) extends Rule {
-    def sources = prereqs.map(_.sources).flatten
-    def compile = prereqs.map(_.compile).flatten
+    def sources = prereqSources
+    override def watchSources = sources
+    def compileRule(state: CompileState) = ()
   }
 
-  case class Coffee(val target: File, val prereq: Rule) extends Rule {
-    def translate(in: Source) =
+  case class Coffee(val target: File, val prereq: Rule) extends OneToOneRule {
+    val prereqs = List(prereq)
+
+    def translateSource(in: Source) =
       Source(in.path, target / (in.path withExtension ".js").toString, in.dependencies)
 
-    def sources =
-      prereq.sources map (translate _)
-
-    def compile = {
-      prereq.compile
-      for {
-        in  <- prereq.sources
-        out <- List(translate(in)) if requiresRecompilation(in, out)
-      } yield {
-        IO.createDirectory(out.file.getParentFile)
-        ((List("coffee", "-bcp", in.file.getPath) #> out.file) !)
-        out
-      }
-    }
+    def compileSource(state: CompileState, in: Source, out: Source) =
+      List("coffee", "-bcp", in.file.getPath) #> out.file ! state.log
   }
 
-  case class Cat(val target: File, val prereq: Rule) extends Rule {
-    val targetSource =
-      Source(Path.Root, target, Nil)
+  case class Cat(val targetFile: File, val prereq: Rule) extends ManyToOneRule {
+    val prereqs = List(prereq)
 
-    val sources =
-      List(targetSource)
+    val target =
+      Source(Path.Root, targetFile, Nil)
 
-    def compile = {
-      prereq.compile
-      if(prereq.sources.find(requiresRecompilation(_, targetSource)).isDefined) {
-        IO.createDirectory(target.getParentFile)
-        ((("cat" :: prereq.sources.map(_.file.getPath)) #> target) !)
-        sources
-      } else Nil
-    }
+    def compileSources(state: CompileState, in: List[Source], out: Source) =
+      ("cat" :: in.map(_.file.getPath)) #> out.file ! state.log
   }
 
-  case class Filter(val prereq: Rule, val pred: Source => Boolean) extends Rule {
-    def sources = prereq.sources.filter(pred)
-    def compile = prereq.compile.filter(pred)
+  case class Filter(val pred: Source => Boolean, val prereq: Rule) extends Rule {
+    val prereqs = List(prereq)
+    def sources = prereqSources.filter(pred)
+    override def watchSources = sources
+    def compileRule(state: CompileState) = ()
   }
 
   case class Rewrite(
     val target: File,
     val rewrite: (Source, String) => String,
     val prereq: Rule
-  ) extends Rule {
-    def translate(in: Source) =
+  ) extends OneToOneRule {
+    val prereqs = List(prereq)
+
+    def translateSource(in: Source) =
       Source(in.path, target / (in.path withExtension ("." + in.file.ext)).toString, in.dependencies)
 
-    def sources =
-      prereq.sources map (translate _)
-
-    def compile = {
-      prereq.compile
-      for {
-        in  <- prereq.sources
-        out <- List(translate(in)) if requiresRecompilation(in, out)
-      } yield {
-        IO.createDirectory(out.file.getParentFile)
-        IO.write(out.file, rewrite(in, IO.read(in.file)))
-        out
-      }
+    def compileSource(state: CompileState, in: Source, out: Source) = {
+      IO.createDirectory(out.file.getParentFile)
+      IO.write(out.file, rewrite(in, IO.read(in.file)))
     }
   }
 
-  case class UglifyJs(val target: File, val prereq: Rule) extends Rule {
-    val targetSource =
-      Source(Path.Root, target, Nil)
+  case class UglifyJs(val targetFile: File, val prereq: Rule) extends ManyToOneRule {
+    val prereqs = List(prereq)
 
-    val sources =
-      List(targetSource)
+    val target =
+      Source(Path.Root, targetFile, Nil)
 
-    def compile = {
-      prereq.compile
-      if(prereq.sources.find(requiresRecompilation(_, targetSource)).isDefined) {
-        IO.createDirectory(target.getParentFile)
-        ((("uglifyjs" :: prereq.sources.map(_.file.getPath)) #> target) !)
-        sources
-      } else Nil
-    }
+    def compileSources(state: CompileState, in: List[Source], out: Source) =
+      ("uglifyjs" :: prereq.sources.map(_.file.getPath)) #> out.file ! state.log
   }
 }

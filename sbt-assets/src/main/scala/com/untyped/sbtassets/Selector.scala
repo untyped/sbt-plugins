@@ -5,7 +5,9 @@ import scala.collection.mutable
 
 /** Rule that gets its sources straight from the filesystem. */
 trait Selector extends Rule {
-  def compile = sources
+  def prereqs = Nil
+  override def watchSources = sources
+  def compileRule(state: CompileState) = ()
 }
 
 /** Rule that gets its sources straight from the filesystem. */
