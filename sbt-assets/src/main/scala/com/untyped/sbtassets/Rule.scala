@@ -5,16 +5,16 @@ import sbt._
 trait Rule {
   def prereqs: List[Rule]
 
-  /** All sources output by this rule. */
-  def sources: List[Source]
+  /** All assets output by this rule. */
+  def assets: List[Asset]
 
-  /** All sources output by this rule's prerequisites. */
-  def prereqSources =
-    prereqs.map(_.sources).flatten
+  /** All assets output by this rule's prerequisites. */
+  def prereqAssets =
+    prereqs.map(_.assets).flatten
 
-  /** All sources output by this rule and its prerequisites. */
-  def watchSources: List[Source] =
-    (prereqSources ++ sources).distinct
+  /** All assets output by this rule and its prerequisites. */
+  def watchAssets: List[Asset] =
+    (prereqAssets ++ assets).distinct
 
   /** Recompile this rule and all prereqs as necessary. */
   final def compile(state: CompileState = new CompileState()): Unit = {
@@ -32,42 +32,42 @@ trait Rule {
   /** Recompile as necessary. Assume prereqs have been compiled. */
   def compileRule(state: CompileState): Unit
 
-  protected def recompileSource(in: Source, out: Source) =
+  protected def recompileAsset(in: Asset, out: Asset) =
     !out.file.exists || (in.file newerThan out.file)
 }
 
 trait OneToOneRule extends Rule {
-  def translateSource(in: Source): Source
+  def translateAsset(in: Asset): Asset
 
-  def sources =
-    prereqSources map (translateSource _)
+  def assets =
+    prereqAssets map (translateAsset _)
 
   def compileRule(state: CompileState): Unit =
     for {
-      in  <- prereqs.map(_.sources).flatten
-      out  = translateSource(in) if recompileSource(in, out)
+      in  <- prereqs.map(_.assets).flatten
+      out  = translateAsset(in) if recompileAsset(in, out)
     } {
       IO.createDirectory(out.file.getParentFile)
-      compileSource(state, in, out)
+      compileAsset(state, in, out)
     }
 
-  def compileSource(state: CompileState, in: Source, out: Source): Unit
+  def compileAsset(state: CompileState, in: Asset, out: Asset): Unit
 }
 
 trait ManyToOneRule extends Rule {
-  def target: Source
+  def target: Asset
 
-  def sources =
+  def assets =
     List(target)
 
   def compileRule(state: CompileState): Unit = {
-    val in = prereqSources
+    val in = prereqAssets
     val out = target
-    if(in.find(recompileSource(_, out)).isDefined) {
+    if(in.find(recompileAsset(_, out)).isDefined) {
       IO.createDirectory(out.file.getParentFile)
-      compileSources(state, in, out)
+      compileAssets(state, in, out)
     }
   }
 
-  def compileSources(state: CompileState, in: List[Source], out: Source): Unit
+  def compileAssets(state: CompileState, in: List[Asset], out: Asset): Unit
 }

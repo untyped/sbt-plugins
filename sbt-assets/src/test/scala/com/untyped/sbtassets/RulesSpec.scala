@@ -35,23 +35,23 @@ class RulesSpec extends BaseSpec {
                        "b.txt" -> "b",
                        "c.txt" -> "c"
                      )
-    val inSources  = Selectors.Const(List(
-                       Source(Path("/a"), inDir / "a.txt", Nil),
-                       Source(Path("/b"), inDir / "b.txt", Nil),
-                       Source(Path("/c"), inDir / "c.txt", Nil)
+    val inAssets  = Selectors.Const(List(
+                       Asset(Path("/a"), inDir / "a.txt", Nil),
+                       Asset(Path("/b"), inDir / "b.txt", Nil),
+                       Asset(Path("/c"), inDir / "c.txt", Nil)
                      ))
     val outDir     = IO.createTemporaryDirectory
-    val outSources = Selectors.Const(List(
-                       Source(Path.Root, outDir / "out.txt", Nil)
+    val outAssets = Selectors.Const(List(
+                       Asset(Path.Root, outDir / "out.txt", Nil)
                      ))
-    val rule       = Rules.Cat(outDir / "out.txt", inSources)
+    val rule       = Rules.Cat(outDir / "out.txt", inAssets)
 
-    it("should return sources") {
-      rule.sources must equal (outSources.sources)
+    it("should return assets") {
+      rule.assets must equal (outAssets.assets)
       assertNotExists(outDir / "out.txt")
     }
 
-    it("should compile sources") {
+    it("should compile assets") {
       assertNotExists(outDir / "out.txt")
       assertChange(outDir / "out.txt") {
         rule.compile()
@@ -69,25 +69,25 @@ class RulesSpec extends BaseSpec {
                        "b.coffee" -> "alert 'b'",
                        "c.coffee" -> "alert 'c'"
                      )
-    val inSources  = Selectors.Const(List(
-                       Source(Path("/a"), inDir / "a.coffee", Nil),
-                       Source(Path("/b"), inDir / "b.coffee", Nil),
-                       Source(Path("/c"), inDir / "c.coffee", Nil)
+    val inAssets  = Selectors.Const(List(
+                       Asset(Path("/a"), inDir / "a.coffee", Nil),
+                       Asset(Path("/b"), inDir / "b.coffee", Nil),
+                       Asset(Path("/c"), inDir / "c.coffee", Nil)
                      ))
     val outDir     = IO.createTemporaryDirectory
-    val outSources = Selectors.Const(List(
-                       Source(Path("/a"), outDir / "a.js", Nil),
-                       Source(Path("/b"), outDir / "b.js", Nil),
-                       Source(Path("/c"), outDir / "c.js", Nil)
+    val outAssets = Selectors.Const(List(
+                       Asset(Path("/a"), outDir / "a.js", Nil),
+                       Asset(Path("/b"), outDir / "b.js", Nil),
+                       Asset(Path("/c"), outDir / "c.js", Nil)
                      ))
-    val rule       = Rules.Coffee(outDir, inSources)
+    val rule       = Rules.Coffee(outDir, inAssets)
 
-    it("should return sources") {
-      rule.sources must equal (outSources.sources)
-      outSources.sources.map(_.file.exists).foldLeft(false)(_ || _) must equal (false)
+    it("should return assets") {
+      rule.assets must equal (outAssets.assets)
+      outAssets.assets.map(_.file.exists).foldLeft(false)(_ || _) must equal (false)
     }
 
-    it("should compile sources") {
+    it("should compile assets") {
       assertNotExists(outDir / "a.js")
       assertChange(outDir / "a.js") {
         rule.compile()
@@ -111,29 +111,29 @@ class RulesSpec extends BaseSpec {
                        "b.txt" -> "b",
                        "c.txt" -> "c"
                      )
-    val inSources  = Selectors.Const(List(
-                       Source(Path("/a"), inDir / "a.txt", Nil),
-                       Source(Path("/b"), inDir / "b.txt", Nil),
-                       Source(Path("/c"), inDir / "c.txt", Nil)
+    val inAssets  = Selectors.Const(List(
+                       Asset(Path("/a"), inDir / "a.txt", Nil),
+                       Asset(Path("/b"), inDir / "b.txt", Nil),
+                       Asset(Path("/c"), inDir / "c.txt", Nil)
                      ))
     val outDir     = IO.createTemporaryDirectory
-    val outSources = Selectors.Const(List(
-                       Source(Path("/a"), outDir / "a.txt", Nil),
-                       Source(Path("/b"), outDir / "b.txt", Nil),
-                       Source(Path("/c"), outDir / "c.txt", Nil)
+    val outAssets = Selectors.Const(List(
+                       Asset(Path("/a"), outDir / "a.txt", Nil),
+                       Asset(Path("/b"), outDir / "b.txt", Nil),
+                       Asset(Path("/c"), outDir / "c.txt", Nil)
                      ))
     val rule       = Rules.Rewrite(
                        outDir,
-                       (in: Source, contents: String) => "[header " + in.path + "]" + contents + "[footer " + in.path + "]",
-                       inSources
+                       (in: Asset, contents: String) => "[header " + in.path + "]" + contents + "[footer " + in.path + "]",
+                       inAssets
                      )
 
-    it("should return sources") {
-      rule.sources must equal (outSources.sources)
+    it("should return assets") {
+      rule.assets must equal (outAssets.assets)
       assertNotExists(outDir / "a.txt")
     }
 
-    it("should compile sources") {
+    it("should compile assets") {
       assertNotExists(outDir / "a.txt")
       assertChange(outDir / "a.txt") {
         rule.compile()
@@ -151,23 +151,23 @@ class RulesSpec extends BaseSpec {
                        "b.txt" -> "b",
                        "c.txt" -> "c"
                      )
-    val inSources  = Selectors.Const(List(
-                       Source(Path("/a"), inDir / "a.txt", Nil),
-                       Source(Path("/b"), inDir / "b.txt", Nil),
-                       Source(Path("/c"), inDir / "c.txt", Nil)
+    val inAssets  = Selectors.Const(List(
+                       Asset(Path("/a"), inDir / "a.txt", Nil),
+                       Asset(Path("/b"), inDir / "b.txt", Nil),
+                       Asset(Path("/c"), inDir / "c.txt", Nil)
                      ))
     val outDir     = IO.createTemporaryDirectory
-    val outSources = Selectors.Const(List(
-                       Source(Path.Root, outDir / "out.txt", Nil)
+    val outAssets = Selectors.Const(List(
+                       Asset(Path.Root, outDir / "out.txt", Nil)
                      ))
-    val rule       = Rules.UglifyJs(outDir / "out.txt", inSources)
+    val rule       = Rules.UglifyJs(outDir / "out.txt", inAssets)
 
-    it("should return sources") {
-      rule.sources must equal (outSources.sources)
+    it("should return assets") {
+      rule.assets must equal (outAssets.assets)
       assertNotExists(outDir / "out.txt")
     }
 
-    it("should compile sources") {
+    it("should compile assets") {
       assertNotExists(outDir / "out.txt")
       assertChange(outDir / "out.txt") {
         rule.compile()

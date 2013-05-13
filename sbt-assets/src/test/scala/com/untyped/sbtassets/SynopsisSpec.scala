@@ -28,7 +28,7 @@ class SynopsisSpec extends BaseSpec {
       distMin.compile()
       println("-----")
 
-      IO.read(distMin.sources.head.file) must equal ("alert(\"a\");alert(\"b\");")
+      IO.read(distMin.assets.head.file) must equal ("alert(\"a\");alert(\"b\");")
     }
   }
 }

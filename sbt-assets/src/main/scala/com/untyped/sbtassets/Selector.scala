@@ -3,14 +3,14 @@ package com.untyped.sbtassets
 import sbt._
 import scala.collection.mutable
 
-/** Rule that gets its sources straight from the filesystem. */
+/** Rule that gets its assets straight from the filesystem. */
 trait Selector extends Rule {
   def prereqs = Nil
-  override def watchSources = sources
+  override def watchAssets = assets
   def compileRule(state: CompileState) = ()
 }
 
-/** Rule that gets its sources straight from the filesystem. */
+/** Rule that gets its assets straight from the filesystem. */
 trait SimpleSelector extends Selector {
   def format: Format
 

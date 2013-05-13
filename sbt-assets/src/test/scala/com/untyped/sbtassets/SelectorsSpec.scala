@@ -29,16 +29,16 @@ class SelectorsSpec extends BaseSpec {
   )
 
   describe("Deps") {
-    it("should select sources") {
+    it("should select assets") {
       Selectors.Deps(
         Path("/a"),
         Resolvers.Extensions(List(".js"), Resolvers.Dir(normalDir))
-      ).sources must equal(List(
-        Source(Path("/a"),     normalDir / "a.js",     List(Path("/lib/b"))),
-        Source(Path("/lib/b"), normalDir / "lib/b.js", List(Path("/lib/c"), Path("/d"), Path("/e"))),
-        Source(Path("/lib/c"), normalDir / "lib/c.js", List()),
-        Source(Path("/d"),     normalDir / "d.js",     List()),
-        Source(Path("/e"),     normalDir / "e.js",     List())
+      ).assets must equal(List(
+        Asset(Path("/a"),     normalDir / "a.js",     List(Path("/lib/b"))),
+        Asset(Path("/lib/b"), normalDir / "lib/b.js", List(Path("/lib/c"), Path("/d"), Path("/e"))),
+        Asset(Path("/lib/c"), normalDir / "lib/c.js", List()),
+        Asset(Path("/d"),     normalDir / "d.js",     List()),
+        Asset(Path("/e"),     normalDir / "e.js",     List())
       ))
     }
 
@@ -47,25 +47,25 @@ class SelectorsSpec extends BaseSpec {
         Selectors.Deps(
           Path("/a"),
           Resolvers.Extensions(List(".js"), Resolvers.Dir(escapeDir))
-        ).sources
+        ).assets
       }
     }
   }
 
   describe("Dir") {
-    it("should select sources") {
-      Selectors.Dir(normalDir).sources must equal(List(
-        Source(Path("/a"),     normalDir / "a.js",     List(Path("/lib/b"))),
-        Source(Path("/d"),     normalDir / "d.js",     List()),
-        Source(Path("/e"),     normalDir / "e.js",     List()),
-        Source(Path("/lib/b"), normalDir / "lib/b.js", List(Path("/lib/c"), Path("/d"), Path("/e"))),
-        Source(Path("/lib/c"), normalDir / "lib/c.js", List())
+    it("should select assets") {
+      Selectors.Dir(normalDir).assets must equal(List(
+        Asset(Path("/a"),     normalDir / "a.js",     List(Path("/lib/b"))),
+        Asset(Path("/d"),     normalDir / "d.js",     List()),
+        Asset(Path("/e"),     normalDir / "e.js",     List()),
+        Asset(Path("/lib/b"), normalDir / "lib/b.js", List(Path("/lib/c"), Path("/d"), Path("/e"))),
+        Asset(Path("/lib/c"), normalDir / "lib/c.js", List())
       ))
     }
 
     it("should prevent filesystem escapes") {
       intercept[Exception] {
-        Selectors.Dir(escapeDir).sources
+        Selectors.Dir(escapeDir).assets
       }
     }
   }
