@@ -21,11 +21,11 @@ class SynopsisSpec extends BaseSpec {
 
     it("should produce a single minified output") {
       println("-----")
-      distMin.compile()
+      distMin.compile(log)
       println("-----")
 
       println("-----")
-      distMin.compile()
+      distMin.compile(log)
       println("-----")
 
       IO.read(distMin.assets.head.file) must equal ("alert(\"a\");alert(\"b\");")

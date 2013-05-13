@@ -15,4 +15,10 @@ trait BaseSpec extends FunSpec with MustMatchers {
     }
     dir
   }
+
+  object log extends Logger {
+    def trace(t: => Throwable) = t.printStackTrace
+    def success(message: => String) = println(message)
+    def log(level: Level.Value, message: => String) = println(level + ": " + message)
+  }
 }

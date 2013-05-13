@@ -54,11 +54,11 @@ class RulesSpec extends BaseSpec {
     it("should compile assets") {
       assertNotExists(outDir / "out.txt")
       assertChange(outDir / "out.txt") {
-        rule.compile()
+        rule.compile(log)
       }
       assertContents(outDir / "out.txt") { "abc" }
       assertNoop(outDir / "out.txt") {
-        rule.compile()
+        rule.compile(log)
       }
     }
   }
@@ -90,7 +90,7 @@ class RulesSpec extends BaseSpec {
     it("should compile assets") {
       assertNotExists(outDir / "a.js")
       assertChange(outDir / "a.js") {
-        rule.compile()
+        rule.compile(log)
       }
       assertContents(outDir / "a.js") {
         """
@@ -100,7 +100,7 @@ class RulesSpec extends BaseSpec {
         """.trim.stripMargin
       }
       assertNoop(outDir / "a.js") {
-        rule.compile()
+        rule.compile(log)
       }
     }
   }
@@ -136,11 +136,11 @@ class RulesSpec extends BaseSpec {
     it("should compile assets") {
       assertNotExists(outDir / "a.txt")
       assertChange(outDir / "a.txt") {
-        rule.compile()
+        rule.compile(log)
       }
       assertContents(outDir / "a.txt")("[header /a]a[footer /a]")
       assertNoop(outDir / "a.txt") {
-        rule.compile()
+        rule.compile(log)
       }
     }
   }
@@ -170,11 +170,11 @@ class RulesSpec extends BaseSpec {
     it("should compile assets") {
       assertNotExists(outDir / "out.txt")
       assertChange(outDir / "out.txt") {
-        rule.compile()
+        rule.compile(log)
       }
       assertContents(outDir / "out.txt")("a;b;c;")
       assertNoop(outDir / "out.txt") {
-        rule.compile()
+        rule.compile(log)
       }
     }
   }

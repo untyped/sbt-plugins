@@ -7,7 +7,7 @@ import scala.collection.mutable
 trait Selector extends Rule {
   def prereqs = Nil
   override def watchAssets = assets
-  def compileRule(state: CompileState) = ()
+  def compileRule(log: Logger) = ()
 }
 
 /** Rule that gets its assets straight from the filesystem. */
