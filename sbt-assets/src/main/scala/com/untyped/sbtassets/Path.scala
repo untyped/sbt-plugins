@@ -81,7 +81,7 @@ object Path {
     List.fill(ups)("..") ++ parts
   }
 
-  implicit object pathOrder extends Ordering[Path] {
+  implicit object order extends Ordering[Path] {
     def compare(x: Path, y: Path): Int =
       x.toString compare y.toString
   }

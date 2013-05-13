@@ -61,7 +61,7 @@ trait ManyToOneRule extends Rule {
     List(target)
 
   def compileRule(state: CompileState): Unit = {
-    val in = prereqAssets
+    val in = AssetGraph(prereqAssets).sorted
     val out = target
     if(in.find(recompileAsset(_, out)).isDefined) {
       IO.createDirectory(out.file.getParentFile)
