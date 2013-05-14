@@ -4,7 +4,6 @@ import sbt._
 
 package object sbtassets {
 
-  /** Resolvers resolve path names into files.
-   */
-  type Resolver = Path => Option[File]
+  /** Resolvers resolve path names into files. */
+  type Resolver = (Path, String) => Option[File]
 }

@@ -8,33 +8,40 @@ object Plugin extends sbt.Plugin {
   object AssetsKeys {
     // val assetsConfig = SettingKey[AssetsConfig]("assets-config", "Asset compilation configuration.")
     val assetsRule   = TaskKey[Rule]("assets-rule", "Asset compilation rule.")
-    val assets       = TaskKey[Unit]("assets", "Compile all assets.")
+    val assets       = TaskKey[Seq[File]]("assets", "Compile all assets.")
   }
 
   import AssetsKeys._
 
-  def watchSourcesTask: Initialize[Task[Seq[File]]] =
+  def unmanagedSourcesTask: Initialize[Task[Seq[File]]] =
     (streams, assetsRule) map { (out, rule) =>
-      rule.watchSources
+      rule.unmanagedAssets.map(_.file)
     }
 
-  def compileTask =
+  def managedSourcesTask: Initialize[Task[Seq[File]]] =
+    (streams, assetsRule) map { (out, rule) =>
+      rule.managedAssets.map(_.file)
+    }
+
+  def compileTask: Initialize[Task[Seq[File]]] =
     (streams, assetsRule) map { (out, rule) =>
       rule.compile(out.log)
+      rule.assets.map(_.file)
     }
 
-  def cleanTask =
+  def cleanTask: Initialize[Task[Unit]] =
     (streams, assetsRule) map { (out, rule) =>
       rule.clean(out.log)
     }
 
   def assetsSettingsIn(conf: Configuration): Seq[Setting[_]] =
     inConfig(conf)(Seq(
-      clean        in assets <<= cleanTask,
-      watchSources in assets <<= watchSourcesTask,
-      assets                 <<= compileTask
+      clean            in assets <<= cleanTask,
+      unmanagedSources in assets <<= unmanagedSourcesTask,
+      managedSources   in assets <<= unmanagedSourcesTask,
+      assets                     <<= compileTask
     )) ++ Seq(
-      watchSources          <++= watchSources in assets in conf
+      watchSources              <++= (unmanagedSources in assets in conf)
     )
 
   def assetsSettings: Seq[Setting[_]] =

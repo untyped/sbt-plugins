@@ -38,5 +38,10 @@ class AssetGraph(unsorted: List[Asset]) extends Ordering[Asset] {
       +1
     } else if(transitivePrecedents.getOrElse(a.path, Nil) contains b.path) {
       -1
-    } else Path.order.compare(a.path, b.path)
+    } else {
+      // If there's no direct dependency, maintain the same relative position in the original list.
+      // This allows us to (sort-of) rely on implicit dependencies from the orderings in require
+      // statements.
+      unsorted.indexOf(a) - unsorted.indexOf(b)
+    }
 }

@@ -40,7 +40,7 @@ object Build extends Build {
       sbtPlugin    := true,
       organization := "com.untyped",
       version      := pluginsVersion,
-      scalaVersion := "2.9.2",
+      scalaVersion := "2.9.1",
       resolvers    += untyped,
       // resolvers += untyped,
       publishTo <<= (version) { version: String =>

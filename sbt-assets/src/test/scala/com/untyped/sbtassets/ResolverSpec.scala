@@ -4,57 +4,54 @@ import sbt._
 import scala.util.matching.Regex
 
 class ResolverSpec extends BaseSpec {
-  object Resolvers extends Resolvers {
-    def Fake(root: File, regex: Regex): Resolver =
-      (path: Path) =>
-        for {
-          file <- regex.findFirstIn(path.toString).map { _ =>
-                    root / path.toString
-                  }
-        } yield file
-  }
+  val dir =
+    createTemporaryFiles(
+      "foo/a.js" -> "a",
+      "bar/b.coffee" -> "b",
+      "baz/c.less" -> "c"
+    )
+
+  val otherDir =
+    createTemporaryFiles(
+      "etc/d.css" -> "d"
+    )
 
   describe("Dir") {
     it("should resolve files") {
-      val resolver = Resolvers.Dir(cwd)
-      resolver(Path("README.markdown")) must equal (Some(cwd / "README.markdown"))
-      resolver(Path("DONTREADME.markdown")) must equal (None)
-    }
-  }
+      val resolver = Resolvers.Dir(dir)
 
-  describe("Fake") {
-    it("should resolve files") {
-      val resolver = Resolvers.Fake(file("/foo"), "bar.*".r)
-      resolver(Path("bar")) must equal (Some(file("/foo/bar")))
-      resolver(Path("baz")) must equal (None)
-      resolver(Path("bar/abc")) must equal (Some(file("/foo/bar/abc")))
-      resolver(Path("baz/abc")) must equal (None)
+      resolver(Path("foo/a"), "js") must equal (Some(dir / "foo/a.js"))
+      resolver(Path("bar/b"), "coffee") must equal (Some(dir / "bar/b.coffee"))
+      resolver(Path("baz/c"), "") must equal (None)
+      resolver(Path("etc/d"), "css") must equal (None)
     }
   }
 
   describe("Or") {
     it("should resolve files") {
       var resolver = Resolvers.Or(List(
-        Resolvers.Fake(file("/foo"), "a".r),
-        Resolvers.Fake(file("/bar"), "b".r)
+        Resolvers.Dir(dir),
+        Resolvers.Dir(otherDir)
       ))
 
-      resolver(Path("a")) must equal (Some(file("/foo/a")))
-      resolver(Path("b")) must equal (Some(file("/bar/b")))
-      resolver(Path("c")) must equal (None)
+      resolver(Path("foo/a"), "js") must equal (Some(dir / "foo/a.js"))
+      resolver(Path("bar/b"), "coffee") must equal (Some(dir / "bar/b.coffee"))
+      resolver(Path("baz/c"), "") must equal (None)
+      resolver(Path("etc/d"), "css") must equal (Some(otherDir / "etc/d.css"))
     }
   }
 
   describe("Extensions") {
     it("should resolve files") {
-      var resolver = Resolvers.Extensions(List(".js", ".coffee"), Resolvers.Or(List(
-        Resolvers.Fake(file("/foo"), "a[.]coffee".r),
-        Resolvers.Fake(file("/bar"), "b[.]js".r)
-      )))
+      var resolver =
+        Resolvers.Extensions(List("js", "coffee"), Resolvers.Dir(dir))
 
-      resolver(Path("a")) must equal (Some(file("/foo/a.coffee")))
-      resolver(Path("b")) must equal (Some(file("/bar/b.js")))
-      resolver(Path("c")) must equal (None)
+      // TODO: This test is silly - the fake resolvers always find the files.
+      // Rewrite with create
+      resolver(Path("foo/a"), "") must equal (Some(dir / "foo/a.js"))
+      resolver(Path("bar/b"), "") must equal (Some(dir / "bar/b.coffee"))
+      resolver(Path("baz/c"), "") must equal (None)
+      resolver(Path("etc/d"), "css") must equal (None)
     }
   }
 }

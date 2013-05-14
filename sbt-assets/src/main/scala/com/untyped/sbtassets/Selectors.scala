@@ -12,7 +12,7 @@ trait Selectors {
 
   case class Deps(val main: Path, val resolver: Resolver, val format: Format = Formats.Any) extends SimpleSelector {
     def makeAsset(path: Path) = {
-      val file = resolver(path) getOrElse sys.error("Cannot find file for path: " + path)
+      val file = resolver(path, "") getOrElse sys.error("Cannot find file for path: " + path)
       Asset(path, file, dependencies(path.parent, file))
     }
 
@@ -36,7 +36,9 @@ trait Selectors {
   case class Dir(val dir: File, val format: Format = Formats.Any) extends SimpleSelector {
     def assets =
       (dir ***).get.filter(_.isFile).toList.map { file =>
-        val path = Path("/" + IO.relativize(dir, file).get).stripExtension
+        val unnorm = IO.relativize(dir, file).get
+        val norm = format.stripExtension(unnorm) getOrElse unnorm
+        val path = Path("/" + norm)
         val deps = dependencies(path.parent, file)
         Asset(path, file, deps)
       }

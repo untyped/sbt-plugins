@@ -28,11 +28,11 @@ case class Path(val abs: Boolean, val parts: List[String]) {
   def makeAbsolute =
     if(abs) this else Path(true, parts)
 
-  def stripExtension =
-    Path(abs, parts.dropRight(1) :+ base)
+  // def stripExtension =
+  //   Path(abs, parts.dropRight(1) :+ base)
 
-  def withExtension(ext: String) =
-    Path(abs, parts.dropRight(1) :+ (base + ext))
+  // def withExtension(ext: String) =
+  //   Path(abs, parts.dropRight(1) :+ (base + ext))
 
   def /(in: String): Path =
     this / Path(in)

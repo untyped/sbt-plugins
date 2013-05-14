@@ -6,8 +6,10 @@ import scala.collection.mutable
 /** Rule that gets its assets straight from the filesystem. */
 trait Selector extends Rule {
   def prereqs = Nil
-  override def watchAssets = assets
+  override def unmanagedAssets = assets
+  override def managedAssets = Nil
   def compileRule(log: Logger) = ()
+  override def cleanRule(log: Logger) = ()
 }
 
 /** Rule that gets its assets straight from the filesystem. */
