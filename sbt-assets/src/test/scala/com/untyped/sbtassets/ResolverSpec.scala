@@ -7,51 +7,53 @@ class ResolverSpec extends BaseSpec {
   val dir =
     createTemporaryFiles(
       "foo/a.js" -> "a",
+      "foo/a.coffee" -> "a",
+      "foo/z" -> "z",
       "bar/b.coffee" -> "b",
       "baz/c.less" -> "c"
     )
 
   val otherDir =
     createTemporaryFiles(
+      "foo/a" -> "a",
       "etc/d.css" -> "d"
     )
 
   describe("Dir") {
-    it("should resolve files") {
+    it("should expand paths") {
       val resolver = Resolvers.Dir(dir)
 
-      resolver(Path("foo/a"), "js") must equal (Some(dir / "foo/a.js"))
-      resolver(Path("bar/b"), "coffee") must equal (Some(dir / "bar/b.coffee"))
-      resolver(Path("baz/c"), "") must equal (None)
-      resolver(Path("etc/d"), "css") must equal (None)
+      resolver.expand(Path("/foo/a")) must equal (List(Path("/foo/a")))
+      resolver.expand(Path("/foo/*")) must equal (List(Path("/foo/a"), Path("/foo/z")))
+      resolver.expand(Path("/**")) must equal (List(
+        Path("/bar/b"),
+        Path("/baz/c"),
+        Path("/foo/a"),
+        Path("/foo/z")
+      ))
+    }
+
+    it("should find files") {
+      val resolver = Resolvers.Dir(dir)
+
+      resolver.find(Path("foo/a")) must equal (Some(dir / "foo/a.coffee"))
+      resolver.find(Path("bar/b")) must equal (Some(dir / "bar/b.coffee"))
+      resolver.find(Path("baz/c")) must equal (Some(dir / "baz/c.less"))
+      resolver.find(Path("etc/d")) must equal (None)
     }
   }
 
   describe("Or") {
-    it("should resolve files") {
+    it("should find files") {
       var resolver = Resolvers.Or(List(
         Resolvers.Dir(dir),
         Resolvers.Dir(otherDir)
       ))
 
-      resolver(Path("foo/a"), "js") must equal (Some(dir / "foo/a.js"))
-      resolver(Path("bar/b"), "coffee") must equal (Some(dir / "bar/b.coffee"))
-      resolver(Path("baz/c"), "") must equal (None)
-      resolver(Path("etc/d"), "css") must equal (Some(otherDir / "etc/d.css"))
-    }
-  }
-
-  describe("Extensions") {
-    it("should resolve files") {
-      var resolver =
-        Resolvers.Extensions(List("js", "coffee"), Resolvers.Dir(dir))
-
-      // TODO: This test is silly - the fake resolvers always find the files.
-      // Rewrite with create
-      resolver(Path("foo/a"), "") must equal (Some(dir / "foo/a.js"))
-      resolver(Path("bar/b"), "") must equal (Some(dir / "bar/b.coffee"))
-      resolver(Path("baz/c"), "") must equal (None)
-      resolver(Path("etc/d"), "css") must equal (None)
+      resolver.find(Path("foo/a")) must equal (Some(dir / "foo/a.coffee"))
+      resolver.find(Path("bar/b")) must equal (Some(dir / "bar/b.coffee"))
+      resolver.find(Path("baz/c")) must equal (Some(dir / "baz/c.less"))
+      resolver.find(Path("etc/d")) must equal (Some(otherDir / "etc/d.css"))
     }
   }
 }

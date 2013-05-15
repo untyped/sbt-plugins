@@ -7,7 +7,7 @@ object AssetGraph {
     new AssetGraph(assets)
 }
 
-class AssetGraph(unsorted: List[Asset]) extends Ordering[Asset] {
+class AssetGraph(val unsorted: List[Asset]) extends Ordering[Asset] {
   // Key depends on values
   val transitiveDependents = mutable.Map[Path, List[Path]]()
 
@@ -31,13 +31,14 @@ class AssetGraph(unsorted: List[Asset]) extends Ordering[Asset] {
     transitivePrecedents.put(b, (a :: transitivePrecedents.getOrElse(b, Nil)).distinct)
   }
 
-  lazy val sorted = unsorted.sorted(this)
+  lazy val sorted =
+    unsorted.sorted(this)
 
   def compare(a: Asset, b: Asset) =
-    if(transitiveDependents.getOrElse(a.path, Nil) contains b.path) {
-      +1
-    } else if(transitivePrecedents.getOrElse(a.path, Nil) contains b.path) {
-      -1
+    if(transitivePrecedents.getOrElse(a.path, Nil) contains b.path) {
+      -1 // a comes before b
+    } else if(transitiveDependents.getOrElse(a.path, Nil) contains b.path) {
+      +1 // a comes after b
     } else {
       // If there's no direct dependency, maintain the same relative position in the original list.
       // This allows us to (sort-of) rely on implicit dependencies from the orderings in require

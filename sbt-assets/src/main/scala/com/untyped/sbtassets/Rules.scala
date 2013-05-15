@@ -28,77 +28,34 @@ trait Rules {
     val target: File,
     val prereq: Rule,
     val bare: Boolean = false
-  ) extends ManyToManyRule {
-    val prereqs = List(prereq)
-
-    def translateAsset(in: Asset) =
-      Asset(in.path, target / (in.path.toString + ".js"), in.dependencies)
-
-    def compileAsset(log: Logger, in: Asset, out: Asset) = {
-      in.file.ext match {
-        case "coffee" =>
-          var command = List("--compile", "--print", in.file.getPath)
-          if(bare) command = "--bare" :: command
-          command = "coffee" :: command
-          log.debug(command.mkString(" "))
-          command #> out.file ! log
-
-        case _ =>
-          IO.copy(List(in.file -> out.file))
-      }
-    }
+  ) extends SimpleManyToManyRule {
+    val step =
+      Steps.Or(List(
+        Steps.Coffee(bare),
+        Steps.Copy()
+      ))
   }
 
   case class CommonJs(
     val target: File,
     val prereq: Rule,
     val test: Asset => Boolean = (in: Asset) => true
-  ) extends ManyToManyRule {
-    val prereqs = List(prereq)
-
-    def translateAsset(in: Asset) =
-      Asset(in.path, target / (in.path.toString + ".js"), in.dependencies)
-
-    def compileAsset(log: Logger, in: Asset, out: Asset) = {
-      if(test(in)) {
-        IO.writeLines(
-          out.file,
-          List("window.require.register(\"" + in.path.toString.substring(1) + "\", (exports, require, module) {") ++
-          IO.readLines(in.file).map("  " + _) ++
-          List("});")
-        )
-      } else {
-        IO.copy(List(in.file -> out.file))
-      }
-    }
+  ) extends SimpleManyToManyRule {
+    val step =
+      Steps.Or(List(
+        Steps.If(test, Steps.CommonJs),
+        Steps.Copy()
+      ))
   }
 
   case class Copy(
     val target: File,
     val prereq: Rule,
-    val rewriteFilename: Option[Asset => String] = None,
-    val rewriteContent: Option[(Asset, List[String]) => List[String]] = None
-  ) extends ManyToManyRule {
-    val prereqs = List(prereq)
-
-    def translateAsset(in: Asset) =
-      rewriteFilename match {
-        case Some(fn) => Asset(in.path, target / (in.path.parent.toString + fn(in)), in.dependencies)
-        case None     => Asset(in.path, target / in.path.toString, in.dependencies)
-      }
-
-    def compileAsset(log: Logger, in: Asset, out: Asset) =
-      rewriteContent match {
-        case Some(fn) => IO.writeLines(out.file, fn(in, IO.readLines(in.file)))
-        case None     => IO.copy(List(in.file -> out.file))
-      }
-  }
-
-  case class Filter(val pred: Asset => Boolean, val prereq: Rule) extends Rule {
-    val prereqs = List(prereq)
-    def assets = prereqAssets.filter(pred)
-    def compileRule(log: Logger) = ()
-    def cleanRule(log: Logger) = ()
+    val rename: Option[Asset => String] = None,
+    val rewrite: Option[(Asset, List[String]) => List[String]] = None
+  ) extends SimpleManyToManyRule {
+    val step =
+      Steps.Copy(rename, rewrite)
   }
 
   case class LessCss(

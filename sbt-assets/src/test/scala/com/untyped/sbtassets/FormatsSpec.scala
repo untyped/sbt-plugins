@@ -11,14 +11,14 @@ class FormatsSpec extends BaseSpec {
         IO.write(
           file,
           """
-          |# require "foo/bar.js"
+          |# require "jquery"
+          |# require "./foo/bar.js"
           |  # require "../baz.coffee"
-          |// require "error"
-          |alert '# require "error"'
+          |require "commonjs"
           """.trim.stripMargin
         )
         Formats.Coffee.dependencies(Path("/a/b/c"), file)
-      } must equal (List(Path("/a/b/c/foo/bar"), Path("/a/b/baz")))
+      } must equal (List(Path("/a/b/c/jquery"), Path("/a/b/c/foo/bar"), Path("/a/b/baz")))
     }
   }
 
@@ -28,14 +28,14 @@ class FormatsSpec extends BaseSpec {
         IO.write(
           file,
           """
-          |// require "foo/bar.js"
+          |// require "jquery"
+          |// require "./foo/bar.js"
           |  // require "../baz.coffee"
-          |# require "error"
-          |alert '// require "error"'
+          |require("commonjs")
           """.trim.stripMargin
         )
         Formats.Js.dependencies(Path("/a/b/c"), file)
-      } must equal (List(Path("/a/b/c/foo/bar"), Path("/a/b/baz")))
+      } must equal (List(Path("/a/b/c/jquery"), Path("/a/b/c/foo/bar"), Path("/a/b/baz")))
     }
   }
 

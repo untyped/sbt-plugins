@@ -173,10 +173,8 @@ class RulesSpec extends BaseSpec {
                      )
     val inAssets  = Selectors.Deps(
                       Path("/a"),
-                      Resolvers.Extensions(
-                        List("less", "css"),
-                        Resolvers.Dir(inDir)
-                      ))
+                      Resolvers.Dir(inDir)
+                    )
     val outDir    = IO.createTemporaryDirectory
     val outAssets = Selectors.Const(List(
                        Asset(Path.Root, outDir / "a.css", Nil)
@@ -239,9 +237,9 @@ class RulesSpec extends BaseSpec {
                                    |.c { color: blue; }
                                    """.trim.stripMargin
                      )
-    val inAssets  = Selectors.Const(List(
-                       Asset(Path("/a"), inDir / "a.less", Nil),
-                       Asset(Path("/b"), inDir / "b.css", Nil),
+    val inAssets   = Selectors.Const(List(
+                       Asset(Path("/a"), inDir / "a.less", List(Path("/b"), Path("/c"))),
+                       Asset(Path("/b"), inDir / "b.css", List(Path("/c"))),
                        Asset(Path("/c"), inDir / "c.css", Nil)
                      ))
     val outDir     = IO.createTemporaryDirectory

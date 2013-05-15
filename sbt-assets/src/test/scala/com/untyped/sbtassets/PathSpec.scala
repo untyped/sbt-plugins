@@ -37,20 +37,44 @@ class PathSpec extends BaseSpec {
     }
   }
 
-  describe("Path.{name, base, ext}") {
-    val coffee = Path("src/js/main.coffee")
-    val readme = Path("src/js/README")
-
+  describe("Path.{ parent, name }") {
     it("should work with filenames that have extensions") {
-      coffee.name must equal ("main.coffee")
-      coffee.base must equal ("main")
-      coffee.ext  must equal ("coffee")
+      Path("src/js/main").parent must equal (Path("src/js"))
+      Path("src/js/main").name must equal ("main")
+    }
+  }
+
+  describe("Path.pathFinder") {
+    val dir = createTemporaryFiles(
+      "foo/a"        -> "a",
+      "foo/a.js"     -> "a.js",
+      "foo/b"        -> "b",
+      "foo/bar/c"    -> "c",
+      "baz/a"        -> "a"
+    )
+
+    it("should select files with all extensions") {
+      Path("foo/a").pathFinder(dir).get.toList must equal (List(dir / "foo/a", dir / "foo/a.js"))
     }
 
-    it("should work with filenames that have no extensions") {
-      readme.name must equal ("README")
-      readme.base must equal ("README")
-      readme.ext  must equal ("")
+    it("should work with single depth wildcard filenames") {
+      Path("foo/*").pathFinder(dir).get.toList must equal (List(
+        dir / "foo/a",
+        dir / "foo/a.js",
+        dir / "foo/b",
+        dir / "foo/bar"
+      ))
+    }
+
+    it("should work with arbitrary depth wildcard filenames") {
+      Path("foo/**").pathFinder(dir).get.toList must equal (List(
+        dir / "foo",
+        dir / "foo/a",
+        dir / "foo/a.js",
+        dir / "foo/b",
+        dir / "foo/bar",
+        dir / "foo/bar/c"
+      ))
     }
   }
 }

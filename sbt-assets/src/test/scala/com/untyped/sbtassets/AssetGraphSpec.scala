@@ -16,6 +16,24 @@ class AssetGraphSpec extends BaseSpec {
       val graph  = AssetGraph(List(a, x, b, y, c, z))
       val assets = graph.sorted
 
+      println(graph.transitiveDependents)
+      println(graph.transitivePrecedents)
+      println(graph.unsorted)
+      println(graph.sorted)
+
+      graph.compare(a, b) must be > (0)
+      graph.compare(b, a) must be < (0)
+      graph.compare(a, c) must be > (0)
+      graph.compare(c, a) must be < (0)
+
+      graph.compare(x, y) must be < (0)
+      graph.compare(y, x) must be > (0)
+      graph.compare(x, z) must be < (0)
+      graph.compare(z, x) must be > (0)
+
+      graph.compare(a, x) must be < (0)
+      graph.compare(x, a) must be > (0)
+
       assets.indexOf(a) must be > (assets.indexOf(b))
       assets.indexOf(a) must be > (assets.indexOf(c))
       assets.indexOf(b) must be > (assets.indexOf(c))

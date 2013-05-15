@@ -176,5 +176,4 @@ object Build extends Build {
       libraryDependencies += scalatest % "test"
     )
   ).dependsOn(sbtLess, sbtJs)
-
 }

@@ -6,26 +6,39 @@ object Resolvers extends Resolvers
 
 trait Resolvers {
   object Empty extends Resolver {
-    def apply(in: Path, ext: String) = None
+    def expand(in: Path) = Nil
+    def find(in: Path) = None
+    def pathOf(in: File) = None
   }
 
-  case class Dir(val dir: File) extends Resolver {
-    def apply(in: Path, ext: String) = {
-      Option(dir / (in.toString + "." + ext)).filter(_.isFile)
-    }
-  }
+  case class Dir(val root: File, val filter: FileFilter = "*") extends Resolver {
+    def expand(in: Path) =
+      in.pathFinder(root).get.filter(file => file.isFile && filter.accept(file)).flatMap(pathOf _).toList.distinct
 
-  case class Extensions(val extensions: List[String], val inner: Resolver) extends Resolver {
-    def apply(in: Path, ext: String) =
-      extensions.foldLeft(Option.empty[File]) { (memo, ext) =>
-        memo orElse inner(in, ext)
+    def find(in: Path) =
+      in.pathFinder(root).get.filter(filter.accept _).headOption
+
+    def pathOf(in: File) =
+      IO.relativize(root, in).map(file(_)).map { file =>
+        if(file.getParent == null) {
+          Path("/" + file.base)
+        } else {
+          Path("/" + file.getParent + "/" + file.base)
+        }
       }
   }
 
   case class Or(val resolvers: List[Resolver]) extends Resolver {
-    def apply(in: Path, ext: String) =
-      resolvers.foldLeft(Option.empty[File]) { (memo, resolver) =>
-        memo orElse resolver(in, ext)
-      }
+    def expand(in: Path) =
+      resolvers.foldLeft(Option.empty[List[Path]]) {
+        (memo, resolver) =>
+          memo orElse Option(resolver.expand(in)).filterNot(_.isEmpty)
+      }.getOrElse(Nil)
+
+    def find(in: Path) =
+      resolvers.flatMap(_.find(in)).headOption
+
+    def pathOf(in: File) =
+      resolvers.flatMap(_.pathOf(in)).headOption
   }
 }

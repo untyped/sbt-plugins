@@ -10,21 +10,29 @@ trait Selectors {
     val format = Formats.Any
   }
 
-  case class Deps(val main: Path, val resolver: Resolver, val format: Format = Formats.Any) extends SimpleSelector {
-    def makeAsset(path: Path) = {
-      val file = resolver(path, "") getOrElse sys.error("Cannot find file for path: " + path)
-      Asset(path, file, dependencies(path.parent, file))
-    }
+  case class Deps(
+    val main: Path,
+    val resolver: Resolver,
+    val format: Format = Formats.Any
+  ) extends SimpleSelector {
+    def makeAssets(path: Path) =
+      for {
+        path <- resolver.expand(path) match {
+                  case Nil   => sys.error("Cannot find file(s) for path: " + path)
+                  case files => files
+                }
+        file <- resolver.find(path)
+      } yield Asset(path, file, dependencies(path.parent, file).flatMap(resolver.expand _))
 
     def assets = {
-      val open = mutable.Queue(makeAsset(main))
+      val open = mutable.Queue(makeAssets(main) : _*)
       val closed = mutable.ArrayBuffer[Asset]()
 
       while(!open.isEmpty) {
         val curr = open.dequeue
         closed += curr
 
-        val next = curr.dependencies.map(makeAsset).filterNot(closed.contains _)
+        val next = curr.dependencies.flatMap(makeAssets _).filterNot(closed.contains _)
 
         open.enqueue(next : _*)
       }
@@ -33,9 +41,13 @@ trait Selectors {
     }
   }
 
-  case class Dir(val dir: File, val format: Format = Formats.Any) extends SimpleSelector {
+  case class Dir(
+    val dir: File,
+    val finder: (File) => PathFinder = (in: File) => in ***,
+    val format: Format = Formats.Any
+  ) extends SimpleSelector {
     def assets =
-      (dir ***).get.filter(_.isFile).toList.map { file =>
+      finder(dir).get.filter(_.isFile).toList.map { file =>
         val unnorm = IO.relativize(dir, file).get
         val norm = format.stripExtension(unnorm) getOrElse unnorm
         val path = Path("/" + norm)

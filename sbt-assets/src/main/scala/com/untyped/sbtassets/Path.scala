@@ -3,8 +3,7 @@ package com.untyped.sbtassets
 import sbt._
 
 case class Path(val abs: Boolean, val parts: List[String]) {
-  lazy val name = toFile.name
-  lazy val (base, ext) = toFile.baseAndExt
+  lazy val name = parts.last
 
   def parent: Path =
     if(parts.isEmpty) {
@@ -12,6 +11,29 @@ case class Path(val abs: Boolean, val parts: List[String]) {
     } else {
       Path(abs, parts.dropRight(1))
     }
+
+  def pathFinder(root: File): PathFinder = {
+    val name = this.name
+    val finder = parts.dropRight(1).foldLeft(PathFinder(root))(_ / _)
+    this.name match {
+      case "**" => finder ***
+      case "*"  => finder * "*"
+      case _    => finder * (name || name + ".*")
+    }
+  }
+
+  // Expand a path into a list of paths matching actual files on the filesystem:
+  def expand(root: File): List[Path] =
+    pathFinder(root).get.map { file =>
+      if(file == root) {
+        Path("/")
+      } else {
+        Path("/" + file.getParent + "/" + file.base)
+      }
+    }.toList
+
+  def find(root: File): Option[File] =
+    pathFinder(root).get.headOption
 
   def isRoot =
     abs && parts.isEmpty
@@ -68,7 +90,9 @@ object Path {
         (part, memo) =>
           memo match {
             case (toRemove, closed) =>
-              if(part == "..") {
+              if(part == ".") {
+                (toRemove, closed)
+              } else if(part == "..") {
                 (toRemove + 1, closed)
               } else if(toRemove > 0) {
                 (toRemove - 1, closed)

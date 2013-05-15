@@ -58,15 +58,15 @@ trait Rule {
 }
 
 trait ManyToManyRule extends Rule {
-  def translateAsset(in: Asset): Asset
+  def renameAsset(in: Asset): Asset
 
   def assets =
-    prereqAssets map (translateAsset _)
+    prereqAssets map (renameAsset _)
 
   def compileRule(log: Logger): Unit =
     for {
       in  <- prereqs.map(_.assets).flatten
-      out  = translateAsset(in) if recompileAsset(in, out)
+      out  = renameAsset(in) if recompileAsset(in, out)
     } {
       log.info("  compile " + in.file + " => " + out.file)
 
@@ -81,6 +81,20 @@ trait ManyToManyRule extends Rule {
       log.info("  delete " + file)
       file.delete
     }
+}
+
+trait SimpleManyToManyRule extends ManyToManyRule {
+  def target: File
+  def prereq: Rule
+  def step: Step
+
+  def prereqs = List(prereq)
+
+  def renameAsset(in: Asset) =
+    Asset(in.path, target / in.path.parent.toString / step.rename(in), in.dependencies)
+
+  def compileAsset(log: Logger, in: Asset, out: Asset) =
+    step.compile(log, in, out)
 }
 
 trait ManyToOneRule extends Rule {
