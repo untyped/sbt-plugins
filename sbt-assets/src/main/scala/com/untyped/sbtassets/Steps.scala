@@ -57,11 +57,7 @@ trait Steps {
       log.debug(command.mkString(" "))
       IO.writeLines(
         out.file,
-        List(
-          "module.exports = Handlebars.template(",
-          (command !! log),
-          ");"
-        )
+        List("module.exports = Handlebars.template(", (command !! log), ");")
       )
     }
   }

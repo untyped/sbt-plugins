@@ -6,5 +6,6 @@ import scala.collection.mutable
 case class Asset(
   val path: Path,
   val file: File,
-  val dependencies: List[Path]
+  val dependencies: List[Path],
+  val attributes: Map[String, String] = Map()
 )

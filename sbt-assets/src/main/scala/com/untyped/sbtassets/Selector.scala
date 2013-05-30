@@ -8,7 +8,11 @@ trait Selector extends Rule {
   def prereqs = Nil
   override def unmanagedAssets = assets
   override def managedAssets = Nil
-  def compileRule(log: Logger) = ()
+  def compileRule(log: Logger) = {
+    for(asset <- assets) {
+      log.info("  select " + asset.path + " => " + asset.file)
+    }
+  }
   override def cleanRule(log: Logger) = ()
 }
 

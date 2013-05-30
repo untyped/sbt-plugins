@@ -91,7 +91,7 @@ trait SimpleManyToManyRule extends ManyToManyRule {
   def prereqs = List(prereq)
 
   def renameAsset(in: Asset) =
-    Asset(in.path, target / in.path.parent.toString / step.rename(in), in.dependencies)
+    Asset(in.path, target / in.path.parent.toString.substring(1) / step.rename(in), in.dependencies)
 
   def compileAsset(log: Logger, in: Asset, out: Asset) =
     step.compile(log, in, out)

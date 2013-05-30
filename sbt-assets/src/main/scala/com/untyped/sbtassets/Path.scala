@@ -1,6 +1,7 @@
 package com.untyped.sbtassets
 
 import sbt._
+import scala.util.matching.Regex
 
 case class Path(val abs: Boolean, val parts: List[String]) {
   lazy val name = parts.last
@@ -20,6 +21,19 @@ case class Path(val abs: Boolean, val parts: List[String]) {
       case "*"  => finder * "*"
       case _    => finder * (name || name + ".*")
     }
+  }
+
+  def regex: Regex = {
+    val temp =
+      parts.foldLeft("") { (accum, part) =>
+        accum + (part match {
+          case "*"  => "[/]+[^/]*"
+          case "**" => "[/]+.*"
+          case str  => "[/]+" + java.util.regex.Pattern.quote(str)
+        })
+      }
+
+    ("^" + temp + "$").r
   }
 
   // Expand a path into a list of paths matching actual files on the filesystem:
@@ -65,7 +79,7 @@ case class Path(val abs: Boolean, val parts: List[String]) {
   def toFile =
     file(toString)
 
-  override def toString =
+  override lazy val toString =
     (if(abs) "/" else "") + (parts mkString "/")
 }
 

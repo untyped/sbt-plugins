@@ -12,7 +12,7 @@ class SynopsisSpec extends BaseSpec {
     val srcDir    = rootDir / "src"
     val tempDir   = rootDir / "temp"
     val distDir   = rootDir / "dist"
-    val mainSrc   = Selectors.Deps(Path.Root / "main", Resolvers.Dir(srcDir))
+    val mainSrc   = Rules.Deps(Path.Root / "main", Selectors.Dir(srcDir))
     val jsSrc     = Rules.Coffee(tempDir / "js", mainSrc)
     val dist      = Rules.Cat(distDir / "dist.js", jsSrc)
     val distMin   = Rules.UglifyJs(distDir / "dist.min.js", dist)
@@ -22,9 +22,9 @@ class SynopsisSpec extends BaseSpec {
         Asset(Path.Root, distDir / "dist.min.js", Nil)
       ))
       distMin.unmanagedAssets must equal (List(
-        Asset(Path("/main"), srcDir / "main.coffee", List(Path("/a"), Path("/b"))),
         Asset(Path("/a"), srcDir / "a.coffee", List()),
-        Asset(Path("/b"), srcDir / "b.coffee", List())
+        Asset(Path("/b"), srcDir / "b.coffee", List()),
+        Asset(Path("/main"), srcDir / "main.coffee", List(Path("/a"), Path("/b")))
       ))
       distMin.managedAssets must equal (List(
        Asset(Path("/main"), tempDir / "js/main.js", List(Path("/a"), Path("/b"))),
@@ -37,7 +37,7 @@ class SynopsisSpec extends BaseSpec {
 
     it("should produce a single minified output") {
       distMin.compile(log)
-      IO.read(distMin.assets.head.file) must equal ("""(function(){alert("a")}).call(this);(function(){alert("b")}).call(this);(function(){}).call(this);""")
+      IO.read(distMin.assets.head.file) must equal ("""!function(){alert("a")}.call(this);!function(){alert("b")}.call(this);!function(){}.call(this);""")
     }
 
     it("should clean managed files only") {

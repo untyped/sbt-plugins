@@ -1,6 +1,7 @@
 package com.untyped.sbtassets
 
 import sbt._
+import scala.collection.mutable
 
 object Rules extends Rules
 
@@ -58,6 +59,70 @@ trait Rules {
       Steps.Copy(rename, rewrite)
   }
 
+  case class Deps(
+    val main: Path,
+    val prereq: Rule
+  ) extends Rule {
+    def prereqs = List(prereq)
+
+    override def managedAssets: List[Asset] =
+      prereqs.map(_.managedAssets).flatten.distinct
+
+    def assets = {
+      val preAssets = prereqAssets
+
+      def findAsset(in: Path) =
+        preAssets find (_.path == in) getOrElse {
+          for(asset <- preAssets) {
+            println("Searching " + asset.path)
+          }
+          sys.error("Asset not found: " + in)
+        }
+
+      def expandPath(in: Path) = {
+        val rx = in.regex
+        val ans = preAssets.filter(asset => rx.findFirstIn(asset.path.toString).isDefined)
+        if(ans == Nil) {
+          sys.error("Asset not found: " + in + " (regex " + rx + ")")
+        } else ans
+      }
+
+      val mainAsset = findAsset(main)
+
+      val open   = mutable.Queue(mainAsset)
+      val closed = mutable.ArrayBuffer[Asset]()
+
+      while(!open.isEmpty) {
+        val curr = open.dequeue
+        closed += curr
+
+        val next = curr.dependencies flatMap expandPath filterNot (closed.contains _)
+
+        open.enqueue(next : _*)
+      }
+
+      closed.toList
+    }
+
+    def compileRule(log: Logger): Unit = {
+      for(asset <- assets) {
+        log.info("  select " + asset.path + " => " + asset.file)
+      }
+    }
+
+    def cleanRule(log: Logger): Unit = ()
+  }
+
+  case class Filter(
+    val transform: Asset => Asset,
+    val prereq: Rule
+  ) extends Rule {
+    def prereqs = List(prereq)
+    def assets = prereqs flatMap (_.assets) map transform
+    def compileRule(log: Logger): Unit = ()
+    def cleanRule(log: Logger): Unit = ()
+  }
+
   case class LessCss(
     val mainPath: Path,
     val targetFile: File,
@@ -101,6 +166,19 @@ trait Rules {
         echoCommand #>> out.file ! log
       }
     }
+  }
+
+  case class Shadow(val prereqs: List[Rule]) extends Rule {
+    def assets = {
+      val ans = new mutable.ArrayBuffer[Asset]
+      for {
+        prereq <- prereqs
+        asset  <- prereq.assets if ans.filter(_.path == asset.path).isEmpty
+      } ans += asset
+      ans.toList
+    }
+    def compileRule(log: Logger) = ()
+    def cleanRule(log: Logger) = ()
   }
 
   case class UglifyJs(

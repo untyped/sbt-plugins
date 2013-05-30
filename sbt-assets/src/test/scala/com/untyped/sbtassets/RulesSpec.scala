@@ -171,9 +171,9 @@ class RulesSpec extends BaseSpec {
                                    |.c { color: blue; }
                                    """.trim.stripMargin
                      )
-    val inAssets  = Selectors.Deps(
+    val inAssets  = Rules.Deps(
                       Path("/a"),
-                      Resolvers.Dir(inDir)
+                      Selectors.Dir(inDir)
                     )
     val outDir    = IO.createTemporaryDirectory
     val outAssets = Selectors.Const(List(
