@@ -30,6 +30,7 @@ object Plugin extends sbt.Plugin {
     val Less115 = new LessVersion { val filename = "less-rhino-1.1.5.js" }
     val Less130 = new LessVersion { val filename = "less-1.3.0.js" }
     val Less133 = new LessVersion { val filename = "less-1.3.3.js" }
+    val Less140 = new LessVersion { val filename = "less-1.4.0.js" }
   }
 
   import LessKeys._
@@ -105,7 +106,7 @@ object Plugin extends sbt.Plugin {
       prettyPrint                  :=  false,
       includeFilter in less        :=  "*.less",
       excludeFilter in less        :=  (".*" - ".") || "_*" || HiddenFileFilter,
-      lessVersion in less          :=  LessVersion.Less133,
+      lessVersion in less          :=  LessVersion.Less140,
       useCommandLine in less       :=  false,
       sourceDirectory in less      <<= (sourceDirectory in conf),
       sourceDirectories in less    <<= (sourceDirectory in (conf, less)) { Seq(_) },
