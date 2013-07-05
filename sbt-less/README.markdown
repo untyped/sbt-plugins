@@ -85,7 +85,8 @@ valid Less versions include:
 
  - `LessVersion.Less113`
  - `LessVersion.Less115`
- - `LessVersion.Less130` (the default)
+ - `LessVersion.Less130`
+ - `LessVersion.Less140` (the default)
 
 Usage
 =====
@@ -96,8 +97,8 @@ above to see how to include Less CSS compilation as part of the regular `compile
 The default behaviour of the plugin is to scan your `src/main` directory and look files with the
 extension `.less`.
 
-These files are compiled to CSS using Less CSS v1.1.3 and placed in equivalent locations under
-`target/scala-2.9.x/resource_managed`.
+These files are compiled to CSS and placed in equivalent locations under
+`target/scala-x.x.x/resource_managed`.
 
 Templating
 ==========
