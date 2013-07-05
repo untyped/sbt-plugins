@@ -88,7 +88,7 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
   def compile: Option[File] = {
     val des = this.des getOrElse (throw new Exception("Could not determine destination filename for " + src))
 
-    graph.log.info("Compiling %s source %s".format(graph.pluginName, des))
+    graph.log.info("Compiling %s source %s to %s".format(graph.pluginName, src, des))
 
     val less =
       if (isTemplated) {
@@ -116,6 +116,7 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
             graph.lessVersion match {
               case Plugin.LessVersion.Less130 => less130Scope(ctx)
 	          case Plugin.LessVersion.Less133 => less130Scope(ctx)
+              case Plugin.LessVersion.Less140 => less130Scope(ctx)
               case _                          => earlyLessScope(ctx)
             }
 
