@@ -1,32 +1,25 @@
 import sbt._
 import sbt.Keys._
+import Defaults._
 
 object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.6-M5"
+  val pluginsVersion = "0.6-M8"
   val tipiVersion = "0.1-M4"
 
   // Libraries ----------------------------------
 
   val untyped   = Resolver.url("Untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
 
-  val closure   = "com.google.javascript" % "closure-compiler" % "v20130227"
+  val closure   = "com.google.javascript" % "closure-compiler" % "v20130823"
   val mustache  = "com.samskivert" % "jmustache" % "1.3"
   val rhino     = "org.mozilla" % "rhino" % "1.7R3"
-  val scalatest = "org.scalatest" %% "scalatest" % "1.6.1"
+  val scalatest = "org.scalatest" %% "scalatest" %  "1.9.1"
   val tipi      = "com.untyped" %% "tipi" % tipiVersion % "compile" changing()
-
-  def webPlugin(sbtVersion: String) =
-    sbtVersion match {
-      case "0.11.0" => "com.github.siasia" %% "xsbt-web-plugin" % "0.11.0-0.2.8"
-      case "0.11.1" => "com.github.siasia" %% "xsbt-web-plugin" % "0.11.1-0.2.10"
-      case "0.11.2" => "com.github.siasia" %% "xsbt-web-plugin" % "0.11.2-0.2.11"
-      case "0.11.3" => "com.github.siasia" %% "xsbt-web-plugin" % "0.11.3-0.2.11.1"
-      case x if (x.startsWith("0.12")) => "com.github.siasia" %% "xsbt-web-plugin" % "0.12.0-0.2.11.1"
-      case other    => throw new Exception("Build.scala: don't know what version of xsbt-web-plugin to use for SBT " + other)
-    }
+  val jetty		=  "org.eclipse.jetty" % "jetty-webapp" % "9.0.5.v20130815" % "container,test"
+  val xsbtwebplugin = "com.earldouglas" %% "xsbt-web-plugin" % "0.4.2"
 
   // Settings -----------------------------------
 
@@ -155,7 +148,7 @@ object Build extends Build {
     id = "sbt-runmode",
     base = file("sbt-runmode"),
     settings = defaultSettings ++ Seq(
-      libraryDependencies <+= sbtVersion(v => webPlugin(v)),
+      libraryDependencies += sbtPluginExtra(xsbtwebplugin, "0.12", "2.9.2"),
       libraryDependencies += scalatest % "test"
     )
   ).dependsOn(sbtLess, sbtJs)
