@@ -1,7 +1,7 @@
 package com.untyped.sbtrunmode
 
-import com.github.siasia._
-import com.github.siasia.{PluginKeys=>WebKeys}
+import com.earldouglas.xsbtwebplugin._
+import com.earldouglas.xsbtwebplugin.{PluginKeys=>WebKeys}
 import java.nio.charset.Charset
 import java.util.Properties
 import sbt._
