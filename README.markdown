@@ -15,7 +15,7 @@ See the `README` files in the relevant subdirectories for more information and a
 Version 0.6 (current development release)
 =========================================
 
-This release is compatible with Scala 2.9.2 and SBT 0.12.1.
+This release is compatible with Scala 2.9.2 and SBT 0.12.3.
 Sample `plugins.sbt` file:
 
     resolvers ++= Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
@@ -41,7 +41,7 @@ Added the [sbt-tipi] plugin for the [Tipi] templating language.
 Version 0.5 (current stable release)
 ====================================
 
-This is a dual-release for Scala 2.9.2 / SBT 0.11.3 and Scala 2.9.1 / SBT 0.12.1.
+This is a dual-release for Scala 2.9.2 / SBT 0.11.3 and Scala 2.9.1 / SBT 0.12.3.
 Sample `plugins.sbt` file:
 
     resolvers ++= Resolver.url(
@@ -57,7 +57,7 @@ Sample `plugins.sbt` file:
 
 New features:
 
-Supports SBT 0.12.1 and Scala 2.9.2.
+Supports SBT 0.12.3 and Scala 2.9.2.
 
 Added the experimental `useCommandLine` key for `sbt-less`, allowing you to
 use command line `lessc` instead of Rhino (defaults to `false`).
