@@ -12,6 +12,19 @@ This repo contains source for three SBT plugins:
 
 See the `README` files in the relevant subdirectories for more information and acknowledgements.
 
+Building the Plugins
+====================
+
+The build script uses the [sbt-cross-building] plugin to target various SBT and Scala versions.
+
+To compile the code for all targetted versions of SBT, do:
+
+    ^compile
+
+To run the `sbt-scripted` tests (takes a loooong time):
+
+    ^scripted
+
 Version 0.6 (current development release)
 =========================================
 
@@ -237,6 +250,7 @@ limitations under the License.
 [sbt-js]: https://github.com/untyped/sbt-plugins/tree/master/sbt-js
 [sbt-runmode]: https://github.com/untyped/sbt-plugins/tree/master/sbt-runmode
 [sbt-tipi]: https://github.com/untyped/sbt-plugins/tree/master/sbt-tipi
+[sbt-cross-building]: https://github.com/jrudolph/sbt-cross-building
 [Tipi]: https://github.com/davegurnell/tipi
 [ivy.untyped.com]: http://ivy.untyped.com/com.untyped
 [Build.scala]: https://github.com/untyped/sbt-plugins/blob/master/project/Build.scala

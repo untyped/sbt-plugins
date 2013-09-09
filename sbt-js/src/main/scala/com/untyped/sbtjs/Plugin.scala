@@ -76,7 +76,7 @@ object Plugin extends sbt.Plugin {
 
           sourceDirs.foldLeft(Seq[File]()) {
             (accum, sourceDir) =>
-              accum ++ sourceDir.descendantsExcept(includeFilter, excludeFilter).get
+              accum ++ com.untyped.sbtgraph.Descendents(sourceDir, includeFilter, excludeFilter).get
           }
         }
     }
