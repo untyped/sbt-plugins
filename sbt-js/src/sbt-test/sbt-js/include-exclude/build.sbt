@@ -1,6 +1,6 @@
 name := "sbt-js-issues"
 
-scalaVersion := "2.9.2"
+scalaVersion := "2.10.3"
 
 seq(jsSettings : _*)
 

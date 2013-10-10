@@ -73,7 +73,7 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
                 Env.Basic.`import`(envIn, docIn)
               }
             } catch {
-              case exn =>
+              case exn : Throwable =>
                 // Provide an informative error mesage:
                 args.string(envIn, Id("class")) match {
                   case None => sys.error("Bad import tag: no 'source' or 'class' parameter")

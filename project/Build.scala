@@ -16,10 +16,10 @@ object Build extends Build {
   val closure   = "com.google.javascript" % "closure-compiler" % "v20130823"
   val mustache  = "com.samskivert" % "jmustache" % "1.3"
   val rhino     = "org.mozilla" % "rhino" % "1.7R3"
-  val scalatest = "org.scalatest" %% "scalatest" %  "1.9.1"
+  val scalatest = "org.scalatest" %% "scalatest" %  "1.9.2"
   val tipi      = "com.untyped" %% "tipi" % tipiVersion % "compile" changing()
   val jetty		=  "org.eclipse.jetty" % "jetty-webapp" % "9.0.5.v20130815" % "container,test"
-  val xsbtwebplugin = "com.earldouglas" %% "xsbt-web-plugin" % "0.4.2"
+  val xsbtwebplugin = "com.earldouglas" %% "xsbt-web-plugin" % "0.5.0-SNAPSHOT"
 
   // Settings -----------------------------------
 
@@ -33,10 +33,10 @@ object Build extends Build {
       sbtPlugin    := true,
       organization := "com.untyped",
       version      := pluginsVersion,
-      scalaVersion := "2.9.2",
+      scalaVersion := "2.10.3",
       resolvers    += untyped,
       // resolvers += untyped,
-      publishTo <<= (version) { version: String =>
+      publishTo <<= version { version: String =>
        if (isSnapshot(version)) {
          for {
            host    <- Option(System.getenv("DEFAULT_IVY_REPO_HOST"))
@@ -77,7 +77,7 @@ object Build extends Build {
     id = "sbt-graph",
     base = file("sbt-graph"),
     settings = defaultSettings ++ Seq(
-      publishArtifact in (Compile) := false,
+      publishArtifact in Compile := false,
       publishArtifact in (Compile, packageBin) := false,
       publishArtifact in (Compile, packageSrc) := false,
       publishArtifact in (Compile, packageDoc) := false,
@@ -148,7 +148,7 @@ object Build extends Build {
     id = "sbt-runmode",
     base = file("sbt-runmode"),
     settings = defaultSettings ++ Seq(
-      libraryDependencies += sbtPluginExtra(xsbtwebplugin, "0.12", "2.9.2"),
+      libraryDependencies += sbtPluginExtra(xsbtwebplugin, "0.13", "2.10"),
       libraryDependencies += scalatest % "test"
     )
   ).dependsOn(sbtLess, sbtJs)

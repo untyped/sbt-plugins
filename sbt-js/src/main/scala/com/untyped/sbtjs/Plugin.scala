@@ -66,7 +66,7 @@ object Plugin extends sbt.Plugin {
     result
   }
 
-  def unmanagedSourcesTask: Initialize[Task[Seq[File]]] =
+  def unmanagedSourcesTask: Def.Initialize[Task[Seq[File]]] =
     (streams, sourceDirectories in js, includeFilter in js, excludeFilter in js) map {
       (out, sourceDirs, includeFilter, excludeFilter) =>
         time(out, "unmanagedSourcesTask") {
@@ -81,7 +81,7 @@ object Plugin extends sbt.Plugin {
         }
     }
 
-  def sourceGraphTask: Initialize[Task[Graph]] =
+  def sourceGraphTask: Def.Initialize[Task[Graph]] =
     (streams, sourceDirectories in js, resourceManaged in js, unmanagedSources in js, templateProperties, downloadDirectory, coffeeVersion, coffeeOptions, closureOptions) map {
       (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, coffeeVersion, coffeeOptions, closureOptions) =>
         out.log.debug("sbt-js template properties " + templateProperties)
@@ -104,7 +104,7 @@ object Plugin extends sbt.Plugin {
         }
     }
 
-  def watchSourcesTask: Initialize[Task[Seq[File]]] =
+  def watchSourcesTask: Def.Initialize[Task[Seq[File]]] =
     (streams, sourceGraph in js) map {
       (out, graph) =>
         graph.sources.map(_.src)
@@ -124,13 +124,13 @@ object Plugin extends sbt.Plugin {
         graph.sources.foreach(_.clean)
     }
 
-  def coffeeOptionsSetting: Initialize[List[CoffeeOption]] =
+  def coffeeOptionsSetting: Def.Initialize[List[CoffeeOption]] =
     (streams, coffeeBare in js) apply {
       (out, bare) =>
         if(bare) List(CoffeeOption.BARE) else Nil
     }
 
-  def closureOptionsSetting: Initialize[ClosureOptions] =
+  def closureOptionsSetting: Def.Initialize[ClosureOptions] =
     (streams,
       variableRenamingPolicy in js,
       prettyPrint in js,

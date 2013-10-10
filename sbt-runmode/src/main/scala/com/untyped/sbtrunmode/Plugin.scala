@@ -61,13 +61,13 @@ object Plugin extends sbt.Plugin {
   // Alias to make RunMode visible in .sbt files:
   val RunMode = com.untyped.sbtrunmode.RunMode
 
-  def propertiesSetting: Initialize[Properties] =
+  def propertiesSetting: Def.Initialize[Properties] =
     (streams, propertiesPath, runMode) apply {
       (out, propertiesPath, runMode) =>
         Props.properties(propertiesPath, runMode)
     }
 
-  def updateRunModeTask: Initialize[Task[Unit]] =
+  def updateRunModeTask: Def.Initialize[Task[Unit]] =
     (streams, runMode, jettyWebPath, charset, jettyVersion) map {
       (out, runMode, jettyWebPath, charset, jettyVersion) =>
         runMode match {
@@ -144,7 +144,7 @@ object Plugin extends sbt.Plugin {
         runMode                             :=  mode,
         properties                          <<= propertiesSetting,
         updateRunMode                       <<= updateRunModeTask,
-        test                                <<= test dependsOn (updateRunModeTask)
+        test                                <<= test dependsOn updateRunModeTask
       ))
 
   def runModeSettings: Seq[Setting[_]] =
