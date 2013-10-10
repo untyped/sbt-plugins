@@ -19,7 +19,7 @@ object Build extends Build {
   val scalatest = "org.scalatest" %% "scalatest" %  "1.9.2"
   val tipi      = "com.untyped" %% "tipi" % tipiVersion % "compile" changing()
   val jetty		=  "org.eclipse.jetty" % "jetty-webapp" % "9.0.5.v20130815" % "container,test"
-  val xsbtwebplugin = "com.earldouglas" %% "xsbt-web-plugin" % "0.5.0-SNAPSHOT"
+  val xsbtwebplugin = "com.earldouglas" %% "xsbt-web-plugin" % "0.4.2"
 
   // Settings -----------------------------------
 
