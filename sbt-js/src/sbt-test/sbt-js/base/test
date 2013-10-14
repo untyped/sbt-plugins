@@ -15,10 +15,6 @@ $ exists target/scala-2.9.2/resource_managed/main/resources/file7.notemplate.js
 $ exists target/scala-2.9.2/resource_managed/main/resources/file8.js
 $ exists target/scala-2.9.2/resource_managed/main/resources/file9.js
 
-# Check that the temporary downloads exist but have not been compiled:
-$ exists target/sbt-js/downloads/http___code.jquery.com_jquery-1.7.js
--$ exists target/scala-2.9.2/resource_managed/http___code.jquery.com_jquery-1.7.js
-
 # Check that the JS files have the correct content:
 > contents target/scala-2.9.2/resource_managed/main/resources/file1.js            fixtures/file1.js
 > contents target/scala-2.9.2/resource_managed/main/scala/file2.js                fixtures/file2.js
@@ -29,9 +25,6 @@ $ exists target/sbt-js/downloads/http___code.jquery.com_jquery-1.7.js
 > contents target/scala-2.9.2/resource_managed/main/resources/file7.notemplate.js fixtures/file7.notemplate.js
 > contents target/scala-2.9.2/resource_managed/main/resources/file8.js            fixtures/file8.js
 > contents target/scala-2.9.2/resource_managed/main/resources/file9.js            fixtures/file9.js
-
-# Check that the temporary downloads have the correct content:
-> contents target/sbt-js/downloads/http___code.jquery.com_jquery-1.7.js           fixtures/jquery-1.7.js
 
 # Check that the JS files were updated by the last compile task:
 $ newer target/scala-2.9.2/resource_managed/main/resources/file1.js            fixtures/last-compile-time
