@@ -4,6 +4,7 @@ libraryDependencies <+= sbtVersion { v =>
     case "0.11.1" => "org.scala-tools.sbt" %% "scripted-plugin" % v
     case "0.11.2" => "org.scala-tools.sbt" %% "scripted-plugin" % v
     case x if (x.startsWith("0.12")) =>  "org.scala-sbt"        % "scripted-plugin" % v
+    case x if (x.startsWith("0.13")) =>  "org.scala-sbt"        % "scripted-plugin" % v
     case other    => throw new Exception("plugins.sbt: don't know what version of scripted-plugin to use for SBT " + other)
   }
 }

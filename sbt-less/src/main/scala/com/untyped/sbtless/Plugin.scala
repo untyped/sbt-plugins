@@ -43,7 +43,7 @@ object Plugin extends sbt.Plugin {
     result
   }
 
-  def unmanagedSourcesTask: Initialize[Task[Seq[File]]] =
+  def unmanagedSourcesTask: Def.Initialize[Task[Seq[File]]] =
     (streams, sourceDirectories in less, includeFilter in less, excludeFilter in less) map {
       (out, sourceDirs, includeFilter, excludeFilter) =>
         time(out, "unmanagedSourcesTask") {
@@ -58,7 +58,7 @@ object Plugin extends sbt.Plugin {
         }
     }
 
-  def sourceGraphTask: Initialize[Task[Graph]] =
+  def sourceGraphTask: Def.Initialize[Task[Graph]] =
     (streams, sourceDirectories in less, resourceManaged in less, unmanagedSources in less, templateProperties in less, downloadDirectory in less, prettyPrint in less, lessVersion in less, useCommandLine in less) map {
       (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, prettyPrint, lessVersion, useCommandLine) =>
         time(out, "sourceGraphTask") {
@@ -81,7 +81,7 @@ object Plugin extends sbt.Plugin {
         }
     }
 
-  def watchSourcesTask: Initialize[Task[Seq[File]]] =
+  def watchSourcesTask: Def.Initialize[Task[Seq[File]]] =
     (streams, sourceGraph in less) map {
       (out, graph) =>
         graph.sources.map(_.src)

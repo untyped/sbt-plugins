@@ -18,7 +18,7 @@ object Plugin extends sbt.Plugin {
 
   import MustacheKeys._
 
-  def unmanagedSourcesTask: Initialize[Task[Seq[File]]] =
+  def unmanagedSourcesTask: Def.Initialize[Task[Seq[File]]] =
     (streams, sourceDirectories in mustache, includeFilter in mustache, excludeFilter in mustache) map {
       (out, sourceDirs, includeFilter, excludeFilter) =>
         out.log.debug("sourceDirectories: " + sourceDirs)
@@ -31,7 +31,7 @@ object Plugin extends sbt.Plugin {
         }
     }
 
-  def sourceGraphTask: Initialize[Task[Graph]] =
+  def sourceGraphTask: Def.Initialize[Task[Graph]] =
     (streams, sourceDirectories in mustache, resourceManaged in mustache, unmanagedSources in mustache, templateProperties, downloadDirectory) map {
       (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir) =>
         out.log.debug("sbt-mustache template properties " + templateProperties)
@@ -49,7 +49,7 @@ object Plugin extends sbt.Plugin {
         graph
     }
 
-  def watchSourcesTask: Initialize[Task[Seq[File]]] =
+  def watchSourcesTask: Def.Initialize[Task[Seq[File]]] =
     (streams, sourceGraph in mustache) map {
       (out, graph) =>
         graph.sources.map(_.src)

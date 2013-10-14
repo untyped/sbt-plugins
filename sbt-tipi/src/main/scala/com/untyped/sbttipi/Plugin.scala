@@ -19,7 +19,7 @@ object Plugin extends sbt.Plugin {
 
   import TipiKeys._
 
-  def unmanagedSourcesTask: Initialize[Task[Seq[File]]] =
+  def unmanagedSourcesTask: Def.Initialize[Task[Seq[File]]] =
     (streams, sourceDirectories in tipi, includeFilter in tipi, excludeFilter in tipi) map {
       (out, sourceDirs, includeFilter, excludeFilter) =>
         out.log.debug("sourceDirectories: " + sourceDirs)
@@ -32,7 +32,7 @@ object Plugin extends sbt.Plugin {
         }
     }
 
-  def sourceGraphTask: Initialize[Task[Graph]] =
+  def sourceGraphTask: Def.Initialize[Task[Graph]] =
     (streams, sourceDirectories in tipi, resourceManaged in tipi, unmanagedSources in tipi, environment, downloadDirectory) map {
       (out, sourceDirs, targetDir, sourceFiles, environment, downloadDir) =>
         val graph = Graph(
@@ -48,7 +48,7 @@ object Plugin extends sbt.Plugin {
         graph
     }
 
-  def watchSourcesTask: Initialize[Task[Seq[File]]] =
+  def watchSourcesTask: Def.Initialize[Task[Seq[File]]] =
     (streams, sourceGraph in tipi) map {
       (out, graph) =>
         graph.sources.map(_.src)
