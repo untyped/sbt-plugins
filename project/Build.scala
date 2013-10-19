@@ -18,7 +18,6 @@ object Build extends Build {
 
   def scalatest(sbtVersion: String) =
     sbtVersion match {
-      case v if v startsWith "0.11" => "org.scalatest" %% "scalatest" % "1.6.1" % "test"
       case v if v startsWith "0.12" => "org.scalatest" %% "scalatest" % "1.9.1" % "test"
       case v if v startsWith "0.13" => "org.scalatest" %% "scalatest" % "1.9.1" % "test"
       case v => throw new Exception("Build.scala: don't know what version of scalatest to use for SBT " + v)
@@ -26,15 +25,15 @@ object Build extends Build {
 
   def webPlugin(sbtVersion: String) =
     sbtVersion match {
-      case "0.11.0"                 => "com.github.siasia" %% "xsbt-web-plugin"           % "0.11.0-0.2.8"
-      case "0.11.1"                 => "com.github.siasia" %% "xsbt-web-plugin"           % "0.11.1-0.2.10"
-      case "0.11.2"                 => "com.github.siasia" %% "xsbt-web-plugin"           % "0.11.2-0.2.11"
-      case "0.11.3"                 => "com.github.siasia" %% "xsbt-web-plugin"           % "0.11.3-0.2.11.1"
-      // case "0.12.0" => "com.github.siasia_2.9.2" % "xsbt-web-plugin" % "0.12.0-0.2.11.1"
-      case v if v startsWith "0.12" => "com.github.siasia" %% "xsbt-web-plugin"           % "0.12.0-0.2.11.1"
+      case v if v startsWith "0.12" => Defaults.sbtPluginExtra("com.earldouglas" % "xsbt-web-plugin" % "0.4.2", "0.12", "2.9.2")
       case v if v startsWith "0.13" => Defaults.sbtPluginExtra("com.earldouglas" % "xsbt-web-plugin" % "0.4.2", "0.13", "2.10")
       case v => throw new Exception("Build.scala: don't know what version of xsbt-web-plugin to use for SBT " + v)
     }
+
+  // This is a Jetty/Orbit thing:
+  // http://stackoverflow.com/questions/9889674/sbt-jetty-and-servlet-3-0
+  def jettyOrbit =
+    "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" artifacts (Artifact("javax.servlet", "jar", "jar"))
 
   def snapshotPublishTo =
     for {
@@ -65,7 +64,6 @@ object Build extends Build {
       sbtPlugin                      := true,
       organization                   := "com.untyped",
       version                        := pluginsVersion,
-      scalaVersion                   := "2.10.3",
       CrossBuilding.crossSbtVersions := Seq("0.12", "0.13"),
       resolvers                      += untyped,
       scalacOptions                 ++= Seq("-deprecation"),
@@ -73,7 +71,8 @@ object Build extends Build {
       publishMavenStyle              := false,
       scriptedBufferLog              := false,
       scalacOptions                  += "-deprecation",
-      scalacOptions                  += "-unchecked"
+      scalacOptions                  += "-unchecked",
+      scriptedLaunchOpts             += "-XX:MaxPermSize=256m"
     )
 
   // Projects -----------------------------------
@@ -81,7 +80,7 @@ object Build extends Build {
   lazy val root = Project(
     id = "root",
     base = file("."),
-    settings = defaultSettings ++ Seq(publish := {})
+    settings = defaultSettings ++ Seq(publish := ())
   ) aggregate (
     sbtJs,
     sbtLess,
@@ -139,8 +138,14 @@ object Build extends Build {
     id = "sbt-runmode",
     base = file("sbt-runmode"),
     settings = defaultSettings ++ Seq(
+      // This is a Jetty/Orbit thing:
+      // http://stackoverflow.com/questions/9889674/sbt-jetty-and-servlet-3-0
+      classpathTypes                          ~= (_ + "orbit"),
       libraryDependencies                    <+= (sbtVersion in sbtPlugin)(webPlugin),
-      libraryDependencies                    <+= (sbtVersion in sbtPlugin)(scalatest)
+      libraryDependencies                    <+= (sbtVersion in sbtPlugin)(scalatest),
+      // This is a Jetty/Orbit thing:
+      // http://stackoverflow.com/questions/9889674/sbt-jetty-and-servlet-3-0
+      libraryDependencies                     += jettyOrbit
     )
   ).dependsOn(sbtLess, sbtJs)
 
