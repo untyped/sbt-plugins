@@ -35,7 +35,7 @@ object Build extends Build {
       version      := pluginsVersion,
       scalaVersion := "2.10.3",
       resolvers    += untyped,
-      // resolvers += untyped,
+      scalacOptions ++= Seq("-deprecation","-feature","-warning"),
       publishTo <<= version { version: String =>
        if (isSnapshot(version)) {
          for {

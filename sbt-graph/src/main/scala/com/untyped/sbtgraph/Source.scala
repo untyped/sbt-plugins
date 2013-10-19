@@ -1,9 +1,7 @@
 package com.untyped.sbtgraph
 
-import com.samskivert.mustache.{Mustache,Template}
-import java.util.Properties
+import com.samskivert.mustache.Mustache
 import sbt._
-import scala.collection._
 
 object Source {
 
@@ -52,9 +50,10 @@ trait Source {
   def isTemplated: Boolean
 
   def requiresRecompilation: Boolean = {
-    des map { des =>
-      requiresRecompilationFor(des)
-    } getOrElse false
+    des exists {
+      des =>
+        requiresRecompilationFor(des)
+    }
   }
 
   def requiresRecompilationFor(des: File): Boolean = {
@@ -66,7 +65,7 @@ trait Source {
 
   def compile: Option[File]
 
-  def clean: Unit =
+  def clean(): Unit =
     des foreach { des =>
       graph.log.info("Cleaning %s source %s".format(graph.pluginName, des))
       IO.delete(des)

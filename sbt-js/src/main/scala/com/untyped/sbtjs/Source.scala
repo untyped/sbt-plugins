@@ -2,11 +2,9 @@ package com.untyped.sbtjs
 
 import com.google.javascript.jscomp.{
   SourceFile => ClosureSource,
-  Compiler => ClosureCompiler,
-  _
+  Compiler => ClosureCompiler
 }
 import sbt._
-import scala.collection._
 import scala.collection.JavaConversions._
 
 trait Source extends com.untyped.sbtgraph.Source {

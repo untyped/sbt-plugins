@@ -3,13 +3,14 @@ package com.untyped.sbtrunmode
 import java.io.{File,FileInputStream}
 import java.net.InetAddress
 import java.util.Properties
+import scala.language.implicitConversions
 
 // Heavily based on Lift's Props.
 // 
 // Reimplemented here as there were a few things in 
 // Lift's properties handling that made it hard to reuse.
 
-case class RunMode(val name: String) {
+case class RunMode(name: String) {
   
   lazy val dottedName: String =
     if(name == "development") "" else name + "."
@@ -31,7 +32,7 @@ object Props {
     str match {
       case None => ""
       case Some("") => ""
-      case Some(str) => str + "."
+      case Some(s) => s + "."
     }
   
   implicit def fileToString(in: File) =
@@ -82,7 +83,7 @@ object Props {
       val in = new FileInputStream(new File(propFile))
       props.load(in)
       props.setProperty("run.mode", mode.name)
-      in.close
+      in.close()
       props
     } getOrElse {
       val props = new Properties

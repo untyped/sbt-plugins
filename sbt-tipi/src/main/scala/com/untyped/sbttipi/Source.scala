@@ -1,14 +1,12 @@
 package com.untyped.sbttipi
 
 // Need to be specific here because sbt.Doc conflicts with tipi.core.Doc:
-import sbt.{ File, IO, file, singleFileFinder, globFilter }
+import sbt.{ File, IO, singleFileFinder, globFilter }
 import scala.collection._
-import scala.util.parsing.combinator._
 import scala.util.parsing.input._
 import tipi.core._
-import tipi.core.Implicits._
 
-case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.Source with tipi.core.Implicits {
+case class Source(graph: Graph,src: File) extends com.untyped.sbtgraph.Source with tipi.core.Implicits {
 
   type S = com.untyped.sbttipi.Source
   type G = com.untyped.sbttipi.Graph
@@ -24,7 +22,7 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
 
     try {
       graph.parse(input) match {
-        case graph.parse.Success(doc, _) => doc
+        case graph.parse.Success(doc_, _) => doc_
         case err: graph.parse.NoSuccess =>
           sys.error("%s [%s,%s]: %s".format(src.toString, input.pos.line, input.pos.column, err.msg))
       }
@@ -37,7 +35,7 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
     new File(srcDirectory, path).getCanonicalFile
 
   def findFiles(pattern: String): Seq[File] =
-    (srcDirectory ** pattern) get
+    (srcDirectory ** pattern).get
 
   private def inClassLoader[T](cls: Class[_])(fn: => T): T = {
     val prev = Thread.currentThread.getContextClassLoader
@@ -97,7 +95,7 @@ case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.
           loop(body)
 
         case Range(children) =>
-          children.flatMap(loop _)
+          children.flatMap(loop)
 
         case _ => Nil
       }

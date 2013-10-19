@@ -5,14 +5,14 @@ import sbt._
 import scala.collection._
 
 case class Graph(
-    val log: Logger,
-    val sourceDirs: Seq[File],
-    val targetDir: File,
-    val templateProperties: Properties,
-    val downloadDir: File,
-    val lessVersion: Plugin.LessVersion,
-    val prettyPrint: Boolean,
-    val useCommandLine: Boolean = false
+    log: Logger,
+    sourceDirs: Seq[File],
+    targetDir: File,
+    templateProperties: Properties,
+    downloadDir: File,
+    lessVersion: Plugin.LessVersion,
+    prettyPrint: Boolean,
+    useCommandLine: Boolean = false
   ) extends com.untyped.sbtgraph.Graph {
 
   type S = com.untyped.sbtless.Source
@@ -29,7 +29,7 @@ case class Graph(
 
   val pluginName = "sbt-less"
 
-  override def dump: Unit = {
+  override def dump(): Unit = {
     log.debug("Graph for " + pluginName + ":")
 
     log.debug("  lessVersion:")
@@ -44,7 +44,7 @@ case class Graph(
     log.debug("  downloadDir:")
     log.debug("    " + downloadDir)
 
-    sources.foreach(dumpSource _)
+    sources.foreach(dumpSource)
   }
 
 }
