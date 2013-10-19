@@ -45,9 +45,9 @@ object Build extends Build {
 
   def releasePublishTo =
     Some(Resolver.url(
-      "sbt-plugin-releases",
-      new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases"
-    ))(Resolver.ivyStylePatterns))
+      "sbt-plugin-releases-publish",
+      new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases")
+    )(Resolver.ivyStylePatterns))
     // Once we drop SBT 0.12 support, this can change to the following:
     // Some(sbtPluginRepo("releases"))
 
