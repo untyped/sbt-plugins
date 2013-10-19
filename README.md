@@ -53,10 +53,10 @@ with different versions of SBT. Development releases are published with mileston
 
 Each plugin has its own set of configuration options described in its own README file:
 
- - [sbt-js](sbt-js/README.md)
- - [sbt-less](sbt-less/README.md)
- - [sbt-mustache](sbt-mustache/README.md)
- - [sbt-runmode](sbt-runmode/README.md)
+ - [sbt-js](sbt-js/)
+ - [sbt-less](sbt-less/)
+ - [sbt-mustache](sbt-mustache/)
+ - [sbt-runmode](sbt-runmode/)
 
 ## Changelog
 
