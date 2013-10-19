@@ -48,6 +48,8 @@ object Build extends Build {
       "sbt-plugin-releases",
       new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases"
     ))(Resolver.ivyStylePatterns))
+    // Once we drop SBT 0.12 support, this can change to the following:
+    // Some(sbtPluginRepo("releases"))
 
   // Settings -----------------------------------
 
