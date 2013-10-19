@@ -4,7 +4,6 @@ import java.nio.charset.Charset
 import java.util.Properties
 import sbt._
 import sbt.Keys._
-import sbt.Project.Initialize
 
 object Plugin extends sbt.Plugin {
 
@@ -18,7 +17,7 @@ object Plugin extends sbt.Plugin {
 
   import MustacheKeys._
 
-  def unmanagedSourcesTask: Initialize[Task[Seq[File]]] =
+  def unmanagedSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
     (streams, sourceDirectories in mustache, includeFilter in mustache, excludeFilter in mustache) map {
       (out, sourceDirs, includeFilter, excludeFilter) =>
         out.log.debug("sourceDirectories: " + sourceDirs)
@@ -27,11 +26,11 @@ object Plugin extends sbt.Plugin {
 
         sourceDirs.foldLeft(Seq[File]()) {
           (accum, sourceDir) =>
-            accum ++ sourceDir.descendantsExcept(includeFilter, excludeFilter).get
+            accum ++ com.untyped.sbtgraph.Descendents(sourceDir, includeFilter, excludeFilter).get
         }
     }
 
-  def sourceGraphTask: Initialize[Task[Graph]] =
+  def sourceGraphTask = // : Def.Initialize[Task[Graph]] =
     (streams, sourceDirectories in mustache, resourceManaged in mustache, unmanagedSources in mustache, templateProperties, downloadDirectory) map {
       (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir) =>
         out.log.debug("sbt-mustache template properties " + templateProperties)
@@ -44,15 +43,15 @@ object Plugin extends sbt.Plugin {
           downloadDir        = downloadDir
         )
 
-        sourceFiles.foreach(graph += _)
+        sourceFiles.foreach(graph +=)
 
         graph
     }
 
-  def watchSourcesTask: Initialize[Task[Seq[File]]] =
+  def watchSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
     (streams, sourceGraph in mustache) map {
       (out, graph) =>
-        graph.sources.map(_.src)
+        graph.sources.map(_.src) : Seq[File]
     }
 
   def compileTask =
@@ -64,7 +63,7 @@ object Plugin extends sbt.Plugin {
   def cleanTask =
     (streams, sourceGraph in mustache) map {
       (out, graph) =>
-        graph.sources.foreach(_.clean)
+        graph.sources.foreach(_.clean())
     }
 
   def mustacheSettingsIn(conf: Configuration): Seq[Setting[_]] =

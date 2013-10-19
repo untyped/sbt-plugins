@@ -4,6 +4,8 @@ scalaVersion := "2.9.2"
 
 seq(lessSettings : _*)
 
+(resourceManaged in (Compile, LessKeys.less)) <<= (target in Compile) { _ / "scripted" }
+
 LessKeys.lessVersion in (Compile, LessKeys.less) := LessVersion.Less130
 
 (includeFilter in (Compile, LessKeys.less)) := "bootstrap.less"

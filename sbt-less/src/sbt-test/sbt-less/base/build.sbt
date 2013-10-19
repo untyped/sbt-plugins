@@ -4,6 +4,8 @@ logLevel := Level.Debug
 
 seq(lessSettings : _*)
 
+(resourceManaged in (Compile, LessKeys.less)) <<= (target in Compile) { _ / "scripted" }
+
 LessKeys.templateProperties in Compile := {
   val props = new java.util.Properties
   props.setProperty("test.user.name", "mustache")

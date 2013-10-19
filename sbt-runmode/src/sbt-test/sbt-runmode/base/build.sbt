@@ -8,13 +8,16 @@ seq(webSettings : _*)
 
 seq(runModeSettings : _*)
 
-libraryDependencies ++= {
-  val liftVersion = "2.4-M4"
-  Seq(
-    "org.mortbay.jetty" % "jetty" % "6.1.22" % "container",
-    "javax.servlet" % "servlet-api" % "2.5" % "provided"
-  )
-}
+// This is a Jetty/Orbit thing:
+// http://stackoverflow.com/questions/9889674/sbt-jetty-and-servlet-3-0
+classpathTypes ~= (_ + "orbit")
+
+// This is a Jetty/Orbit thing:
+// http://stackoverflow.com/questions/9889674/sbt-jetty-and-servlet-3-0
+libraryDependencies ++= Seq(
+  "org.eclipse.jetty" % "jetty-webapp" % "8.1.7.v20120910" % "container,test",
+  "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container,compile" artifacts Artifact("javax.servlet", "jar", "jar")
+)
 
 InputKey[Unit]("contents") <<= inputTask { (argsTask: TaskKey[Seq[String]]) =>
   (argsTask, streams) map { (args, out) =>

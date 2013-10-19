@@ -1,3 +1,3 @@
-alert("Before (should appear after jQuery)");
-// require "http://code.jquery.com/jquery-1.7.js"
-alert("After (should also appear after jQuery)");
+alert("Before (should appear after Noel)");
+// require "https://raw.github.com/untyped/sbt-plugins/master/sbt-js/src/sbt-test/sbt-js/base/src/main/scala/file2.js"
+alert("After (should also appear after Noel)");

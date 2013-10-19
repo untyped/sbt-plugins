@@ -4,6 +4,8 @@ logLevel := Level.Debug
 
 seq(mustacheSettings : _*)
 
+(resourceManaged in (Compile, MustacheKeys.mustache)) <<= (target in Compile) { _ / "scripted" }
+
 (sourceDirectories in (Compile, MustacheKeys.mustache)) <<= (sourceDirectory in Compile) {
   srcDir =>
     Seq(srcDir / "resources" / "dir2", srcDir / "resources" / "dir1")

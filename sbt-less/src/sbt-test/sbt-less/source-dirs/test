@@ -5,11 +5,11 @@ $ sleep 1000
 > less
 
 # Check that the CSS files exist:
-$ exists target/scala-2.9.2/resource_managed/main/a.css
-$ exists target/scala-2.9.2/resource_managed/main/b.css
-$ exists target/scala-2.9.2/resource_managed/main/all.css
+$ exists target/scripted/a.css
+$ exists target/scripted/b.css
+$ exists target/scripted/all.css
 
 # Check that the CSS files have the correct content:
-> contents target/scala-2.9.2/resource_managed/main/a.css   fixtures/a.css
-> contents target/scala-2.9.2/resource_managed/main/b.css   fixtures/b.css
-> contents target/scala-2.9.2/resource_managed/main/all.css fixtures/all.css
+> contents target/scripted/a.css   fixtures/a.css
+> contents target/scripted/b.css   fixtures/b.css
+> contents target/scripted/all.css fixtures/all.css

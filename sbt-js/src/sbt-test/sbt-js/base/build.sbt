@@ -4,6 +4,8 @@ logLevel := Level.Debug
 
 seq(jsSettings : _*)
 
+(resourceManaged in (Compile, JsKeys.js)) <<= (target in Compile) { _ / "scripted" }
+
 JsKeys.templateProperties in Compile := {
   val props = new java.util.Properties
   props.setProperty("test.user.name", "Mustache")

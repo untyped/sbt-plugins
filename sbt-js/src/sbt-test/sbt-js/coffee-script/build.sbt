@@ -4,6 +4,8 @@ logLevel := Level.Debug
 
 seq(jsSettings : _*)
 
+(resourceManaged in (Compile, JsKeys.js)) <<= (target in Compile) { _ / "scripted" }
+
 JsKeys.coffeeBare in Compile := true
 
 JsKeys.coffeeVersion in Compile := CoffeeVersion.Coffee110

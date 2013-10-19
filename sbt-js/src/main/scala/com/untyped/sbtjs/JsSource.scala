@@ -2,7 +2,6 @@ package com.untyped.sbtjs
 
 import com.google.javascript.jscomp.{ SourceFile => ClosureSource }
 import sbt._
-import scala.collection._
 
 object JsSource {
 
@@ -16,7 +15,7 @@ object JsSource {
 
 }
 
-case class JsSource(val graph: Graph, val src: File) extends Source {
+case class JsSource(graph: Graph, src: File) extends Source {
 
   lazy val parents: List[Source] =
     for {

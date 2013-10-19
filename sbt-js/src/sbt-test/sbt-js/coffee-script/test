@@ -1,9 +1,7 @@
 # Run the run-test task (which calls compile:js) and expect it to fail:
 > js
 
-$ pause
-
 # Check that the JS file exists:
-$ exists target/scala-2.9.2/resource_managed/main/resources/file1.js
+$ exists target/scripted/resources/file1.js
 
-> contents target/scala-2.9.2/resource_managed/main/resources/file1.js fixtures/file1.js
+> contents target/scripted/resources/file1.js fixtures/file1.js

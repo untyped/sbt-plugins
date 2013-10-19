@@ -2,11 +2,11 @@
 > less
 
 # Check that only the relevant files exist in the target directory:
--$ exists target/scala-2.9.2/resource_managed/main/less/1.css
--$ exists target/scala-2.9.2/resource_managed/main/less/2.css
-$ exists target/scala-2.9.2/resource_managed/main/less/3.include.css
--$ exists target/scala-2.9.2/resource_managed/main/less/4.css
--$ exists target/scala-2.9.2/resource_managed/main/less/5.exclude.include.css
+-$ exists target/scripted/less/1.css
+-$ exists target/scripted/less/2.css
+$ exists target/scripted/less/3.include.css
+-$ exists target/scripted/less/4.css
+-$ exists target/scripted/less/5.exclude.include.css
 
 # Check that the contents of the generated files is correct:
-> contents target/scala-2.9.2/resource_managed/main/less/3.include.css fixtures/3.include.css
+> contents target/scripted/less/3.include.css fixtures/3.include.css
