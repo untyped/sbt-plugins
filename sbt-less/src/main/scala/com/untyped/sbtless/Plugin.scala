@@ -1,10 +1,8 @@
 package com.untyped.sbtless
 
-import java.nio.charset.Charset
 import java.util.Properties
 import sbt._
 import sbt.Keys._
-import sbt.Project.Initialize
 
 object Plugin extends sbt.Plugin {
 
@@ -30,7 +28,7 @@ object Plugin extends sbt.Plugin {
     val Less115 = new LessVersion { val filename = "less-rhino-1.1.5.js" }
     val Less130 = new LessVersion { val filename = "less-1.3.0.js" }
     val Less133 = new LessVersion { val filename = "less-1.3.3.js" }
-    val Less140 = new LessVersion { val filename = "less-1.4.0.js" }
+    val Less142 = new LessVersion { val filename = "less-1.4.2.js" }
   }
 
   import LessKeys._
@@ -43,7 +41,7 @@ object Plugin extends sbt.Plugin {
     result
   }
 
-  def unmanagedSourcesTask: Def.Initialize[Task[Seq[File]]] =
+  def unmanagedSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
     (streams, sourceDirectories in less, includeFilter in less, excludeFilter in less) map {
       (out, sourceDirs, includeFilter, excludeFilter) =>
         time(out, "unmanagedSourcesTask") {
@@ -53,12 +51,12 @@ object Plugin extends sbt.Plugin {
 
           sourceDirs.foldLeft(Seq[File]()) {
             (accum, sourceDir) =>
-              accum ++ sourceDir.descendantsExcept(includeFilter, excludeFilter).get
+              accum ++ com.untyped.sbtgraph.Descendents(sourceDir, includeFilter, excludeFilter).get
           }
         }
     }
 
-  def sourceGraphTask: Def.Initialize[Task[Graph]] =
+  def sourceGraphTask = // : Def.Initialize[Task[Graph]] =
     (streams, sourceDirectories in less, resourceManaged in less, unmanagedSources in less, templateProperties in less, downloadDirectory in less, prettyPrint in less, lessVersion in less, useCommandLine in less) map {
       (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, prettyPrint, lessVersion, useCommandLine) =>
         time(out, "sourceGraphTask") {
@@ -81,10 +79,10 @@ object Plugin extends sbt.Plugin {
         }
     }
 
-  def watchSourcesTask: Def.Initialize[Task[Seq[File]]] =
+  def watchSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
     (streams, sourceGraph in less) map {
       (out, graph) =>
-        graph.sources.map(_.src)
+        graph.sources.map(_.src) : Seq[File]
     }
 
   def compileTask =
@@ -98,7 +96,7 @@ object Plugin extends sbt.Plugin {
   def cleanTask =
     (streams, sourceGraph in less) map {
       (out, graph) =>
-        graph.sources.foreach(_.clean)
+        graph.sources.foreach(_.clean())
     }
 
   def lessSettingsIn(conf: Configuration): Seq[Setting[_]] = {
@@ -106,7 +104,7 @@ object Plugin extends sbt.Plugin {
       prettyPrint                  :=  false,
       includeFilter in less        :=  "*.less",
       excludeFilter in less        :=  (".*" - ".") || "_*" || HiddenFileFilter,
-      lessVersion in less          :=  LessVersion.Less140,
+      lessVersion in less          :=  LessVersion.Less142,
       useCommandLine in less       :=  false,
       sourceDirectory in less      <<= (sourceDirectory in conf),
       sourceDirectories in less    <<= (sourceDirectory in (conf, less)) { Seq(_) },

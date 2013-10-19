@@ -1,25 +1,55 @@
 import sbt._
 import sbt.Keys._
-import Defaults._
+import net.virtualvoid.sbt.cross._
 
 object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.6-M8"
-  val tipiVersion = "0.1-M4"
+  val pluginsVersion = "0.6"
 
   // Libraries ----------------------------------
 
   val untyped   = Resolver.url("Untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
 
-  val closure   = "com.google.javascript" % "closure-compiler" % "v20130823"
-  val mustache  = "com.samskivert" % "jmustache" % "1.3"
-  val rhino     = "org.mozilla" % "rhino" % "1.7R3"
-  val scalatest = "org.scalatest" %% "scalatest" %  "1.9.2"
-  val tipi      = "com.untyped" %% "tipi" % tipiVersion % "compile" changing()
-  val jetty		=  "org.eclipse.jetty" % "jetty-webapp" % "9.0.5.v20130815" % "container,test"
-  val xsbtwebplugin = "com.earldouglas" %% "xsbt-web-plugin" % "0.4.2"
+  val closure   = "com.google.javascript" % "closure-compiler"   % "v20130227"
+  val mustache  = "com.samskivert"        % "jmustache"          % "1.3"
+  val rhino     = "org.mozilla"           % "rhino"              % "1.7R3"
+
+  def scalatest(sbtVersion: String) =
+    sbtVersion match {
+      case v if v startsWith "0.12" => "org.scalatest" %% "scalatest" % "1.9.1" % "test"
+      case v if v startsWith "0.13" => "org.scalatest" %% "scalatest" % "1.9.1" % "test"
+      case v => throw new Exception("Build.scala: don't know what version of scalatest to use for SBT " + v)
+    }
+
+  def webPlugin(sbtVersion: String) =
+    sbtVersion match {
+      case v if v startsWith "0.12" => Defaults.sbtPluginExtra("com.earldouglas" % "xsbt-web-plugin" % "0.4.2", "0.12", "2.9.2")
+      case v if v startsWith "0.13" => Defaults.sbtPluginExtra("com.earldouglas" % "xsbt-web-plugin" % "0.4.2", "0.13", "2.10")
+      case v => throw new Exception("Build.scala: don't know what version of xsbt-web-plugin to use for SBT " + v)
+    }
+
+  // This is a Jetty/Orbit thing:
+  // http://stackoverflow.com/questions/9889674/sbt-jetty-and-servlet-3-0
+  def jettyOrbit =
+    "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" artifacts (Artifact("javax.servlet", "jar", "jar"))
+
+  def snapshotPublishTo =
+    for {
+      host    <- Option(System.getenv("DEFAULT_IVY_REPO_HOST"))
+      path    <- Option(System.getenv("DEFAULT_IVY_REPO_PATH"))
+      user    <- Option(System.getenv("DEFAULT_IVY_REPO_USER"))
+      keyfile <- Option(System.getenv("DEFAULT_IVY_REPO_KEYFILE"))
+    } yield Resolver.sftp("UntypedPublish", host, path)(Resolver.ivyStylePatterns).as(user, file(keyfile))
+
+  def releasePublishTo =
+    Some(Resolver.url(
+      "sbt-plugin-releases-publish",
+      new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases")
+    )(Resolver.ivyStylePatterns))
+    // Once we drop SBT 0.12 support, this can change to the following:
+    // Some(sbtPluginRepo("releases"))
 
   // Settings -----------------------------------
 
@@ -28,33 +58,23 @@ object Build extends Build {
 
   def defaultSettings =
     Project.defaultSettings ++
-    scriptedSettings ++
+    CrossPlugin.crossBuildingSettings ++
+    CrossBuilding.scriptedSettings ++
     Seq(
-      sbtPlugin    := true,
-      organization := "com.untyped",
-      version      := pluginsVersion,
-      scalaVersion := "2.10.3",
-      resolvers    += untyped,
-      // resolvers += untyped,
-      publishTo <<= version { version: String =>
-       if (isSnapshot(version)) {
-         for {
-           host    <- Option(System.getenv("DEFAULT_IVY_REPO_HOST"))
-           path    <- Option(System.getenv("DEFAULT_IVY_REPO_PATH"))
-           user    <- Option(System.getenv("DEFAULT_IVY_REPO_USER"))
-           keyfile <- Option(System.getenv("DEFAULT_IVY_REPO_KEYFILE"))
-         } yield Resolver.sftp("UntypedPublish", host, path)(Resolver.ivyStylePatterns).as(user, file(keyfile))
-       } else {
-         Some(Resolver.url(
-           "sbt-plugin-releases",
-           new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases"
-         ))(Resolver.ivyStylePatterns))
-       }
-      },
-      publishMavenStyle := false,
-      scriptedBufferLog := false,
-      scalacOptions += "-deprecation",
-      scalacOptions += "-unchecked"
+      fork                           := true,
+      fork in scripted               := true,
+      sbtPlugin                      := true,
+      organization                   := "com.untyped",
+      version                        := pluginsVersion,
+      CrossBuilding.crossSbtVersions := Seq("0.12", "0.13"),
+      resolvers                      += untyped,
+      scalacOptions                 ++= Seq("-deprecation"),
+      publishTo                     <<= version { v => if (isSnapshot(v)) snapshotPublishTo else releasePublishTo },
+      publishMavenStyle              := false,
+      scriptedBufferLog              := false,
+      scalacOptions                  += "-deprecation",
+      scalacOptions                  += "-unchecked",
+      scriptedLaunchOpts             += "-XX:MaxPermSize=256m"
     )
 
   // Projects -----------------------------------
@@ -62,14 +82,11 @@ object Build extends Build {
   lazy val root = Project(
     id = "root",
     base = file("."),
-    settings = defaultSettings ++ Seq(
-      publish := {}
-    )
+    settings = defaultSettings ++ Seq(publish := ())
   ) aggregate (
     sbtJs,
     sbtLess,
     sbtMustache,
-    sbtTipi,
     sbtRunmode
   )
 
@@ -77,14 +94,12 @@ object Build extends Build {
     id = "sbt-graph",
     base = file("sbt-graph"),
     settings = defaultSettings ++ Seq(
-      publishArtifact in Compile := false,
+      publishArtifact in Compile               := false,
       publishArtifact in (Compile, packageBin) := false,
       publishArtifact in (Compile, packageSrc) := false,
       publishArtifact in (Compile, packageDoc) := false,
-      libraryDependencies ++= Seq(
-        mustache,
-        scalatest % "test"
-      )
+      libraryDependencies                      += mustache,
+      libraryDependencies                     <+= (sbtVersion in sbtPlugin)(scalatest)
     )
   )
 
@@ -92,11 +107,8 @@ object Build extends Build {
     id = "sbt-less",
     base = file("sbt-less"),
     settings = defaultSettings ++ Seq(
-      libraryDependencies ++= Seq(
-        rhino,
-        mustache,
-        scalatest % "test"
-      ),
+      libraryDependencies                    ++= Seq(rhino, mustache),
+      libraryDependencies                    <+= (sbtVersion in sbtPlugin)(scalatest),
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-less:
       unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
     )
@@ -106,12 +118,8 @@ object Build extends Build {
     id = "sbt-js",
     base = file("sbt-js"),
     settings = defaultSettings ++ Seq(
-      libraryDependencies ++= Seq(
-        closure,
-        rhino,
-        mustache,
-        scalatest % "test"
-      ),
+      libraryDependencies                    ++= Seq(closure, rhino, mustache),
+      libraryDependencies                    <+= (sbtVersion in sbtPlugin)(scalatest),
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-js:
       unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
     )
@@ -121,24 +129,8 @@ object Build extends Build {
     id = "sbt-mustache",
     base = file("sbt-mustache"),
     settings = defaultSettings ++ Seq(
-      libraryDependencies ++= Seq(
-        mustache,
-        scalatest % "test"
-      ),
-      // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-mustache:
-      unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
-    )
-  )
-
-  lazy val sbtTipi = Project(
-    id = "sbt-tipi",
-    base = file("sbt-tipi"),
-    settings = defaultSettings ++ Seq(
-      libraryDependencies ++= Seq(
-        tipi,
-        mustache,
-        scalatest % "test"
-      ),
+      libraryDependencies                    ++= Seq(rhino, mustache),
+      libraryDependencies                    <+= (sbtVersion in sbtPlugin)(scalatest),
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-mustache:
       unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
     )
@@ -148,8 +140,14 @@ object Build extends Build {
     id = "sbt-runmode",
     base = file("sbt-runmode"),
     settings = defaultSettings ++ Seq(
-      libraryDependencies += sbtPluginExtra(xsbtwebplugin, "0.13", "2.10"),
-      libraryDependencies += scalatest % "test"
+      // This is a Jetty/Orbit thing:
+      // http://stackoverflow.com/questions/9889674/sbt-jetty-and-servlet-3-0
+      classpathTypes                          ~= (_ + "orbit"),
+      libraryDependencies                    <+= (sbtVersion in sbtPlugin)(webPlugin),
+      libraryDependencies                    <+= (sbtVersion in sbtPlugin)(scalatest),
+      // This is a Jetty/Orbit thing:
+      // http://stackoverflow.com/questions/9889674/sbt-jetty-and-servlet-3-0
+      libraryDependencies                     += jettyOrbit
     )
   ).dependsOn(sbtLess, sbtJs)
 

@@ -2,6 +2,8 @@ logLevel := Level.Debug
 
 seq(mustacheSettings : _*)
 
+(resourceManaged in (Compile, MustacheKeys.mustache)) <<= (target in Compile) { _ / "scripted" }
+
 MustacheKeys.templateProperties in Compile := {
   val props = new java.util.Properties
   props.setProperty("test.user.name", "Mustache")

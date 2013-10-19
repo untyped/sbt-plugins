@@ -1,13 +1,12 @@
 package com.untyped.sbtrunmode
 
 import com.earldouglas.xsbtwebplugin._
-import com.earldouglas.xsbtwebplugin.{PluginKeys=>WebKeys}
+import com.earldouglas.xsbtwebplugin.{ PluginKeys => WebKeys }
 import java.nio.charset.Charset
 import java.util.Properties
 import sbt._
 import sbt.Keys._
-import sbt.Keys.{`package` => packageKey}
-import sbt.Project.Initialize
+import sbt.Keys.{ `package` => packageKey }
 import com.untyped.sbtjs.Plugin.JsKeys
 import com.untyped.sbtless.Plugin.LessKeys
 
@@ -30,25 +29,27 @@ object Plugin extends sbt.Plugin {
 
   object JettyVersion {
     val Jetty6 = new JettyVersion {
-      val template =  """|<?xml version="1.0"?>
-                        |<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
-                        |<Configure class="org.mortbay.jetty.webapp.WebAppContext">
-                        |  <Call class="java.lang.System" name="setProperty">
-                        |    <Arg>run.mode</Arg>
-                        |    <Arg>%s</Arg>
-                        |  </Call>
-                        |</Configure>"""
+      val template =
+        """|<?xml version="1.0"?>
+           |<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+           |<Configure class="org.mortbay.jetty.webapp.WebAppContext">
+           |  <Call class="java.lang.System" name="setProperty">
+           |    <Arg>run.mode</Arg>
+           |    <Arg>%s</Arg>
+           |  </Call>
+           |</Configure>"""
     }
     val Jetty7Plus = new JettyVersion {
-      val template =  """|<?xml version="1.0"  encoding="UTF-8"?>
-                        |<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
-                        |
-                        |<Configure class="org.eclipse.jetty.webapp.WebAppContext">
-                        |    <Call class="java.lang.System" name="setProperty">
-                        |        <Arg>run.mode</Arg>
-                        |        <Arg>%s</Arg>
-                        |    </Call>
-                        |</Configure>"""
+      val template =
+        """|<?xml version="1.0"  encoding="UTF-8"?>
+           |<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+           |
+           |<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+           |    <Call class="java.lang.System" name="setProperty">
+           |        <Arg>run.mode</Arg>
+           |        <Arg>%s</Arg>
+           |    </Call>
+           |</Configure>"""
     }
   }
 
@@ -61,13 +62,13 @@ object Plugin extends sbt.Plugin {
   // Alias to make RunMode visible in .sbt files:
   val RunMode = com.untyped.sbtrunmode.RunMode
 
-  def propertiesSetting: Def.Initialize[Properties] =
+  def propertiesSetting = // : Def.Initialize[Properties] =
     (streams, propertiesPath, runMode) apply {
       (out, propertiesPath, runMode) =>
         Props.properties(propertiesPath, runMode)
     }
 
-  def updateRunModeTask: Def.Initialize[Task[Unit]] =
+  def updateRunModeTask = // : Def.Initialize[Task[Unit]] =
     (streams, runMode, jettyWebPath, charset, jettyVersion) map {
       (out, runMode, jettyWebPath, charset, jettyVersion) =>
         runMode match {

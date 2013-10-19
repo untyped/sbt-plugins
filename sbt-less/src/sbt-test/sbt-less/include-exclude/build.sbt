@@ -8,6 +8,8 @@ seq(lessSettings : _*)
 
 (excludeFilter in (Compile, LessKeys.less)) := ("*.exclude*": FileFilter)
 
+(resourceManaged in (Compile, LessKeys.less)) <<= (target in Compile) { _ / "scripted" }
+
 InputKey[Unit]("contents") <<= inputTask { (argsTask: TaskKey[Seq[String]]) =>
   (argsTask, streams) map { (args, out) =>
     args match {

@@ -1,5 +1,0 @@
-Basic Import test:
-
-{{import source="Test01.import"}}
-
-{{DefineAuthor author=GlobalAuthor url=GlobalURL}}

@@ -1,7 +1,6 @@
 package com.untyped.sbtmustache
 
 import sbt._
-import scala.collection._
 
 object JsSource {
 
@@ -12,7 +11,7 @@ object JsSource {
 
 }
 
-case class Source(val graph: Graph, val src: File) extends com.untyped.sbtgraph.Source {
+case class Source(graph: Graph, src: File) extends com.untyped.sbtgraph.Source {
 
   type S = com.untyped.sbtmustache.Source
   type G = com.untyped.sbtmustache.Graph
