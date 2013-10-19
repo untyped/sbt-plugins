@@ -1,11 +1,10 @@
 package com.untyped.sbttipi
 
 import java.nio.charset.Charset
-import java.util.Properties
 import sbt._
 import sbt.Keys._
-import sbt.Project.Initialize
 import tipi.core._
+import scala.language.postfixOps
 
 object Plugin extends sbt.Plugin {
 
@@ -43,7 +42,7 @@ object Plugin extends sbt.Plugin {
           downloadDir = downloadDir
         )
 
-        sourceFiles.foreach(graph += _)
+        sourceFiles.foreach(graph +=)
 
         graph
     }
@@ -63,7 +62,7 @@ object Plugin extends sbt.Plugin {
   def cleanTask =
     (streams, sourceGraph in tipi) map {
       (out, graph) =>
-        graph.sources.foreach(_.clean)
+        graph.sources.foreach(_.clean())
     }
 
   def tipiSettingsIn(conf: Configuration): Seq[Setting[_]] =

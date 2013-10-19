@@ -1,16 +1,15 @@
 package com.untyped.sbttipi
 
-import java.util.Properties
 import sbt._
 import scala.collection._
 import tipi.core._
 
 case class Graph(
-  val log: Logger,
-  val sourceDirs: Seq[File],
-  val targetDir: File,
-  val environment: Env,
-  val downloadDir: File
+  log: Logger,
+  sourceDirs: Seq[File],
+  targetDir: File,
+  environment: Env,
+  downloadDir: File
 ) extends com.untyped.sbtgraph.Graph {
   type S = com.untyped.sbttipi.Source
 

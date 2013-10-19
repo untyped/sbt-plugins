@@ -1,10 +1,9 @@
 package com.untyped.sbtless
 
-import java.nio.charset.Charset
 import java.util.Properties
 import sbt._
 import sbt.Keys._
-import sbt.Project.Initialize
+import scala.language.postfixOps
 
 object Plugin extends sbt.Plugin {
 
@@ -75,7 +74,7 @@ object Plugin extends sbt.Plugin {
             useCommandLine     = useCommandLine
           )
 
-          sourceFiles.foreach(graph += _)
+          sourceFiles.foreach(graph +=)
 
           graph
         }
@@ -98,7 +97,7 @@ object Plugin extends sbt.Plugin {
   def cleanTask =
     (streams, sourceGraph in less) map {
       (out, graph) =>
-        graph.sources.foreach(_.clean)
+        graph.sources.foreach(_.clean())
     }
 
   def lessSettingsIn(conf: Configuration): Seq[Setting[_]] = {
