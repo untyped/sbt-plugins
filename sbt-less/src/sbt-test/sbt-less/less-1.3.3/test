@@ -1,0 +1,12 @@
+# Compile all sources:
+> less
+
+# Check that only the relevant files exist in the target directory:
+$ exists target/scripted/less/1.css
+$ exists target/scripted/less/2.css
+$ exists target/scripted/less/3.css
+
+# Check that the contents of the generated files is correct:
+> contents target/scripted/less/1.css fixtures/1.css
+> contents target/scripted/less/2.css fixtures/2.css
+> contents target/scripted/less/3.css fixtures/3.css
