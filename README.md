@@ -182,6 +182,10 @@ You can grab command line addons to Git to assist with Git Flow. For example, on
 
     brew install git-flow
 
+### Building
+
+We strongly recommend you use the latest version of Paul Phillips' [SBT launcher] script to automatically select and install the correct version of SBT to build this project.
+
 ### Tests
 
 Please make sure all tests pass before submitting a pull request. The build script uses the
@@ -278,3 +282,4 @@ v0.1 used a tweaked version of the [Less for Java] wrapper by Asual.
 [Tim Nelson]: https://github.com/eltimn
 [Untyped]: http://untyped.com
 [YUI Compressor SBT plugin]: https://github.com/hoffrocket/sbt-yui
+[SBT launcher]: https://github.com/paulp/sbt-extras
