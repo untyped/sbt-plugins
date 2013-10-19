@@ -65,11 +65,11 @@ object Build extends Build {
       sbtPlugin                      := true,
       organization                   := "com.untyped",
       version                        := pluginsVersion,
-      scalaVersion                   := "2.10.1",
+      scalaVersion                   := "2.10.3",
       CrossBuilding.crossSbtVersions := Seq("0.12", "0.13"),
       resolvers                      += untyped,
       scalacOptions                 ++= Seq("-deprecation"),
-      publishTo                     <<= (version) { v => if (isSnapshot(v)) snapshotPublishTo else releasePublishTo },
+      publishTo                     <<= version { v => if (isSnapshot(v)) snapshotPublishTo else releasePublishTo },
       publishMavenStyle              := false,
       scriptedBufferLog              := false,
       scalacOptions                  += "-deprecation",
@@ -81,22 +81,19 @@ object Build extends Build {
   lazy val root = Project(
     id = "root",
     base = file("."),
-    settings = defaultSettings ++ Seq(
-      publish := {}
-    )
+    settings = defaultSettings ++ Seq(publish := {})
   ) aggregate (
     sbtJs,
     sbtLess,
-    sbtMustache
-    // sbtTipi,
-    // sbtRunmode
+    sbtMustache,
+    sbtRunmode
   )
 
   lazy val sbtGraph = Project(
     id = "sbt-graph",
     base = file("sbt-graph"),
     settings = defaultSettings ++ Seq(
-      publishArtifact in (Compile)             := false,
+      publishArtifact in Compile               := false,
       publishArtifact in (Compile, packageBin) := false,
       publishArtifact in (Compile, packageSrc) := false,
       publishArtifact in (Compile, packageDoc) := false,
