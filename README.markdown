@@ -1,178 +1,146 @@
-Untyped SBT Plugins
-===================
+# Untyped SBT Plugins
 
-Copyright 2011-12 [Dave Gurnell] of [Untyped]
+Copyright 2011-12 [Dave Gurnell] of [Untyped].
 
 This repo contains source for three SBT plugins:
 
  - [sbt-less] - Less CSS compilation, minification, and templating;
  - [sbt-js] - Javascript and Coffeescript compilation, minification, and templating;
- - [sbt-tipi] - wrapper for the [Tipi] templating language;
  - [sbt-runmode] - specification of Lift run modes using custom jetty-web.xml files.
 
 See the `README` files in the relevant subdirectories for more information and acknowledgements.
 
-Building the Plugins
-====================
+## Installation
 
-The build script uses the [sbt-cross-building] plugin to target various SBT and Scala versions.
+Create a file called `plugins.sbt` in your `project` directory and add the following:
 
-To compile the code for all targetted versions of SBT, do:
+```scala
+// This line is needed for development releases but not stable ones:
 
-    ^compile
+resolvers += Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
 
-To run the `sbt-scripted` tests (takes a loooong time):
+// Add whichever plugins you want to use:
 
-    ^scripted
+addSbtPlugin("com.untyped" % "sbt-js"       % <<VERSION>>)
 
-Version 0.6 (current development release)
-=========================================
+addSbtPlugin("com.untyped" % "sbt-less"     % <<VERSION>>)
 
-This release is compatible with Scala 2.9.2 and SBT 0.12.1.
-Sample `plugins.sbt` file:
+addSbtPlugin("com.untyped" % "sbt-mustache" % <<VERSION>>)
 
-    resolvers ++= Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
+addSbtPlugin("com.untyped" % "sbt-runmode"  % <<VERSION>>)
+```
 
-    addSbtPlugin("com.untyped" % "sbt-js"      % <<VERSION>>)
+Then, in your `build.sbt`, add the following:
 
-    addSbtPlugin("com.untyped" % "sbt-less"    % <<VERSION>>)
+```scala
+// Add the lines below for whichever plugins you want to use:
 
-    addSbtPlugin("com.untyped" % "sbt-runmode" % <<VERSION>>)
+seq(jsSettings : _*)
 
-    addSbtPlugin("com.untyped" % "sbt-tipi"    % <<VERSION>>)
+seq(lessSettings : _*)
 
-Development snapshots are published with milestone suffixes (`"0.6-M1"` and so on). See [Build.scala] for the latest version number.
+seq(mustacheSettings : _*)
 
-New features:
+seq(runmodeSettings : _*)
+```
 
-Updated to Google Closure Compiler v20130227 and added the *strict mode*, *optimisation level* and *warning level* options. Thanks to [Alexandre Richonnier] for these features.
+See the changelog below for the current stable and development version numbers and their compatibility
+with different versions of SBT. Development releases are published with milestone suffixes
+(`"0.x-M1"` and so on). See [Build.scala] on the `develop` branch for the latest version number.
 
-Added the option to change the Coffee Script compiler version, changed the default version to v1.6.1, and added the *bare* option.
+Each plugin has its own set of options, described in a separate README in the relevant subdirectory:
 
-Added the [sbt-tipi] plugin for the [Tipi] templating language.
+ - [sbt-js](sbt-js/README.md)
+ - [sbt-less](sbt-less/README.md)
+ - [sbt-mustache](sbt-mustache/README.md)
+ - [sbt-runmode](sbt-runmode/README.md)
 
-Version 0.5 (current stable release)
-====================================
+## Changelog
 
-This is a dual-release for Scala 2.9.2 / SBT 0.11.3 and Scala 2.9.1 / SBT 0.12.1.
-Sample `plugins.sbt` file:
-
-    resolvers ++= Resolver.url(
-      "sbt-plugin-releases",
-      url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/"
-    ))(Resolver.ivyStylePatterns)
-
-    addSbtPlugin("com.untyped" % "sbt-js"      % "0.5")
-
-    addSbtPlugin("com.untyped" % "sbt-less"    % "0.5")
-
-    addSbtPlugin("com.untyped" % "sbt-runmode" % "0.5")
+### Version 0.6 (current development release; SBT 0.12, 0.13)
 
 New features:
 
-Supports SBT 0.12.1 and Scala 2.9.2.
+ - Added support for SBT 0.13. Thanks to [mdedetrich] for this and for numerous other
+   clean-ups to the code.
 
-Added the experimental `useCommandLine` key for `sbt-less`, allowing you to
-use command line `lessc` instead of Rhino (defaults to `false`).
+ - Updated to Google Closure Compiler v20130227 and added the *strict mode*,
+   *optimisation level* and *warning level* options. Thanks to [Alexandre Richonnier]
+   for these features.
 
-Better reporting of line/column numbers for Less CSS compilation errors.
+ - Added the option to change the Coffee Script compiler version, changed the default
+   version to v1.6.1, and added the *bare* option.
+
+### Version 0.5 (current stable release; SBT 0.11.3, 0.12)
+
+New features:
+
+ - Added an experimental `useCommandLine` key for `sbt-less`, allowing you to
+   use command line `lessc` instead of Rhino (defaults to `false`).
+
+ - Better reporting of line/column numbers for Less CSS compilation errors.
 
 Bug fixes:
 
-Fixed a bug that caused unnecessary recompilation of multi-file JS/Less builds
+ - Fixed a bug that caused unnecessary recompilation of multi-file JS/Less builds
 when `includeFilter` was used.
 
 Removed features:
 
-Reverted to the original placement of Less/CSS `@import` statements.
+ - Reverted to the original placement of Less/CSS `@import` statements.
 Imports are once again inlined before the top of the file rather than at
 the point of the import. There are two reasons for this change:
 
- 1. By inlining before the top of the file, the plugin can ensure that
-    each Less/CSS library is included once and once only in the output file.
-    This ensures efficient compilation of complex libraries such as Twitter
-    Bootstrap, producing a several hundred percent speedup.
+    - By inlining before the top of the file, the plugin can ensure that
+      each Less/CSS library is included once and once only in the output file.
+      This ensures efficient compilation of complex libraries such as Twitter
+      Bootstrap, producing a several hundred percent speedup.
 
- 2. The [W3C specification] for `@import` statements states that they are
-    only allowed at the top of a file. The two inlining behaviours of sbt-less
-    are consistent if this restriction is applied by the stylesheet author
-    (i.e. most people should be unaffected by this regression).
+    - The [W3C specification] for `@import` statements states that they are
+      only allowed at the top of a file. The two inlining behaviours of sbt-less
+      are consistent if this restriction is applied by the stylesheet author
+      (i.e. most people should be unaffected by this regression).
 
 [W3C specification]: http://www.w3.org/TR/CSS21/cascade.html#at-import
 
-Version 0.4
-===========
-
-This version works with SBT SBT 0.11.2. Sample `plugins.sbt` file:
-
-    resolvers ++= Resolver.url(
-      "sbt-plugin-releases",
-      url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/"
-    ))(Resolver.ivyStylePatterns)
-
-    addSbtPlugin("com.untyped" % "sbt-js"      % "0.4")
-
-    addSbtPlugin("com.untyped" % "sbt-less"    % "0.4")
-
-    addSbtPlugin("com.untyped" % "sbt-runmode" % "0.4")
+### Version 0.4 (SBT 0.11.2)
 
 New features:
 
-You can now specify multiple `sourceDirectories` in `sbt-js` and `sbt-less`,
-providing `CLASSPATH`-style semantics when resolving files in `// require` and
-`@import` statements.
+ - You can now specify multiple `sourceDirectories` in `sbt-js` and `sbt-less`,
+   providing `CLASSPATH`-style semantics when resolving files in `// require` and
+   `@import` statements.
 
-This is useful if you want to override a single file in a library such as
-Twitter Bootstrap. Check the library out as a Git submodule in your project,
-and specify your sourceDirectories as follows:
+ - This is useful if you want to override a single file in a library such as
+   Twitter Bootstrap. Check the library out as a Git submodule in your project,
+   and specify your sourceDirectories as follows:
 
-    (sourceDirectories in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile) {
-      srcDir =>
-        Seq(
-          srcDir / "path" / "to" / "my" / "files",
-          srcDir / "path" / "to" / "twitter" / "bootstrap"
-        )
-    }
+   ```scala
+   (sourceDirectories in (Compile, LessKeys.less)) <<=
+     (sourceDirectory in Compile) {
+       srcDir =>
+         Seq(
+           srcDir / "path" / "to" / "my" / "files",
+           srcDir / "path" / "to" / "twitter" / "bootstrap"
+         )
+     }
+   ```
 
-Any `@import` statements are resolved relative to your files first, and then
-Twitter's files. You can override `variables.less` and still maintain the ability
-to pull the latest fixes from Twitter's Github repo.
+ - Any `@import` statements are resolved relative to your files first, and then
+   Twitter's files. You can override `variables.less` and still maintain the ability
+   to pull the latest fixes from Twitter's Github repo.
 
 Changes and bug fixes:
 
-Less CSS content pulled in by `@import` statements now appears at the point of the
-`@import` statement, rather than at the top of the file. For example, the following
-three files:
+ - Less CSS content pulled in by `@import` statements now appears at the point of the
+   `@import` statement, rather than at the top of the file. `\\ require` statements in
+   Javascript and Coffeescript files are unaffected.
 
-    a.less:
-    .a{color:black;}
+   Thanks to [Denis Bardadym] for this fix.
 
-    b.less:
-    .b{color:black;}
+   **Note: this feature was reverted in sbt-less version 0.5.**
 
-    c.less:
-    @import "a.less";
-    .c{color:black;}
-    @import "b.less";
-
-compile to:
-
-    .a{color:black;}
-    .c{color:black;}
-    .b{color:black;}
-
-where they would previously have compiled to:
-
-    .a{color:black;}
-    .b{color:black;}
-    .c{color:black;}
-
-Note that `\\ require` statements in Javascript and Coffeescript files are unaffected.
-
-Thanks to [Denis Bardadym] for this fix.
-
-Version 0.3
-===========
+### Version 0.3 (SBT 0.11.0, 0.11.2)
 
 No new features or bug fixes.
 
@@ -183,28 +151,7 @@ As a consequence of this, certain things have changed:
  - the group ID has changed from `untyped` to `com.untyped`;
  - the package names have changed from `untyped.<foo>` to `com.untyped.sbt<foo>`.
 
-These versions work with SBT 0.11.0 and SBT 0.11.2. Sample `plugins.sbt` file:
-
-    resolvers ++= Resolver.url("sbt-plugin-releases", url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
-
-    addSbtPlugin("com.untyped" % "sbt-js"      % "0.3")
-
-    addSbtPlugin("com.untyped" % "sbt-less"    % "0.3")
-
-    addSbtPlugin("com.untyped" % "sbt-runmode" % "0.3")
-
-Snapshots are published on [ivy.untyped.com]:
-
-    resolvers ++= Resolver.url("Untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
-
-    addSbtPlugin("com.untyped" % "sbt-js"      % "0.4-SNAPSHOT")
-
-    addSbtPlugin("com.untyped" % "sbt-less"    % "0.4-SNAPSHOT")
-
-    addSbtPlugin("com.untyped" % "sbt-runmode" % "0.4-SNAPSHOT")
-
-Version 0.2
-===========
+### Version 0.2 (SBT 0.11.0, 0.11.2)
 
 New features:
 
@@ -216,18 +163,46 @@ Bug fixes:
 - `sbt-less`: Import statements in Less CSS files are interpreted relative to the file in which they appear,
    rather than the root file in the dependency graph.
 
-These versions work with SBT 0.11.0 and SBT 0.11.2. Sample `plugins.sbt` file:
+## Contributing
 
-    resolvers ++= "untyped" at "http://repo.untyped.com"
+Contributions to code and documentation are gratefully accepted. Raise an issue first to discuss,
+and then submit a pull request. Please note the following before you start:
 
-    addSbtPlugin("untyped" % "sbt-js" % "0.2")
+### Git Flow
 
-    addSbtPlugin("untyped" % "sbt-less" % "0.2")
+This repo is based on the [git flow] branching model: all development is based off the `develop` branch,
+while the `master` branch is reserved for the current stable release.
 
-    addSbtPlugin("untyped" % "sbt-runmode" % "0.2")
+**Please base pull requests off of the `develop` branch.**
 
-Licence
-=======
+You can grab command line addons to Git to assist with Git Flow. For example, on a Mac with Homebrew:
+
+    brew install git-flow
+
+### Tests
+
+Please make sure all tests pass before submitting a pull request. The build script uses the
+[sbt-cross-building] plugin to target various SBT and Scala versions, and the [sbt-scripted]
+plugin as a test runner.
+
+To compile and test the code for all targetted versions of SBT, do the following:
+
+```
+^compile
+^scripted
+```
+
+To compile and test the code for a single version of SBT, do the following:
+
+```
+^^0.13
+compile
+scripted
+```
+
+The the `sbt-cross-building` documentation for more information.
+
+## Licence
 
 Copyright 2011-12 [Dave Gurnell] of [Untyped]
 
@@ -243,17 +218,46 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-[SBT community plugins repo]: http://www.scala-sbt.org/
-[Dave Gurnell]: http://boxandarrow.com
-[Untyped]: http://untyped.com
-[sbt-less]: https://github.com/untyped/sbt-plugins/tree/master/sbt-less
-[sbt-js]: https://github.com/untyped/sbt-plugins/tree/master/sbt-js
-[sbt-runmode]: https://github.com/untyped/sbt-plugins/tree/master/sbt-runmode
-[sbt-tipi]: https://github.com/untyped/sbt-plugins/tree/master/sbt-tipi
-[sbt-cross-building]: https://github.com/jrudolph/sbt-cross-building
-[Tipi]: https://github.com/davegurnell/tipi
-[ivy.untyped.com]: http://ivy.untyped.com/com.untyped
-[Build.scala]: https://github.com/untyped/sbt-plugins/blob/master/project/Build.scala
-[Denis Bardadym]: https://github.com/btd
-[Shikhar Bhushan]: https://github.com/shikhar
+## Acknowledgements
+
+Many thanks to the following for their contributions: [Denis Bardadym], [Shikhar Bhushan],
+[mdedetrich], [Glade Diviney], [Alexandre Richonnier], and [Tim Nelson].
+
+**sbt-js**
+
+v0.6+ for SBT 0.11 based on [less-sbt](https://github.com/softprops/less-sbt), Copyright (c) 2011 Doug Tangren.
+v0.1-v0.5 for SBT 0.7 based on [Coffee Script SBT plugin], Copyright (c) 2010 Luke Amdor.
+
+Includes an embedded copy of [jCoffeeScript 1.1] (bundled with sbt-js to solve deployment issues).
+
+**sbt-less**
+
+v0.2 for SBT 0.11 based on [less-sbt], Copyright (c) 2011 Doug Tangren.
+v0.1 for SBT 0.7 based on [Coffee Script SBT plugin], Copyright (c) 2010 Luke Amdor.
+
+Heavily influenced by the [YUI Compressor SBT plugin] by Jon Hoffman.
+
+v0.1 used a tweaked version of the [Less for Java] wrapper by Asual.
+
 [Alexandre Richonnier]: https://github.com/heralight
+[Build.scala]: https://github.com/untyped/sbt-plugins/blob/master/project/Build.scala
+[Coffee Script SBT plugin]: https://github.com/rubbish/coffee-script-sbt-plugin
+[Dave Gurnell]: http://boxandarrow.com
+[Denis Bardadym]: https://github.com/btd
+[git flow]: http://nvie.com/posts/a-successful-git-branching-model/
+[Glade Diviney]: https://github.com/gladed
+[ivy.untyped.com]: http://ivy.untyped.com/com.untyped
+[jCoffeeScript 1.1]: https://github.com/yeungda/jcoffeescript
+[Less for Java]: http://www.asual.com/lesscss/
+[less-sbt]: https://github.com/softprops/less-sbt
+[mdedetrich]: https://github.com/mdedetrich
+[SBT community plugins repo]: http://www.scala-sbt.org/
+[sbt-cross-building]: https://github.com/jrudolph/sbt-cross-building
+[sbt-js]: https://github.com/untyped/sbt-plugins/tree/master/sbt-js
+[sbt-less]: https://github.com/untyped/sbt-plugins/tree/master/sbt-less
+[sbt-runmode]: https://github.com/untyped/sbt-plugins/tree/master/sbt-runmode
+[sbt-scripted]: https://github.com/sbt/sbt/tree/0.13/scripted
+[Shikhar Bhushan]: https://github.com/shikhar
+[Tim Nelson]: https://github.com/eltimn
+[Untyped]: http://untyped.com
+[YUI Compressor SBT plugin]: https://github.com/hoffrocket/sbt-yui

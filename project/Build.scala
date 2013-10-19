@@ -7,7 +7,6 @@ object Build extends Build {
   import ScriptedPlugin._
 
   val pluginsVersion = "0.6-M5"
-  // val tipiVersion = "0.1-M4"
 
   // Libraries ----------------------------------
 
@@ -16,7 +15,6 @@ object Build extends Build {
   val closure   = "com.google.javascript" % "closure-compiler"   % "v20130227"
   val mustache  = "com.samskivert"        % "jmustache"          % "1.3"
   val rhino     = "org.mozilla"           % "rhino"              % "1.7R3"
-  // val tipi      = "com.untyped"          %% "tipi" % tipiVersion % "compile" changing()
 
   def scalatest(sbtVersion: String) =
     sbtVersion match {
@@ -137,17 +135,6 @@ object Build extends Build {
       unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
     )
   )
-
-  // lazy val sbtTipi = Project(
-  //   id = "sbt-tipi",
-  //   base = file("sbt-tipi"),
-  //   settings = defaultSettings ++ Seq(
-  //     libraryDependencies                    ++= Seq(tipi, mustache),
-  //     libraryDependencies                    <+= (sbtVersion in sbtPlugin)(scalatest),
-  //     // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-tipi:
-  //     unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
-  //   )
-  // )
 
   lazy val sbtRunmode = Project(
     id = "sbt-runmode",

@@ -1,8 +1,0 @@
-Include file:
-
-{{def GlobalAuthor="Chris" GlobalURL="http://www.hiddenmemory.co.uk"}}
-
-{{#def DefineAuthor author="" url=""}}
-	<author>{{author}}</author>
-	<url>{{url}}</url>
-{{/def}}
