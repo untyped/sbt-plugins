@@ -3,7 +3,6 @@ package com.untyped.sbtless
 import java.util.Properties
 import sbt._
 import sbt.Keys._
-import scala.language.postfixOps
 
 object Plugin extends sbt.Plugin {
 
@@ -73,7 +72,7 @@ object Plugin extends sbt.Plugin {
             useCommandLine     = useCommandLine
           )
 
-          sourceFiles.foreach(graph +=)
+          sourceFiles.foreach(graph += _)
 
           graph
         }

@@ -3,7 +3,6 @@ package com.untyped.sbtrunmode
 import java.io.{File,FileInputStream}
 import java.net.InetAddress
 import java.util.Properties
-import scala.language.implicitConversions
 
 // Heavily based on Lift's Props.
 //

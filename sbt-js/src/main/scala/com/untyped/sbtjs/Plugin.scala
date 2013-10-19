@@ -6,7 +6,6 @@ import java.nio.charset.Charset
 import java.util.Properties
 import sbt._
 import sbt.Keys._
-import scala.language.postfixOps
 
 object Plugin extends sbt.Plugin {
 
@@ -98,7 +97,7 @@ object Plugin extends sbt.Plugin {
             closureOptions     = closureOptions
           )
 
-          sourceFiles.foreach(graph +=)
+          sourceFiles.foreach(graph += _)
 
           graph
         }

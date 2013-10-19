@@ -1,12 +1,12 @@
 package com.untyped.sbtrunmode
 
-import com.github.siasia._
-import com.github.siasia.{PluginKeys=>WebKeys}
+import com.earldouglas.xsbtwebplugin._
+import com.earldouglas.xsbtwebplugin.{ PluginKeys => WebKeys }
 import java.nio.charset.Charset
 import java.util.Properties
 import sbt._
 import sbt.Keys._
-import sbt.Keys.{`package` => packageKey}
+import sbt.Keys.{ `package` => packageKey }
 import com.untyped.sbtjs.Plugin.JsKeys
 import com.untyped.sbtless.Plugin.LessKeys
 
@@ -145,7 +145,7 @@ object Plugin extends sbt.Plugin {
         runMode                             :=  mode,
         properties                          <<= propertiesSetting,
         updateRunMode                       <<= updateRunModeTask,
-        test                                <<= test dependsOn (updateRunModeTask)
+        test                                <<= test dependsOn updateRunModeTask
       ))
 
   def runModeSettings: Seq[Setting[_]] =

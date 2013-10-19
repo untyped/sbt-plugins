@@ -3,7 +3,6 @@ package com.untyped.sbtgraph
 import java.util.Properties
 import sbt._
 import scala.collection._
-import scala.language.postfixOps
 
 trait Graph {
 
@@ -28,7 +27,7 @@ trait Graph {
   private def +=(source: S): Unit =
     if(!sources.contains(source)) {
       sources = source :: sources
-      parents(source).foreach(this +=)
+      parents(source).foreach(this += _)
     }
 
   def getSource(src: String, referredToBy: S): S =
