@@ -1,9 +1,9 @@
 package com.untyped.sbtgraph
 
-import java.io.File
 import java.util.Properties
 import sbt._
 import scala.collection._
+import scala.language.postfixOps
 
 trait Graph {
 
@@ -28,7 +28,7 @@ trait Graph {
   private def +=(source: S): Unit =
     if(!sources.contains(source)) {
       sources = source :: sources
-      parents(source).foreach(this += _)
+      parents(source).foreach(this +=)
     }
 
   def getSource(src: String, referredToBy: S): S =
@@ -91,7 +91,7 @@ trait Graph {
           case None =>
             val file = new File(dir, path)
             if(file.exists) Some(file) else None
-          case ans => ans
+          case ans_ => ans_
         }
     }
 
@@ -128,9 +128,9 @@ trait Graph {
       log.debug("  " + file)
     }
 
-    dump
+    dump()
 
-    val sources = files.flatMap(findSource _)
+    val sources = files.flatMap(findSource)
 
     sources.filter(_.requiresRecompilation) match {
       case Nil =>
@@ -176,10 +176,10 @@ trait Graph {
     sources filter(b => b.parents.contains(a))
 
   def ancestors(a: S): List[S] =
-    postorder(a, parents _)
+    postorder(a, parents)
 
   def descendants(a: S): List[S] =
-    postorder(a, children _)
+    postorder(a, children)
 
   def postorder(node: S, succ: (S) => List[S]): List[S] = {
     var accum: Seq[S] = Seq()
@@ -188,7 +188,7 @@ trait Graph {
     def visit(node: S): Unit = {
       if(!visited.contains(node)) {
         visited = visited ++ Seq(node)
-        succ(node).foreach(visit _)
+        succ(node).foreach(visit)
         accum = accum ++ Seq(node)
       }
     }
@@ -200,7 +200,7 @@ trait Graph {
 
   def pluginName: String
 
-  def dump: Unit = {
+  def dump(): Unit = {
     log.debug("Graph for " + pluginName + ":")
 
     log.debug("  templateProperties:")
@@ -209,7 +209,7 @@ trait Graph {
     log.debug("  downloadDir:")
     log.debug("    " + downloadDir)
 
-    sources.foreach(dumpSource _)
+    sources.foreach(dumpSource)
   }
 
   def dumpSource(source: S): Unit = {

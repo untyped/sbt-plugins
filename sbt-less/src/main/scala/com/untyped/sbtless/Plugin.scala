@@ -1,10 +1,9 @@
 package com.untyped.sbtless
 
-import java.nio.charset.Charset
 import java.util.Properties
 import sbt._
 import sbt.Keys._
-import sbt.Project.Initialize
+import scala.language.postfixOps
 
 object Plugin extends sbt.Plugin {
 
@@ -42,7 +41,7 @@ object Plugin extends sbt.Plugin {
     result
   }
 
-  def unmanagedSourcesTask: Initialize[Task[Seq[File]]] =
+  def unmanagedSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
     (streams, sourceDirectories in less, includeFilter in less, excludeFilter in less) map {
       (out, sourceDirs, includeFilter, excludeFilter) =>
         time(out, "unmanagedSourcesTask") {
@@ -57,7 +56,7 @@ object Plugin extends sbt.Plugin {
         }
     }
 
-  def sourceGraphTask: Initialize[Task[Graph]] =
+  def sourceGraphTask = // : Def.Initialize[Task[Graph]] =
     (streams, sourceDirectories in less, resourceManaged in less, unmanagedSources in less, templateProperties in less, downloadDirectory in less, prettyPrint in less, lessVersion in less, useCommandLine in less) map {
       (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, prettyPrint, lessVersion, useCommandLine) =>
         time(out, "sourceGraphTask") {
@@ -74,16 +73,16 @@ object Plugin extends sbt.Plugin {
             useCommandLine     = useCommandLine
           )
 
-          sourceFiles.foreach(graph += _)
+          sourceFiles.foreach(graph +=)
 
           graph
         }
     }
 
-  def watchSourcesTask: Initialize[Task[Seq[File]]] =
+  def watchSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
     (streams, sourceGraph in less) map {
       (out, graph) =>
-        graph.sources.map(_.src)
+        graph.sources.map(_.src) : Seq[File]
     }
 
   def compileTask =
@@ -97,7 +96,7 @@ object Plugin extends sbt.Plugin {
   def cleanTask =
     (streams, sourceGraph in less) map {
       (out, graph) =>
-        graph.sources.foreach(_.clean)
+        graph.sources.foreach(_.clean())
     }
 
   def lessSettingsIn(conf: Configuration): Seq[Setting[_]] = {

@@ -1,7 +1,6 @@
 package com.untyped.sbtless
 
 import sbt._
-import scala.collection._
 
 object CssSource {
 
@@ -12,7 +11,7 @@ object CssSource {
 
 }
 
-case class CssSource(val graph: Graph, val src: File) extends Source {
+case class CssSource(graph: Graph, src: File) extends Source {
 
   lazy val parents: List[Source] =
     for {

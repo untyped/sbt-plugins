@@ -2,24 +2,22 @@ package com.untyped.sbtjs
 
 import com.google.javascript.jscomp.{
   SourceFile => ClosureSource,
-  CompilerOptions => ClosureOptions,
-  _
+  CompilerOptions => ClosureOptions
 }
 import java.util.Properties
 import org.jcoffeescript.{ Option => CoffeeOption }
 import sbt._
-import scala.collection._
 
 case class Graph(
-    val log: Logger,
-    val sourceDirs: Seq[File],
-    val targetDir: File,
-    val templateProperties: Properties,
-    val downloadDir: File,
-    val coffeeVersion: Plugin.CoffeeVersion,
-    val coffeeOptions: List[CoffeeOption] = List(CoffeeOption.BARE),
-    val closureOptions: ClosureOptions
-  ) extends com.untyped.sbtgraph.Graph {
+  log: Logger,
+  sourceDirs: Seq[File],
+  targetDir: File,
+  templateProperties: Properties,
+  downloadDir: File,
+  coffeeVersion: Plugin.CoffeeVersion,
+  coffeeOptions: List[CoffeeOption] = List(CoffeeOption.BARE),
+  closureOptions: ClosureOptions
+) extends com.untyped.sbtgraph.Graph {
 
   type S = com.untyped.sbtjs.Source
 

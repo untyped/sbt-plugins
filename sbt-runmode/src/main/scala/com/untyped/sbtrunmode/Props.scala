@@ -3,17 +3,18 @@ package com.untyped.sbtrunmode
 import java.io.{File,FileInputStream}
 import java.net.InetAddress
 import java.util.Properties
+import scala.language.implicitConversions
 
 // Heavily based on Lift's Props.
-// 
-// Reimplemented here as there were a few things in 
+//
+// Reimplemented here as there were a few things in
 // Lift's properties handling that made it hard to reuse.
 
-case class RunMode(val name: String) {
-  
+case class RunMode(name: String) {
+
   lazy val dottedName: String =
     if(name == "development") "" else name + "."
-  
+
 }
 
 object RunMode {
@@ -29,20 +30,20 @@ object Props {
 
   def addDot(str: Option[String]): String =
     str match {
-      case None => ""
-      case Some("") => ""
+      case None      => ""
+      case Some("")  => ""
       case Some(str) => str + "."
     }
-  
+
   implicit def fileToString(in: File) =
     in.getCanonicalPath
-  
+
   def defaultUserName: Option[String] =
     Option(System.getProperty("user.name"))
-  
+
   def defaultHostName: Option[String] =
     Option(InetAddress.getLocalHost.getHostName)
-  
+
   def searchPaths(
     basePath: File,
     mode: RunMode,
@@ -52,7 +53,7 @@ object Props {
     val modeDot = mode.dottedName
     val userNameDot = addDot(userName)
     val hostNameDot = addDot(hostName)
-    
+
     List(
       basePath + "/props/" + modeDot + userNameDot + hostNameDot + "props",
       basePath + "/props/" + modeDot + userNameDot + "props",
@@ -63,7 +64,7 @@ object Props {
       basePath + "/" + modeDot + hostNameDot + "props",
       basePath + "/" + modeDot + "default.props")
   }
-  
+
   def file(
     basePath: File,
     mode: RunMode,
@@ -82,12 +83,12 @@ object Props {
       val in = new FileInputStream(new File(propFile))
       props.load(in)
       props.setProperty("run.mode", mode.name)
-      in.close
+      in.close()
       props
     } getOrElse {
       val props = new Properties
       props.setProperty("run.mode", mode.name)
       props
     }
-  
+
 }
