@@ -6,7 +6,7 @@ object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.6-M5"
+  val pluginsVersion = "0.6-M6"
 
   // Libraries ----------------------------------
 
@@ -65,8 +65,10 @@ object Build extends Build {
       sbtPlugin                      := true,
       organization                   := "com.untyped",
       version                        := pluginsVersion,
-      CrossBuilding.crossSbtVersions := Seq("0.11.2", "0.11.3", "0.12", "0.13"),
+      scalaVersion                   := "2.10.1",
+      CrossBuilding.crossSbtVersions := Seq("0.12", "0.13"),
       resolvers                      += untyped,
+      scalacOptions                 ++= Seq("-deprecation"),
       publishTo                     <<= (version) { v => if (isSnapshot(v)) snapshotPublishTo else releasePublishTo },
       publishMavenStyle              := false,
       scriptedBufferLog              := false,
