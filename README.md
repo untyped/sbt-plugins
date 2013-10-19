@@ -1,19 +1,17 @@
 # Untyped SBT Plugins
 
-Copyright 2011-12 [Dave Gurnell] of [Untyped].
+Copyright 2011-13 [Dave Gurnell] of [Untyped]. See below for licence and acknowledgements.
 
-This repo contains source for three SBT plugins:
+This repo contains the following SBT plugins:
 
  - [sbt-js](sbt-js/) - Javascript and Coffeescript compilation, minification, and templating;
  - [sbt-less](sbt-less/) - Less CSS compilation, minification, and templating;
  - [sbt-mustache](sbt-mustache/) - Mustache templating for HTML files;
  - [sbt-runmode](sbt-runmode/) - specification of Lift run modes using custom jetty-web.xml files.
 
-See the `README` files in the relevant subdirectories for more information and acknowledgements.
-
 ## Installation
 
-Create a file called `plugins.sbt` in your `project` directory and add the following:
+Create a file called `project/plugins.sbt` in your SBT project and add the following:
 
 ```scala
 // This line is needed for development releases but not stable ones:
@@ -60,7 +58,7 @@ Each plugin has its own set of configuration options described in its own README
 
 ## Changelog
 
-### Version 0.6 (current development release; SBT 0.12, 0.13)
+### Version 0.6 (current stable release; SBT 0.12, 0.13)
 
 New features:
 
@@ -74,7 +72,7 @@ New features:
  - Added the option to change the Coffee Script compiler version, changed the default
    version to v1.6.1, and added the *bare* option.
 
-### Version 0.5 (current stable release; SBT 0.11.3, 0.12)
+### Version 0.5 (SBT 0.11.3, 0.12)
 
 New features:
 
@@ -141,7 +139,8 @@ Changes and bug fixes:
 
    Thanks to [Denis Bardadym] for this fix.
 
-   **Note: this feature was reverted in sbt-less version 0.5.**
+   **Note: this feature was unfortunately reverted in sbt-less version 0.5 due to
+   performance problems.**
 
 ### Version 0.3 (SBT 0.11.0, 0.11.2)
 

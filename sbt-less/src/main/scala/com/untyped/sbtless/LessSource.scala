@@ -114,7 +114,8 @@ case class LessSource(graph: Graph, src: File) extends Source {
           val scope =
             graph.lessVersion match {
               case Plugin.LessVersion.Less130 => less130Scope(ctx)
-	          case Plugin.LessVersion.Less133 => less130Scope(ctx)
+	            case Plugin.LessVersion.Less133 => less130Scope(ctx)
+              case Plugin.LessVersion.Less142 => less140Scope(ctx)
               case _                          => earlyLessScope(ctx)
             }
 
@@ -142,6 +143,9 @@ case class LessSource(graph: Graph, src: File) extends Source {
       }
     }
   }
+
+  private def less140Scope(ctx: Context) =
+    less130Scope(ctx)
 
   private def less130Scope(ctx: Context) = {
     val global = new Global()
