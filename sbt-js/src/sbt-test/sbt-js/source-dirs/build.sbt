@@ -4,6 +4,8 @@ logLevel := Level.Debug
 
 seq(jsSettings : _*)
 
+(resourceManaged in (Compile, JsKeys.js)) <<= (target in Compile) { _ / "scripted" }
+
 (sourceDirectories in (Compile, JsKeys.js)) <<= (sourceDirectory in Compile) {
   srcDir =>
     Seq(srcDir / "resources" / "dir2", srcDir / "resources" / "dir1")

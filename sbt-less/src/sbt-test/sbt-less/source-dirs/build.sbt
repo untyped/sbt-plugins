@@ -4,6 +4,8 @@ logLevel := Level.Debug
 
 seq(lessSettings : _*)
 
+(resourceManaged in (Compile, LessKeys.less)) <<= (target in Compile) { _ / "scripted" }
+
 (sourceDirectories in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile) {
   srcDir =>
     Seq(srcDir / "resources" / "dir2", srcDir / "resources" / "dir1")

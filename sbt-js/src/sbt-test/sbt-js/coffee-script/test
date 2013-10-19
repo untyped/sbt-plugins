@@ -2,6 +2,6 @@
 > js
 
 # Check that the JS file exists:
-$ exists target/scala-2.9.2/resource_managed/main/resources/file1.js
+$ exists target/scripted/resources/file1.js
 
-> contents target/scala-2.9.2/resource_managed/main/resources/file1.js fixtures/file1.js
+> contents target/scripted/resources/file1.js fixtures/file1.js

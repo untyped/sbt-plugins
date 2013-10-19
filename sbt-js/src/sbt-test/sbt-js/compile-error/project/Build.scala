@@ -21,6 +21,7 @@ object Build extends Build {
       com.untyped.sbtjs.Plugin.jsSettings ++
       Seq(
         logLevel := Level.Debug,
+        (resourceManaged in (Compile, js)) <<= (target in Compile) { _ / "scripted" },
         runTest <<= runTestTask
       )
   )

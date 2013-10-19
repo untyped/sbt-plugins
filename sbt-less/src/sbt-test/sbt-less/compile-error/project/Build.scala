@@ -21,6 +21,7 @@ object Build extends Build {
       com.untyped.sbtless.Plugin.lessSettings ++
       Seq(
         logLevel := Level.Debug,
+        (resourceManaged in (Compile, less)) <<= (target in Compile) { _ / "scripted" },
         runTest <<= runTestTask
       )
   )

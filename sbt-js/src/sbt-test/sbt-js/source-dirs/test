@@ -5,11 +5,11 @@ $ sleep 1000
 > js
 
 # Check that the JS files exist:
-$ exists target/scala-2.9.2/resource_managed/main/a.js
-$ exists target/scala-2.9.2/resource_managed/main/b.js
-$ exists target/scala-2.9.2/resource_managed/main/all.js
+$ exists target/scripted/a.js
+$ exists target/scripted/b.js
+$ exists target/scripted/all.js
 
 # Check that the JS files have the correct content:
-> contents target/scala-2.9.2/resource_managed/main/a.js   fixtures/a.js
-> contents target/scala-2.9.2/resource_managed/main/b.js   fixtures/b.js
-> contents target/scala-2.9.2/resource_managed/main/all.js fixtures/all.js
+> contents target/scripted/a.js   fixtures/a.js
+> contents target/scripted/b.js   fixtures/b.js
+> contents target/scripted/all.js fixtures/all.js
