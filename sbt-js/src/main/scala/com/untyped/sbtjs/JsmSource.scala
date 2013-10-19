@@ -2,13 +2,12 @@ package com.untyped.sbtjs
 
 import com.google.javascript.jscomp.{ SourceFile => ClosureSource }
 import sbt._
-import scala.collection._
 
-case class JsmSource(val graph: Graph, val src: File) extends Source {
+case class JsmSource(graph: Graph, src: File) extends Source {
 
   lazy val parents: List[Source] =
     for {
-      line <- lines.map(stripComments _).filterNot(isSkippable _)
+      line <- lines.map(stripComments).filterNot(isSkippable)
     } yield graph.getSource(line, this)
 
   def isTemplated = false

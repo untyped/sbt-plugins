@@ -1,6 +1,5 @@
 package com.untyped.sbtless
 
-import org.mozilla.javascript.{ Callable, Context, Function, FunctionObject, JavaScriptException, NativeArray, NativeObject, Scriptable, ScriptableObject }
 import org.mozilla.javascript.tools.shell.{ Environment, Global }
 import java.nio.charset.Charset
 import org.mozilla.javascript._
@@ -74,7 +73,7 @@ object LessSource {
  * This code was adapted from less-sbt:
  *   https://github.com/softprops/less-sbt/blob/master/src/main/scala/compiler.scala
  */
-case class LessSource(val graph: Graph, val src: File) extends Source {
+case class LessSource(graph: Graph, src: File) extends Source {
 
   lazy val parents: List[Source] =
     for {
@@ -103,7 +102,7 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
       out.println(less)
       out.close()
 
-      (Process(Seq("lessc", temp.getCanonicalPath, des.getCanonicalPath)) !) match {
+      Process(Seq("lessc", temp.getCanonicalPath, des.getCanonicalPath)).! match {
         case 0 => Some(des)
         case n => sys.error("Could not compile %s source %s".format(graph.pluginName, des))
       }
@@ -152,14 +151,14 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
 
     ctx.evaluateReader(
       scope,
-      new java.io.InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.envjsUrl), Charset.forName("utf-8")),
+      new java.io.InputStreamReader(getClass.getResourceAsStream(graph.lessVersion.envjsUrl), Charset.forName("utf-8")),
       graph.lessVersion.envjsFilename,
       1,
       null)
 
     ctx.evaluateReader(
       scope,
-      new java.io.InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.url), Charset.forName("utf-8")),
+      new java.io.InputStreamReader(getClass.getResourceAsStream(graph.lessVersion.url), Charset.forName("utf-8")),
       graph.lessVersion.filename,
       1,
       null)
@@ -179,7 +178,7 @@ case class LessSource(val graph: Graph, val src: File) extends Source {
 
     ctx.evaluateReader(
       scope,
-      new java.io.InputStreamReader(getClass().getResourceAsStream(graph.lessVersion.url), Charset.forName("utf-8")),
+      new java.io.InputStreamReader(getClass.getResourceAsStream(graph.lessVersion.url), Charset.forName("utf-8")),
       graph.lessVersion.filename,
       1,
       null)

@@ -4,9 +4,10 @@ Copyright 2011-12 [Dave Gurnell] of [Untyped].
 
 This repo contains source for three SBT plugins:
 
- - [sbt-less] - Less CSS compilation, minification, and templating;
- - [sbt-js] - Javascript and Coffeescript compilation, minification, and templating;
- - [sbt-runmode] - specification of Lift run modes using custom jetty-web.xml files.
+ - [sbt-js](sbt-js/) - Javascript and Coffeescript compilation, minification, and templating;
+ - [sbt-less](sbt-less/) - Less CSS compilation, minification, and templating;
+ - [sbt-mustache](sbt-mustache/) - Mustache templating for HTML files;
+ - [sbt-runmode](sbt-runmode/) - specification of Lift run modes using custom jetty-web.xml files.
 
 See the `README` files in the relevant subdirectories for more information and acknowledgements.
 
@@ -48,7 +49,9 @@ See the changelog below for the current stable and development version numbers a
 with different versions of SBT. Development releases are published with milestone suffixes
 (`"0.x-M1"` and so on). See [Build.scala] on the `develop` branch for the latest version number.
 
-Each plugin has its own set of options, described in a separate README in the relevant subdirectory:
+## Configuration
+
+Each plugin has its own set of configuration options described in its own README file:
 
  - [sbt-js](sbt-js/README.md)
  - [sbt-less](sbt-less/README.md)
@@ -202,6 +205,23 @@ scripted
 
 The the `sbt-cross-building` documentation for more information.
 
+### Release
+
+Note-to-self: tasks to complete for a stable release:
+
+ - `git flow release start x.y`
+ - update version number in `Build.scala`
+ - update headings in `README.md`
+ - `sbt ^scripted`
+ - `sbt ^publish`
+ - `git flow release finish x.y`
+
+After release:
+
+ - switch to `develop`
+ - update version number in `Build.scala` to next milestone
+ - push an immediate release to `ivy.untyped.com`
+
 ## Licence
 
 Copyright 2011-12 [Dave Gurnell] of [Untyped]
@@ -253,9 +273,6 @@ v0.1 used a tweaked version of the [Less for Java] wrapper by Asual.
 [mdedetrich]: https://github.com/mdedetrich
 [SBT community plugins repo]: http://www.scala-sbt.org/
 [sbt-cross-building]: https://github.com/jrudolph/sbt-cross-building
-[sbt-js]: https://github.com/untyped/sbt-plugins/tree/master/sbt-js
-[sbt-less]: https://github.com/untyped/sbt-plugins/tree/master/sbt-less
-[sbt-runmode]: https://github.com/untyped/sbt-plugins/tree/master/sbt-runmode
 [sbt-scripted]: https://github.com/sbt/sbt/tree/0.13/scripted
 [Shikhar Bhushan]: https://github.com/shikhar
 [Tim Nelson]: https://github.com/eltimn
