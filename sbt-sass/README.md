@@ -76,7 +76,7 @@ To include, exclude (filter) sass files:
 To specify which version of the Sass CSS compiler to use:
 
 ```scala
-SassKeys.sassVersion in (Compile, SassKeys.sass) := SassVersion.Sass3124
+SassKeys.sassVersion in (Compile, SassKeys.sass) := SassVersion.Sass3214
 ```
 
 valid Sass versions include:

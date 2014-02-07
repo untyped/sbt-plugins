@@ -21,7 +21,7 @@ object Plugin extends sbt.Plugin {
   }
 
   object SassVersion {
-    val Sass3124 = new SassVersion { val version = "3.2.14" }
+    val Sass3214 = new SassVersion { val version = "3.2.14" }
   }
 
   import SassKeys._
@@ -97,7 +97,7 @@ object Plugin extends sbt.Plugin {
       prettyPrint                  :=  false,
       includeFilter in sass        :=  "*.sass" || "*.scss",
       excludeFilter in sass        :=  (".*" - ".") || "_*" || HiddenFileFilter,
-      sassVersion in sass          :=  SassVersion.Sass3124,
+      sassVersion in sass          :=  SassVersion.Sass3214,
       useCommandLine in sass       :=  false,
       sourceDirectory in sass      <<= (sourceDirectory in conf),
       sourceDirectories in sass    <<= (sourceDirectory in (conf, sass)) { Seq(_) },
