@@ -12,11 +12,10 @@ object Build extends Build {
 
   val untyped   = Resolver.url("Untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
 
-  val closure   = "com.google.javascript" % "closure-compiler"   % "v20130227"
-  val mustache  = "com.samskivert"        % "jmustache"          % "1.3"
-  val rhino     = "org.mozilla"           % "rhino"              % "1.7R3"
-  val scuby = "com.tecnoguru" % "scuby" % "0.2.1"
-  val jruby = "org.jruby" % "jruby-complete" % "1.7.4"
+  val closure   = "com.google.javascript" % "closure-compiler"   % "v20131014"
+  val mustache  = "com.samskivert"        % "jmustache"          % "1.8"
+  val rhino     = "org.mozilla"           % "rhino"              % "1.7R4"
+  val jruby     = "org.jruby"             % "jruby-complete"     % "1.7.10"
 
   def scalatest(sbtVersion: String) =
     sbtVersion match {
@@ -35,7 +34,7 @@ object Build extends Build {
   // This is a Jetty/Orbit thing:
   // http://stackoverflow.com/questions/9889674/sbt-jetty-and-servlet-3-0
   def jettyOrbit =
-    "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" artifacts (Artifact("javax.servlet", "jar", "jar"))
+    "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" artifacts Artifact("javax.servlet", "jar", "jar")
 
   def snapshotPublishTo =
     for {
@@ -122,7 +121,7 @@ object Build extends Build {
     id = "sbt-sass",
     base = file("sbt-sass"),
     settings = defaultSettings ++ Seq(
-      libraryDependencies                    ++= Seq(scuby, jruby, mustache),
+      libraryDependencies                    ++= Seq(jruby, mustache),
       libraryDependencies                    <+= (sbtVersion in sbtPlugin)(scalatest),
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-less:
       unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
