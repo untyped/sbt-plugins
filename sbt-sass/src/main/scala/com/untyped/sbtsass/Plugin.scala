@@ -7,13 +7,13 @@ import sbt.Keys._
 object Plugin extends sbt.Plugin {
 
   object SassKeys {
-    val sass                = TaskKey[Seq[File]]("less", "Compile Sass CSS sources.")
-    val sourceGraph         = TaskKey[Graph]("less-source-graph", "List of Sass CSS sources.")
-    val templateProperties  = SettingKey[Properties]("less-template-properties", "Properties to use in Sass CSS templates")
-    val downloadDirectory   = SettingKey[File]("less-download-directory", "Temporary directory to download Sass CSS files to")
-    val prettyPrint         = SettingKey[Boolean]("less-pretty-print", "Whether to pretty print CSS (default false)")
-    val sassVersion         = SettingKey[SassVersion]("less-version", "The version of the Sass CSS compiler to use")
-    val useCommandLine      = SettingKey[Boolean]("less-use-command-line", "Use the Sass CSS command line script instead of Rhino")
+    val sass                = TaskKey[Seq[File]]("sass", "Compile Sass CSS sources.")
+    val sourceGraph         = TaskKey[Graph]("sass-source-graph", "List of Sass CSS sources.")
+    val templateProperties  = SettingKey[Properties]("sass-template-properties", "Properties to use in Sass CSS templates")
+    val downloadDirectory   = SettingKey[File]("sass-download-directory", "Temporary directory to download Sass CSS files to")
+    val prettyPrint         = SettingKey[Boolean]("sass-pretty-print", "Whether to pretty print CSS (default false)")
+    val sassVersion         = SettingKey[SassVersion]("sass-version", "The version of the Sass CSS compiler to use")
+    val useCommandLine      = SettingKey[Boolean]("sass-use-command-line", "Use the Sass CSS command line script instead of Rhino")
   }
 
   sealed trait SassVersion {

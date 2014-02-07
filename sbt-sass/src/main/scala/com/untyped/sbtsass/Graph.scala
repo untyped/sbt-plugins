@@ -9,19 +9,21 @@ case class Graph(
   targetDir: File,
   templateProperties: Properties,
   downloadDir: File,
-  lessVersion: Plugin.SassVersion,
+  sassVersion: Plugin.SassVersion,
   prettyPrint: Boolean,
   useCommandLine: Boolean = false
 ) extends com.untyped.sbtgraph.Graph {
 
   type S = com.untyped.sbtsass.Source
 
-  def createSource(src: File): Source =
-    if(src.toString.trim.toLowerCase.endsWith(".sass")) {
-      LessSource(this, src.getCanonicalFile)
+  def createSource(src: File): S = {
+    val srcLowerCase: String = src.toString.trim.toLowerCase
+    if (srcLowerCase.endsWith(".sass") || srcLowerCase.endsWith(".scss")) {
+      SassSource(this, src.getCanonicalFile)
     } else {
       CssSource(this, src.getCanonicalFile)
     }
+  }
 
   def srcFilenameToDesFilename(filename: String) =
     filename.replaceAll("[.]sass$|[.]scss$", ".css")
@@ -31,8 +33,8 @@ case class Graph(
   override def dump(): Unit = {
     log.debug("Graph for " + pluginName + ":")
 
-    log.debug("  lessVersion:")
-    log.debug("    " + lessVersion.filename)
+    log.debug("  sassVersion:")
+    log.debug("    " + sassVersion.filename)
 
     log.debug("  prettyPrint:")
     log.debug("    " + prettyPrint)

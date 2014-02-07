@@ -1,11 +1,11 @@
-# sbt-less: SBT Less CSS Plugin
+# sbt-sass: SBT Sass CSS Plugin
 
 See [README](../README.md) for copyright, licence, and acknowledgements.
 
-[Simple Build Tool] plugin for compiling [Less CSS] files.
+[Simple Build Tool] plugin for compiling [Sass CSS] files.
 
 [Simple Build Tool]: http://simple-build-tool.googlecode.com
-[Less CSS]: http://lesscss.org
+[Sass CSS]: http://sass-lang.com/
 
 ## Configuration
 
@@ -21,13 +21,13 @@ add the output files to the webapp with:
 To change the directory that is scanned, use:
 
 ```scala
-(sourceDirectory in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile)(_ / "path" / "to" / "less-files")
+(sourceDirectory in (Compile, SassKeys.sass)) <<= (sourceDirectory in Compile)(_ / "path" / "to" / "sass-files")
 ```
 
 To specify multiple source directories, use:
 
 ```scala
-(sourceDirectories in (Compile, LessKeys.less)) <<=
+(sourceDirectories in (Compile, SassKeys.sass)) <<=
   (sourceDirectory in Compile) {
     srcDir =>
       Seq(
@@ -44,64 +44,62 @@ without destructively editing the whole thing.
 To change the destination directory to `src/main/webapp` in an `xsbt-web-plugin` project, use:
 
 ```scala
-(resourceManaged in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile)(_ / "webapp")
+(resourceManaged in (Compile, SassKeys.sass)) <<= (sourceDirectory in Compile)(_ / "webapp")
 ```
 
 To automatically add generated CSS files to the application JAR:
 
 ```scala
-(resourceGenerators in Compile) <+= (LessKeys.less in Compile)
+(resourceGenerators in Compile) <+= (SassKeys.sass in Compile)
 ```
 
-To cause the `less` task to run automatically when you run `compile`:
+To cause the `sass` task to run automatically when you run `compile`:
 
 ```scala
-(compile in Compile) <<= compile in Compile dependsOn (LessKeys.less in Compile)
+(compile in Compile) <<= compile in Compile dependsOn (SassKeys.sass in Compile)
 ```
 
 To use pretty-printing instead of regular CSS minification:
 
 ```scala
-(LessKeys.prettyPrint in (Compile, LessKeys.less)) := true
+(SassKeys.prettyPrint in (Compile, SassKeys.sass)) := true
 ```
 
-To include, exclude (filter) less files:
+To include, exclude (filter) sass files:
 
 ```scala
-(includeFilter in (Compile, LessKeys.less)) := "*.include.less"
+(includeFilter in (Compile, SassKeys.sass)) := "*.include.sass"
 
-(excludeFilter in (Compile, LessKeys.less)) := "*.exclude*"
+(excludeFilter in (Compile, SassKeys.sass)) := "*.exclude*"
 ```
 
-To specify which version of the Less CSS compiler to use:
+To specify which version of the Sass CSS compiler to use:
 
 ```scala
-LessKeys.lessVersion in (Compile, LessKeys.less) := LessVersion.Less130
+SassKeys.sassVersion in (Compile, SassKeys.sass) := SassVersion.Sass3124
 ```
 
-valid Less versions include:
+valid Sass versions include:
 
- - `LessVersion.Less113`
- - `LessVersion.Less115`
- - `LessVersion.Less130` (the default)
+ - `SassVersion.Sass3214` (the default)
 
 ## Usage
 
-To compile Less CSS sources, use the `less` command in sbt. Read the installation instructions
-above to see how to include Less CSS compilation as part of the regular `compile` command.
+To compile Sass CSS sources, use the `sass` command in sbt. Read the installation instructions
+above to see how to include Sass CSS compilation as part of the regular `compile` command.
 
 The default behaviour of the plugin is to scan your `src/main` directory and look files with the
-extension `.less`.
+extension `.sass`.
 
-These files are compiled to CSS using Less CSS v1.1.3 and placed in equivalent locations under
+These files are compiled to CSS using Sass CSS v3.2.14 and placed in equivalent locations under
 `target/scala-2.9.x/resource_managed`.
 
 ### Templating
 
-It is sometime useful to template Less files. For example, you might want scripts
+It is sometime useful to template Sass files. For example, you might want scripts
 to refer to one value during development and another value once deployed to production.
 
-Javascript files with the extension `.template.less` are passed through a [Mustache]
+Javascript files with the extension `.template.sass` are passed through a [Mustache]
 template processor before being passed to the Less compiler.
 
 Property names and values are drawn from a properties file that is located and parsed

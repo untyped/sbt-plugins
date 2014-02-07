@@ -12,18 +12,7 @@ object SassSource {
   def parseImport(line: String): Option[String] =
     importRegex.findAllIn(line).matchData.map(_.group(1)).toList.headOption
 
-  val compileFunction: String =
-    """
-    |function compile(scriptName, code, min) {
-    |  name = scriptName;
-    |  var css = null;
-    |  new less.Parser().parse(code, function (e, root) {
-    |    if(e) { throw e; }
-    |    css = root.toCSS({ compress: min || false })
-    |  });
-    |  return css;
-    |}
-    """.trim.stripMargin
+  val compileFunction: String = ""
 }
 
 /**
@@ -35,7 +24,11 @@ case class SassSource(graph: Graph, src: File) extends Source {
     for {
       line <- IO.readLines(src).map(_.trim).toList
       name <- SassSource.parseImport(line)
-    } yield graph.getSource(name, this)
+    } yield {
+      val srcFileEnding = src.getName.split("\\.").reverse.head
+      val sassImport = "_" + name + "." + srcFileEnding
+      graph.getSource(sassImport, this)
+    }
 
   def isTemplated: Boolean =
     src.toString.contains(".template")
@@ -96,7 +89,7 @@ case class SassSource(graph: Graph, src: File) extends Source {
 //        }
 //      }
 //    }
-    None
+    Some(des)
   }
 
 //  private def less140Scope(ctx: Context) =
@@ -145,16 +138,16 @@ case class SassSource(graph: Graph, src: File) extends Source {
 //    scope
 //  }
 //
-  private def withContext[T](f: Context => T): T = {
-    val ctx = Context.enter()
-    try {
-      ctx.setOptimizationLevel(-1) // Do not compile to byte code (max 64kb methods)
-      ctx.setLanguageVersion(Context.VERSION_1_7)
-      f(ctx)
-    } finally {
-      Context.exit()
-    }
-  }
+//  private def withContext[T](f: Context => T): T = {
+//    val ctx = Context.enter()
+//    try {
+//      ctx.setOptimizationLevel(-1) // Do not compile to byte code (max 64kb methods)
+//      ctx.setLanguageVersion(Context.VERSION_1_7)
+//      f(ctx)
+//    } finally {
+//      Context.exit()
+//    }
+//  }
 
   override def toString =
     "SassSource(" + src + ")"
