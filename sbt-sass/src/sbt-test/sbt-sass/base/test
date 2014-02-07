@@ -1,0 +1,52 @@
+# Mark the time and run the compile task:
+$ sleep 1000
+$ touch fixtures/last-compile-time
+$ sleep 1000
+> sass
+
+# Check that the CSS file exist:
+$ exists target/scripted/resources/file1.css
+$ exists target/scripted/resources/dir1/file2.css
+$ exists target/scripted/scala/dir2/file3.css
+$ exists target/scripted/scala/dir2/file4.css
+
+# Check that the CSS files have the correct content:
+> contents target/scripted/resources/file1.css            fixtures/file1.css
+> contents target/scripted/resources/dir1/file2.css       fixtures/file2.css
+> contents target/scripted/scala/dir2/file3.css           fixtures/file3_4.css
+> contents target/scripted/scala/dir2/file4.css           fixtures/file3_4.css
+
+## Check that the CSS files were updated by the last compile task:
+$ newer target/scripted/resources/file1.css            fixtures/last-compile-time
+$ newer target/scripted/resources/dir1/file2.css       fixtures/last-compile-time
+$ newer target/scripted/scala/dir2/file3.css           fixtures/last-compile-time
+$ newer target/scripted/scala/dir2/file4.css           fixtures/last-compile-time
+
+## Touch some (but not all) of the source files:
+$ touch src/main/resources/file1.css
+$ touch src/main/scala/dir2/file4.scss
+
+## Mark the time and run the compile task again:
+$ sleep 1000
+$ touch fixtures/last-compile-time
+$ sleep 1000
+> sass
+
+## Check that the files still have the correct content:
+> contents target/scripted/resources/file1.css            fixtures/file1.css
+> contents target/scripted/resources/dir1/file2.css       fixtures/file2.css
+> contents target/scripted/scala/dir2/file3.css           fixtures/file3_4.css
+> contents target/scripted/scala/dir2/file4.css           fixtures/file3_4.css
+
+## Check that only the touched files were updated:
+$ newer target/scripted/resources/file1.css      fixtures/last-compile-time
+$ newer target/scripted/scala/dir2/file4.css     fixtures/last-compile-time
+$ newer fixtures/last-compile-time               target/scripted/resources/dir1/file2.css
+$ newer fixtures/last-compile-time               target/scripted/scala/dir2/file3.css
+
+## Clean everything:
+#> clean
+
+## Check the target and temporary downloads directories have been deleted:
+$ absent target/scala-2.9.2/resource_managed
+$ absent target/sbt-sass/downloads

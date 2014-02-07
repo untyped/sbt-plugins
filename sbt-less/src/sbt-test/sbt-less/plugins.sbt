@@ -1,1 +1,1 @@
-addSbtPlugin("com.untyped" % "sbt-less" % "0.6-M6")
+addSbtPlugin("com.untyped" % "sbt-less" % "0.7-SNAPSHOT")

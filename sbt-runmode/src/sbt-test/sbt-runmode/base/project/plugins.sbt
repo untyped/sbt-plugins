@@ -4,4 +4,4 @@ libraryDependencies <+= sbtVersion(v => v match {
   case v => throw new Exception("Build.scala: don't know what version of xsbt-web-plugin to use for SBT " + v)
 })
 
-addSbtPlugin("com.untyped" % "sbt-runmode" % "0.6-M6")
+addSbtPlugin("com.untyped" % "sbt-runmode" % "0.7-SNAPSHOT")
