@@ -34,7 +34,7 @@ case class Graph(
     log.debug("Graph for " + pluginName + ":")
 
     log.debug("  sassVersion:")
-    log.debug("    " + sassVersion.filename)
+    log.debug("    " + sassVersion.version)
 
     log.debug("  prettyPrint:")
     log.debug("    " + prettyPrint)

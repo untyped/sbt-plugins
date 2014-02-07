@@ -68,7 +68,7 @@ To use pretty-printing instead of regular CSS minification:
 To include, exclude (filter) sass files:
 
 ```scala
-(includeFilter in (Compile, SassKeys.sass)) := "*.include.sass"
+(includeFilter in (Compile, SassKeys.sass)) := "*.include.scss"
 
 (excludeFilter in (Compile, SassKeys.sass)) := "*.exclude*"
 ```
@@ -89,17 +89,17 @@ To compile Sass CSS sources, use the `sass` command in sbt. Read the installatio
 above to see how to include Sass CSS compilation as part of the regular `compile` command.
 
 The default behaviour of the plugin is to scan your `src/main` directory and look files with the
-extension `.sass`.
+extension `.scss`.
 
 These files are compiled to CSS using Sass CSS v3.2.14 and placed in equivalent locations under
-`target/scala-2.9.x/resource_managed`.
+`target/scala-2.9.x/resource_managed` or `target/scala-2.10.x/resource_managed`.
 
 ### Templating
 
 It is sometime useful to template Sass files. For example, you might want scripts
 to refer to one value during development and another value once deployed to production.
 
-Javascript files with the extension `.template.sass` are passed through a [Mustache]
+Javascript files with the extension `.template.scss` are passed through a [Mustache]
 template processor before being passed to the Less compiler.
 
 Property names and values are drawn from a properties file that is located and parsed

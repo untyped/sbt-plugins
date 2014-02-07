@@ -17,14 +17,11 @@ object Plugin extends sbt.Plugin {
   }
 
   sealed trait SassVersion {
-    val filename: String
-    lazy val url = "/" + filename
-    lazy val envjsFilename = "env.rhino.1.2.js"
-    lazy val envjsUrl = "/" + envjsFilename
+    val version: String
   }
 
   object SassVersion {
-    val Sass3124 = new SassVersion { val filename = "3.2.14" }
+    val Sass3124 = new SassVersion { val version = "3.2.14" }
   }
 
   import SassKeys._
