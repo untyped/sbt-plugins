@@ -2,16 +2,23 @@ package com.untyped.sbtsass
 
 import sbt._
 import scala.sys.process.Process
-import sbt.File
 import org.jruby.embed.{LocalVariableBehavior, LocalContextScope, ScriptingContainer}
 import org.jruby.exceptions.RaiseException
+import sbt.File
 
 object SassSource {
 
-  val importRegex = """^[ \t]*@import "([^"]+)";.*$""".r
+  val importNameRegex = """["']{1}([^"']+)["']{1}""".r
+  val importRegex = ("""^[ \t]*@import ("""+importNameRegex+"""[, ]*)+;.*$""").r
 
-  def parseImport(line: String): Option[String] =
-    importRegex.findAllIn(line).matchData.map(_.group(1)).toList.headOption
+  def parseImport(line: String): List[String] = {
+    if(importRegex.pattern.matcher(line).matches()) {
+      (for {
+        m <- importNameRegex.findAllIn(line).matchData
+        e <- m.subgroups
+      } yield {m.group(1)}).toList
+    } else List.empty
+  }
 
 }
 
@@ -21,14 +28,20 @@ object SassSource {
 case class SassSource(graph: Graph, src: File) extends Source {
 
   val srcFileEnding = src.getName.split("\\.").reverse.head
-  lazy val parents: List[Source] =
+
+  def regularOrPartialImport(importName: String) = {
+    if (importName.endsWith(srcFileEnding)) importName
+    else "_" + importName + "." + srcFileEnding
+  }
+
+  lazy val parents: List[Source] = {
     for {
       line <- IO.readLines(src).map(_.trim).toList
-      name <- SassSource.parseImport(line)
+      importName <- SassSource.parseImport(line)
     } yield {
-      val sassImport = "_" + name + "." + srcFileEnding
-      graph.getSource(sassImport, this)
+      graph.getSource(regularOrPartialImport(importName), this)
     }
+  }
 
   def isTemplated: Boolean =
     src.toString.contains(".template")
@@ -63,7 +76,9 @@ case class SassSource(graph: Graph, src: File) extends Source {
       handleException(requireSassGem(graph.sassVersion.version))
 
 
-      val syntaxOptions = Map(":syntax" -> (":"+srcFileEnding))
+      val syntaxOptions = Map(":syntax" -> (":"+srcFileEnding))/*, ":loadPaths" -> ("[" + "'.'"/*loadPaths.mkString(",")*/ + "]"))*/
+//      val css = handleException(renderCssFromScssFile(sass, syntaxOptions))
+      graph.log.debug("completeRawSource: \n" + completeRawSource)
       val css = handleException(renderCssFromSassString(sass, syntaxOptions))
       IO.write(des, css)
       Some(des)
@@ -91,7 +106,12 @@ object SassCompiler {
   }
 
   def renderCssFromSassString(sass: String, options: Map[String, String]) = {
-    val sassEngine = createSassEngine(sass, options)
+    val sassEngine = createSassStringEngine(sass, options)
+    callRender(sassEngine)
+  }
+
+  def renderCssFromScssFile(file: File, options: Map[String, String]) = {
+    val sassEngine = createSassFileEngine(file, options)
     callRender(sassEngine)
   }
 
@@ -108,8 +128,12 @@ object SassCompiler {
     r
   }
 
-  private def createSassEngine(sass: String, options: Map[String, String]) = {
+  private def createSassStringEngine(sass: String, options: Map[String, String]) = {
     verifyRubyObj(callRuby(evalRuby("Sass::Engine"), "new", Seq(sass, evalOptions(options))))
+  }
+
+  private def createSassFileEngine(file: File, options: Map[String, String]) = {
+    verifyRubyObj(callRuby(evalRuby("Sass::Engine"), "for_file", Seq(file.getAbsolutePath, evalOptions(options))))
   }
 
   private def require(file: String) = {
