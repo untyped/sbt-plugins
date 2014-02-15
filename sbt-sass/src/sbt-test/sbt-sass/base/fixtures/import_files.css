@@ -1,3 +1,4 @@
+@import url(test.css);
 body {
   background: pink;
   background: -moz-linear-gradient(top, #ffdae0 0%, #ffa6b6 100%);
@@ -12,3 +13,6 @@ body {
 
 #extra {
   font-weight: bold; }
+
+#main .example {
+  color: red; }

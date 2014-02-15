@@ -29,17 +29,28 @@ case class SassSource(graph: Graph, src: File) extends Source {
 
   val srcFileEnding = src.getName.split("\\.").reverse.head
 
-  def regularOrPartialImport(importName: String) = {
-    if (importName.endsWith(srcFileEnding)) importName
-    else "_" + importName + "." + srcFileEnding
+  def regularOrPartialImport(importName: String): Option[String] = {
+    def fileExists(in: String) = new File(this.srcDirectory, in).exists()
+    def asRegularScss(in: String ) = "_" + in + "." + srcFileEnding
+    def asPartialScss(in: String)  = "_" + asRegularScss(in)
+
+    if (fileExists(importName))
+      Some(importName)
+    else if (fileExists(asPartialScss(importName)))
+      Some(asPartialScss(importName))
+    else if (fileExists(asRegularScss(importName)))
+      Some(asRegularScss(importName))
+    else
+      None
   }
 
   lazy val parents: List[Source] = {
     for {
       line <- IO.readLines(src).map(_.trim).toList
       importName <- SassSource.parseImport(line)
+      ropi <- regularOrPartialImport(importName)
     } yield {
-      graph.getSource(regularOrPartialImport(importName), this)
+        graph.getSource(ropi, this)
     }
   }
 
@@ -76,10 +87,8 @@ case class SassSource(graph: Graph, src: File) extends Source {
       handleException(requireSassGem(graph.sassVersion.version))
 
 
-      val syntaxOptions = Map(":syntax" -> (":"+srcFileEnding))/*, ":loadPaths" -> ("[" + "'.'"/*loadPaths.mkString(",")*/ + "]"))*/
-//      val css = handleException(renderCssFromScssFile(sass, syntaxOptions))
-      graph.log.debug("completeRawSource: \n" + completeRawSource)
-      val css = handleException(renderCssFromSassString(sass, syntaxOptions))
+      val syntaxOptions = Map(":syntax" -> (":"+srcFileEnding))
+      val css = handleException(renderCssFromScssFile(src, syntaxOptions))
       IO.write(des, css)
       Some(des)
     }
