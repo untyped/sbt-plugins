@@ -1,0 +1,9 @@
+@import "import_partial.scss", "test.css";
+
+#extra {
+  font-weight: bold;
+}
+
+#main {
+  @import "dir1/extra";
+}
