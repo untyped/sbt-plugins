@@ -37,14 +37,15 @@ object Plugin extends sbt.Plugin {
   def unmanagedSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
     (streams, sourceDirectories in sass, includeFilter in sass, excludeFilter in sass) map {
       (out, sourceDirs, includeFilter, excludeFilter) =>
+        val unmanagedSourcesExcludeFilter = excludeFilter || "_*"
         time(out, "unmanagedSourcesTask") {
           out.log.debug("sourceDirectories: " + sourceDirs)
           out.log.debug("includeFilter: " + includeFilter)
-          out.log.debug("excludeFilter: " + excludeFilter)
+          out.log.debug("excludeFilter: " + unmanagedSourcesExcludeFilter)
 
           sourceDirs.foldLeft(Seq[File]()) {
             (accum, sourceDir) =>
-              accum ++ com.untyped.sbtgraph.Descendents(sourceDir, includeFilter, excludeFilter).get
+              accum ++ com.untyped.sbtgraph.Descendents(sourceDir, includeFilter, unmanagedSourcesExcludeFilter).get
           }
         }
     }
@@ -96,7 +97,7 @@ object Plugin extends sbt.Plugin {
     inConfig(conf)(Seq(
       prettyPrint                  :=  false,
       includeFilter in sass        :=  "*.sass" || "*.scss",
-      excludeFilter in sass        :=  (".*" - ".") || "_*" || HiddenFileFilter,
+      excludeFilter in sass        :=  (".*" - ".") || HiddenFileFilter,
       sassVersion in sass          :=  SassVersion.Sass3214,
       useCommandLine in sass       :=  false,
       sourceDirectory in sass      <<= (sourceDirectory in conf),
