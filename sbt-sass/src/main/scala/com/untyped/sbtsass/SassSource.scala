@@ -9,15 +9,34 @@ import sbt.File
 object SassSource {
 
   val importNameRegex = """["']{1}([^"']+)["']{1}""".r
-  val importRegex = ("""^[ \t]*@import ("""+importNameRegex+"""[, ]*)+;.*$""").r
+  val onlinerImportRegex = """(^[ \t]*@import.*;.*$)""".r
+  val multilineImportRegex = """(^[ \t]*@import[^;]*$)""".r
+  val semicolonRegex = """(.*;)$""".r
 
   def parseImport(line: String): List[String] = {
-    if(importRegex.pattern.matcher(line).matches()) {
+    if(onlinerImportRegex.pattern.matcher(line).matches()) {
       (for {
         m <- importNameRegex.findAllIn(line).matchData
         e <- m.subgroups
       } yield {m.group(1)}).toList
     } else List.empty
+  }
+  
+  def parseImportsFromFile(src: File): List[String] = {
+    val lines = IO.readLines(src).map(_.trim).toList
+    val (imports, _, _) = lines.foldLeft((List.empty[String], "", false)){
+      case ((foundImports: List[String], multilineImportAccum: String, multilineImport: Boolean), line) =>
+        println(foundImports + " - "+ multilineImportAccum + " - " + multilineImport)
+        line match {
+          case onlinerImportRegex(l) => (foundImports ::: parseImport(l), "", false)
+          case multilineImportRegex(l) => (foundImports, multilineImportAccum + l, true)
+          case importNameRegex(l) if multilineImport => (foundImports, multilineImportAccum + l, true)
+          case semicolonRegex(l) if multilineImport => (foundImports ::: parseImport(multilineImportAccum + l), "", false)
+          case l => println(l);(foundImports, "", false)
+        }
+    }
+
+    imports
   }
 
 }
@@ -46,8 +65,7 @@ case class SassSource(graph: Graph, src: File) extends Source {
 
   lazy val parents: List[Source] = {
     for {
-      line <- IO.readLines(src).map(_.trim).toList
-      importName <- SassSource.parseImport(line)
+      importName <- SassSource.parseImportsFromFile(src)
       ropi <- regularOrPartialImport(importName)
     } yield {
         graph.getSource(ropi, this)

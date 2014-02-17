@@ -13,7 +13,7 @@ trait Source extends com.untyped.sbtgraph.Source {
 
   def importsassRawSource: String =
     IO.readLines(src).map { line =>
-      SassSource.importRegex.replaceAllIn(line, "")
+      SassSource.onlinerImportRegex.replaceAllIn(line, "")
     }.mkString("\n")
 
   def completeRawSource: String =
