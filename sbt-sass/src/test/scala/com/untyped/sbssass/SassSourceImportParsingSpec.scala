@@ -98,15 +98,35 @@ class SassSourceImportParsingSpec extends FunSpec with Matchers {
       parseImportsFromFile(severalOnelinerImportsFile) should be (List("master.scss", "vars", "hepp"))
     }
 
+    it("should parse no imports") {
+      val severalOnelinerImportsFile =
+        createImportFile("")
+      parseImportsFromFile(severalOnelinerImportsFile) should be (List())
+    }
+
     def createImportFile(importSection: String) = {
       val file = File.makeTemp().jfile
       IO.append(file,
         importSection +
-        """
-          |#extra {
-          | width: 100px;
-          |}
-        """.stripMargin)
+          """
+            |
+            |@if
+            |@extend
+            |@debug
+            |@warn
+            |@for
+            |@each
+            |@while
+            |@include
+            |@function
+            |@return
+            |
+            |@mixin box-shadow($value) {}
+            |
+            |#extra {
+            | width: 100px;
+            |}
+          """.stripMargin)
       file
     }
 

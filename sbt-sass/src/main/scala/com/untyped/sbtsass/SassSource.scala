@@ -5,6 +5,7 @@ import scala.sys.process.Process
 import org.jruby.embed.{LocalVariableBehavior, LocalContextScope, ScriptingContainer}
 import org.jruby.exceptions.RaiseException
 import sbt.File
+import scala.util.parsing.combinator.RegexParsers
 
 object SassSource {
 
@@ -21,22 +22,36 @@ object SassSource {
       } yield {m.group(1)}).toList
     } else List.empty
   }
-  
-  def parseImportsFromFile(src: File): List[String] = {
-    val lines = IO.readLines(src).map(_.trim).toList
-    val (imports, _, _) = lines.foldLeft((List.empty[String], "", false)){
-      case ((foundImports: List[String], multilineImportAccum: String, multilineImport: Boolean), line) =>
-        println(foundImports + " - "+ multilineImportAccum + " - " + multilineImport)
-        line match {
-          case onlinerImportRegex(l) => (foundImports ::: parseImport(l), "", false)
-          case multilineImportRegex(l) => (foundImports, multilineImportAccum + l, true)
-          case importNameRegex(l) if multilineImport => (foundImports, multilineImportAccum + l, true)
-          case semicolonRegex(l) if multilineImport => (foundImports ::: parseImport(multilineImportAccum + l), "", false)
-          case l => println(l);(foundImports, "", false)
-        }
-    }
 
-    imports
+  object ImportParser extends RegexParsers {
+
+    trait Parsed
+    case class Import(value: String) extends Parsed
+    case object Ignore extends Parsed
+
+    def importStatement: Parser[String] = "^@import".r
+    def singleQuoteImport = "'" ~> """[^']+""".r <~ "'" ^^ Import
+    def doubleQuoteImport = "\"" ~> """[^"]+""".r <~ "\"" ^^ Import
+    def importPart: Parser[Import] = singleQuoteImport | doubleQuoteImport
+
+    lazy val ignore: Parser[List[Parsed]] = """\S+""".r ^^ (_ => Ignore :: Nil)
+    def importParts: Parser[List[Import]] = importStatement ~> rep1sep(importPart, ",") <~ ";"
+    def imports: Parser[List[Import]] = rep1(importParts ||| ignore) ^^ (i => {i.flatten.collect{case i: Import => i}})
+
+    def parseImports(fileContent: String, filePath: String) = {
+      val result = parseAll(imports, fileContent)
+      try {
+        result.get.map(_.value)
+      } catch {
+        case t: Throwable =>
+          throw new Exception("Had problems parsing imports from: %s \n%s".format(filePath, result.toString), t)
+      }
+    }
+  }
+
+  def parseImportsFromFile(src: File): List[String] = {
+    val fileContent = IO.readLines(src).map(_.trim).mkString("\n")
+    ImportParser.parseImports(fileContent, src.getAbsolutePath)
   }
 
 }
