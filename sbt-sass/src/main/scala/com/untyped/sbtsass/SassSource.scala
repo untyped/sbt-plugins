@@ -126,7 +126,7 @@ case class SassSource(graph: Graph, src: File) extends Source {
 
 
       val syntaxOptions = Map(":syntax" -> (":"+srcFileEnding))
-      val css = handleException(renderCssFromScssFile(src, syntaxOptions))
+      val css = handleException(renderCssFromScssFile(src, graph.compilerOptions ++: syntaxOptions))
       IO.write(des, css)
       Some(des)
     }

@@ -14,6 +14,7 @@ object Plugin extends sbt.Plugin {
     val prettyPrint         = SettingKey[Boolean]("sass-pretty-print", "Whether to pretty print CSS (default false)")
     val sassVersion         = SettingKey[SassVersion]("sass-version", "The version of the Sass CSS compiler to use")
     val useCommandLine      = SettingKey[Boolean]("sass-use-command-line", "Use the Sass CSS command line script instead of Rhino")
+    val sassOutputStyle     = SettingKey[Symbol]("sass-output-style", "Sets output style used when compiling")
   }
 
   sealed trait SassVersion {
@@ -50,8 +51,18 @@ object Plugin extends sbt.Plugin {
     }
 
   def sourceGraphTask = // : Def.Initialize[Task[Graph]] =
-    (streams, sourceDirectories in sass, resourceManaged in sass, unmanagedSources in sass, templateProperties in sass, downloadDirectory in sass, prettyPrint in sass, sassVersion in sass, useCommandLine in sass) map {
-      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, prettyPrint, sassVersion, useCommandLine) =>
+    (streams,
+      sourceDirectories in sass,
+      resourceManaged in sass,
+      unmanagedSources in sass,
+      templateProperties in sass,
+      downloadDirectory in sass,
+      prettyPrint in sass,
+      sassVersion in sass,
+      useCommandLine in sass,
+      sassOutputStyle in sass) map {
+      (out, sourceDirs, targetDir, sourceFiles, templateProperties,
+       downloadDir, prettyPrint, sassVersion, useCommandLine, sassOutputStyle) =>
         time(out, "sourceGraphTask") {
           out.log.debug("sbt-sass template properties " + templateProperties)
 
@@ -63,7 +74,8 @@ object Plugin extends sbt.Plugin {
             downloadDir        = downloadDir,
             sassVersion        = sassVersion,
             prettyPrint        = prettyPrint,
-            useCommandLine     = useCommandLine
+            useCommandLine     = useCommandLine,
+            compilerOptions    = Map(":style" -> (":"+sassOutputStyle.name))
           )
 
           sourceFiles.foreach(graph += _)
@@ -99,6 +111,7 @@ object Plugin extends sbt.Plugin {
       includeFilter in sass        :=  "*.sass" || "*.scss",
       excludeFilter in sass        :=  (".*" - ".") || HiddenFileFilter,
       sassVersion in sass          :=  SassVersion.Sass3214,
+      sassOutputStyle in sass      :=  'nested,
       useCommandLine in sass       :=  false,
       sourceDirectory in sass      <<= (sourceDirectory in conf),
       sourceDirectories in sass    <<= (sourceDirectory in (conf, sass)) { Seq(_) },

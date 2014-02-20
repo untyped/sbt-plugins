@@ -69,7 +69,9 @@ To include, exclude (filter) sass files:
 
 ```scala
 (includeFilter in (Compile, SassKeys.sass)) := "*.include.scss"
+```
 
+```scala
 (excludeFilter in (Compile, SassKeys.sass)) := "*.exclude*"
 ```
 
@@ -77,6 +79,14 @@ To specify which version of the Sass CSS compiler to use:
 
 ```scala
 SassKeys.sassVersion in (Compile, SassKeys.sass) := SassVersion.Sass3214
+```
+
+To set output style used when compiling Sass
+
+Valid output styles are ['nested(default), 'expanded, 'compact, 'compressed]
+
+```scala
+SassKeys.sassOutputStyle in (Compile, SassKeys.sass) := 'compressed
 ```
 
 valid Sass versions include:

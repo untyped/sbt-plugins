@@ -57,7 +57,8 @@ class SassSourceImportParsingSpec extends FunSpec with Matchers {
       downloadDir        = null,
       sassVersion        = null,
       prettyPrint        = false,
-      useCommandLine     = false
+      useCommandLine     = false,
+      compilerOptions    = Map(":style" -> ":nested")
     )
 
     def findParents(file: sbt.File) =  SassSource(graph, file).parents.map(_.src.getName)

@@ -11,7 +11,8 @@ case class Graph(
   downloadDir: File,
   sassVersion: Plugin.SassVersion,
   prettyPrint: Boolean,
-  useCommandLine: Boolean = false
+  useCommandLine: Boolean = false,
+  compilerOptions: Map[String, String]
 ) extends com.untyped.sbtgraph.Graph {
 
   type S = com.untyped.sbtsass.Source
