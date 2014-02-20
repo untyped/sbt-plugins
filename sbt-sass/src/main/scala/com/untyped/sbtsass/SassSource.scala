@@ -65,8 +65,13 @@ case class SassSource(graph: Graph, src: File) extends Source {
 
   def regularOrPartialImport(importName: String): Option[String] = {
     def fileExists(in: String) = new File(this.srcDirectory, in).exists()
-    def asRegularScss(in: String ) = "_" + in + "." + srcFileEnding
-    def asPartialScss(in: String)  = "_" + asRegularScss(in)
+    def asRegularScss(in: String ) = in + "." + srcFileEnding
+    def asPartialScss(in: String) = {
+      asRegularScss((in.split("/").toList.reverse match {
+        case head :: tail => ("_"+head) :: tail
+        case Nil => Nil
+      }).reverse.mkString("/"))
+    }
 
     if (fileExists(importName))
       Some(importName)

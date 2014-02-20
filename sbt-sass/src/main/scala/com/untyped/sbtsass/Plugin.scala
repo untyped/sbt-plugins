@@ -37,15 +37,14 @@ object Plugin extends sbt.Plugin {
   def unmanagedSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
     (streams, sourceDirectories in sass, includeFilter in sass, excludeFilter in sass) map {
       (out, sourceDirs, includeFilter, excludeFilter) =>
-        val unmanagedSourcesExcludeFilter = excludeFilter || "_*"
         time(out, "unmanagedSourcesTask") {
           out.log.debug("sourceDirectories: " + sourceDirs)
           out.log.debug("includeFilter: " + includeFilter)
-          out.log.debug("excludeFilter: " + unmanagedSourcesExcludeFilter)
+          out.log.debug("excludeFilter: " + excludeFilter)
 
           sourceDirs.foldLeft(Seq[File]()) {
             (accum, sourceDir) =>
-              accum ++ com.untyped.sbtgraph.Descendents(sourceDir, includeFilter, unmanagedSourcesExcludeFilter).get
+              accum ++ com.untyped.sbtgraph.Descendents(sourceDir, includeFilter, excludeFilter).get
           }
         }
     }
@@ -73,19 +72,20 @@ object Plugin extends sbt.Plugin {
         }
     }
 
-  def watchSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
+  def watchSourcesTask =
     (streams, sourceGraph in sass) map {
       (out, graph) =>
         graph.sources.map(_.src) : Seq[File]
     }
 
-  def compileTask =
+  def compileTask = {
     (streams, unmanagedSources in sass, sourceGraph in sass) map {
       (out, sourceFiles, graph: Graph) =>
         time(out, "compileTask") {
-          graph.compileAll(sourceFiles)
+          graph.compileAll(sourceFiles.filterNot(_.getName.startsWith("_")))
         }
     }
+  }
 
   def cleanTask =
     (streams, sourceGraph in sass) map {

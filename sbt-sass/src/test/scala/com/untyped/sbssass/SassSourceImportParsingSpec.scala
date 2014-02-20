@@ -2,7 +2,7 @@ package com.untyped.sbssass
 
 import org.scalatest.{Matchers, FunSpec}
 import com.untyped.sbtsass.SassSource._
-import scala.reflect.io.File
+import com.untyped.sbtsass.{SassSource, Graph}
 import sbt.IO
 
 class SassSourceImportParsingSpec extends FunSpec with Matchers {
@@ -49,84 +49,95 @@ class SassSourceImportParsingSpec extends FunSpec with Matchers {
 
   describe("The imports from file parser") {
 
+    val graph = Graph(
+      log                = null,
+      sourceDirs         = Seq(new sbt.File(".")),
+      targetDir          = null,
+      templateProperties = null,
+      downloadDir        = null,
+      sassVersion        = null,
+      prettyPrint        = false,
+      useCommandLine     = false
+    )
+
+    def findParents(file: sbt.File) =  SassSource(graph, file).parents.map(_.src.getName)
+
     it("should parse partial imports") {
       val partialImportFile =
-        createImportFile(
+        createFileWithImports(
           """
             | @import 'vars';
           """.stripMargin)
 
-      parseImportsFromFile(partialImportFile) should be (List("vars"))
+      findParents(partialImportFile) should be (List("_vars.scss"))
     }
 
     it("should parse file imports") {
       val fileImportFile =
-        createImportFile(
+        createFileWithImports(
           """
             | @import 'master.scss';
           """.stripMargin)
-      parseImportsFromFile(fileImportFile) should be (List("master.scss"))
+      findParents(fileImportFile) should be (List("master.scss"))
     }
 
     it("should parse several imports on one line") {
       val severalImportsOnOneLineFile =
-        createImportFile(
+        createFileWithImports(
           """
-            | @import "master.scss", 'vars', "hepp";
+            | @import "master.scss", 'vars', "other/hepp";
           """.stripMargin)
-      parseImportsFromFile(severalImportsOnOneLineFile) should be (List("master.scss", "vars", "hepp"))
+      findParents(severalImportsOnOneLineFile) should be (List("master.scss", "_vars.scss", "_hepp.scss"))
     }
 
     it("should parse several oneliner imports") {
       val severalOnelinerImportsFile =
-        createImportFile(
+        createFileWithImports(
           """
             | @import "master.scss";
-            | @import 'vars', "hepp";
+            | @import 'vars', "other/hepp";
           """.stripMargin)
-      parseImportsFromFile(severalOnelinerImportsFile) should be (List("master.scss", "vars", "hepp"))
+      findParents(severalOnelinerImportsFile) should be (List("master.scss", "_vars.scss", "_hepp.scss"))
     }
 
     it("should parse multiliner imports") {
       val severalOnelinerImportsFile =
-        createImportFile(
+        createFileWithImports(
           """
             | @import "master.scss";
             | @import 'vars',
-            | "hepp";
+            | "other/hepp";
           """.stripMargin)
-      parseImportsFromFile(severalOnelinerImportsFile) should be (List("master.scss", "vars", "hepp"))
+      findParents(severalOnelinerImportsFile) should be (List("master.scss", "_vars.scss", "_hepp.scss"))
     }
 
     it("should parse no imports") {
       val severalOnelinerImportsFile =
-        createImportFile("")
-      parseImportsFromFile(severalOnelinerImportsFile) should be (List())
+        createFileWithImports("")
+      findParents(severalOnelinerImportsFile) should be (List())
     }
 
-    def createImportFile(importSection: String) = {
-      val file = File.makeTemp().jfile
-      IO.append(file,
-        importSection +
-          """
-            |
-            |@if
-            |@extend
-            |@debug
-            |@warn
-            |@for
-            |@each
-            |@while
-            |@include
-            |@function
-            |@return
-            |
-            |@mixin box-shadow($value) {}
-            |
-            |#extra {
-            | width: 100px;
-            |}
-          """.stripMargin)
+    def createFileWithImports(importSection: String) = {
+      val file = new sbt.File(getClass.getClassLoader.getResource("main.scss").getPath)
+      IO.write(file, importSection +
+        """
+          |@if
+          |@extend
+          |@debug
+          |@warn
+          |@for
+          |@each
+          |@while
+          |@include
+          |@function
+          |@return
+          |
+          |@mixin box-shadow($value) {}
+          |
+          |#extra {
+          |  width: 100px;
+          |}
+        """.stripMargin)
       file
     }
 
