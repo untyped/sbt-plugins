@@ -22,7 +22,8 @@ object Plugin extends sbt.Plugin {
   }
 
   object SassVersion {
-    val Sass3214 = new SassVersion { val version = "3.2.14" }
+    val Sass3214   = new SassVersion { val version = "3.2.14" }
+    val Sass330RC4 = new SassVersion { val version = "3.3.0.rc.4" }
   }
 
   import SassKeys._
