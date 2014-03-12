@@ -19,11 +19,12 @@ object Plugin extends sbt.Plugin {
 
   sealed trait SassVersion {
     val version: String
+    override def toString = version
   }
 
   object SassVersion {
     val Sass3214   = new SassVersion { val version = "3.2.14" }
-    val Sass330RC4 = new SassVersion { val version = "3.3.0.rc.4" }
+    val Sass332 = new SassVersion { val version = "3.3.2" }
   }
 
   import SassKeys._
@@ -111,7 +112,7 @@ object Plugin extends sbt.Plugin {
       prettyPrint                  :=  false,
       includeFilter in sass        :=  "*.sass" || "*.scss",
       excludeFilter in sass        :=  (".*" - ".") || HiddenFileFilter,
-      sassVersion in sass          :=  SassVersion.Sass3214,
+      sassVersion in sass          :=  SassVersion.Sass332,
       sassOutputStyle in sass      :=  'nested,
       useCommandLine in sass       :=  false,
       sourceDirectory in sass      <<= (sourceDirectory in conf),

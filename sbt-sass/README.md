@@ -91,8 +91,8 @@ SassKeys.sassOutputStyle in (Compile, SassKeys.sass) := 'compressed
 
 valid Sass versions include:
 
- - `SassVersion.Sass3214` (the default)
- - `SassVersion.Sass330RC4` (the default)
+ - `SassVersion.Sass3214`
+ - `SassVersion.Sass332` (the default)
 
 ## Usage
 
