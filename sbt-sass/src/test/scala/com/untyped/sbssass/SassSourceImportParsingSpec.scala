@@ -73,6 +73,38 @@ class SassSourceImportParsingSpec extends FunSpec with Matchers {
       findParents(partialImportFile) should be (List("_vars.scss"))
     }
 
+    it("should handle comments inbetween imports") {
+      val partialImportFile =
+        createFileWithImports(
+          """
+            |/*
+            | This is a comment
+            |*/
+            |
+            | @import 'vars',
+            |   // Comment
+            |   'other/hepp';
+          """.stripMargin)
+
+      findParents(partialImportFile) should be (List("_vars.scss", "_hepp.scss"))
+    }
+
+    it("should handle other @s before an import") {
+      val partialImportFile =
+        createFileWithImports(
+          """
+            | /*
+            | This is a comment
+            |*/
+            |
+            | @charset "UTF-8";
+            |
+            | @import 'vars';
+          """.stripMargin)
+
+      findParents(partialImportFile) should be (List("_vars.scss"))
+    }
+
     it("should parse file imports") {
       val fileImportFile =
         createFileWithImports(
@@ -105,11 +137,12 @@ class SassSourceImportParsingSpec extends FunSpec with Matchers {
       val severalOnelinerImportsFile =
         createFileWithImports(
           """
-            | @import "master.scss";
             | @import 'vars',
-            | "other/hepp";
+            |
+            | 'other/hepp',
+            | 'master.scss';
           """.stripMargin)
-      findParents(severalOnelinerImportsFile) should be (List("master.scss", "_vars.scss", "_hepp.scss"))
+      findParents(severalOnelinerImportsFile) should be (List("_vars.scss", "_hepp.scss", "master.scss"))
     }
 
     it("should parse no imports") {

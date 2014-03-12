@@ -29,6 +29,9 @@ object SassSource {
     case class Import(value: String) extends Parsed
     case object Ignore extends Parsed
 
+    // This override is needed to handle comments within an @import chain
+    protected override val whiteSpace = """(\s|//.*|(?m)/\*(\*(?!/)|[^*])*\*/)+""".r
+
     def importStatement: Parser[String] = "^@import".r
     def singleQuoteImport = "'" ~> """[^']+""".r <~ "'" ^^ Import
     def doubleQuoteImport = "\"" ~> """[^"]+""".r <~ "\"" ^^ Import
