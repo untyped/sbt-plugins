@@ -102,7 +102,7 @@ above to see how to include Sass CSS compilation as part of the regular `compile
 The default behaviour of the plugin is to scan your `src/main` directory and look files with the
 extension `.scss`.
 
-These files are compiled to CSS using Sass CSS v3.2.14 and placed in equivalent locations under
+These files are compiled to CSS using Sass CSS v3.3.2 and placed in equivalent locations under
 `target/scala-2.9.x/resource_managed` or `target/scala-2.10.x/resource_managed`.
 
 ### Templating
