@@ -244,7 +244,7 @@ limitations under the License.
 ## Acknowledgements
 
 Many thanks to the following for their contributions: [Denis Bardadym], [Shikhar Bhushan],
-[mdedetrich], [Glade Diviney], [Alexandre Richonnier], and [Tim Nelson].
+[mdedetrich], [Crisson Jno-Charles], [Glade Diviney], [Alexandre Richonnier], and [Tim Nelson].
 
 **sbt-js**
 
@@ -262,6 +262,7 @@ Heavily influenced by the [YUI Compressor SBT plugin] by Jon Hoffman.
 
 v0.1 used a tweaked version of the [Less for Java] wrapper by Asual.
 
+[Crisson Jno-Charles]: https://github.com/crisson
 [Alexandre Richonnier]: https://github.com/heralight
 [Build.scala]: https://github.com/untyped/sbt-plugins/blob/master/project/Build.scala
 [Coffee Script SBT plugin]: https://github.com/rubbish/coffee-script-sbt-plugin
