@@ -54,6 +54,7 @@ Each plugin has its own set of configuration options described in its own README
 
  - [sbt-js](sbt-js/)
  - [sbt-less](sbt-less/)
+ - [sbt-sass](sbt-sass/)
  - [sbt-mustache](sbt-mustache/)
  - [sbt-runmode](sbt-runmode/)
 
