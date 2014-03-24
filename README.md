@@ -25,6 +25,8 @@ addSbtPlugin("com.untyped" % "sbt-js"       % <<VERSION>>)
 
 addSbtPlugin("com.untyped" % "sbt-less"     % <<VERSION>>)
 
+addSbtPlugin("com.untyped" % "sbt-sass"     % <<VERSION>>)
+
 addSbtPlugin("com.untyped" % "sbt-mustache" % <<VERSION>>)
 
 addSbtPlugin("com.untyped" % "sbt-runmode"  % <<VERSION>>)
@@ -38,6 +40,8 @@ Then, in your `build.sbt`, add the following:
 seq(jsSettings : _*)
 
 seq(lessSettings : _*)
+
+seq(sassSettings : _*)
 
 seq(mustacheSettings : _*)
 
