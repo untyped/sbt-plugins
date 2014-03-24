@@ -1,1 +1,1 @@
-addSbtPlugin("com.untyped" % "sbt-mustache" % "0.7")
+addSbtPlugin("com.untyped" % "sbt-mustache" % "0.8-M1")
