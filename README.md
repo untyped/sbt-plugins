@@ -255,8 +255,8 @@ limitations under the License.
 
 ## Acknowledgements
 
-Many thanks to the following for their contributions: [Denis Bardadym], [Shikhar Bhushan],
-[mdedetrich], [Crisson Jno-Charles], [Glade Diviney], [Alexandre Richonnier], and [Tim Nelson].
+Many thanks to the following for their contributions (alphabetical order): [Denis Bardadym], [Shikhar Bhushan],
+[mdedetrich], [Glade Diviney], [Crisson Jno-Charles], [Tim Nelson], [Alexandre Richonnier], and [Torbjørn Vatn].
 
 **sbt-js**
 
