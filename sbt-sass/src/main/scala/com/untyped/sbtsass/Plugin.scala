@@ -14,14 +14,17 @@ object Plugin extends sbt.Plugin {
     val prettyPrint         = SettingKey[Boolean]("sass-pretty-print", "Whether to pretty print CSS (default false)")
     val sassVersion         = SettingKey[SassVersion]("sass-version", "The version of the Sass CSS compiler to use")
     val useCommandLine      = SettingKey[Boolean]("sass-use-command-line", "Use the Sass CSS command line script instead of Rhino")
+    val sassOutputStyle     = SettingKey[Symbol]("sass-output-style", "Sets output style used when compiling")
   }
 
   sealed trait SassVersion {
     val version: String
+    override def toString = version
   }
 
   object SassVersion {
-    val Sass3214 = new SassVersion { val version = "3.2.14" }
+    val Sass3214   = new SassVersion { val version = "3.2.14" }
+    val Sass332 = new SassVersion { val version = "3.3.2" }
   }
 
   import SassKeys._
@@ -50,8 +53,18 @@ object Plugin extends sbt.Plugin {
     }
 
   def sourceGraphTask = // : Def.Initialize[Task[Graph]] =
-    (streams, sourceDirectories in sass, resourceManaged in sass, unmanagedSources in sass, templateProperties in sass, downloadDirectory in sass, prettyPrint in sass, sassVersion in sass, useCommandLine in sass) map {
-      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, prettyPrint, sassVersion, useCommandLine) =>
+    (streams,
+      sourceDirectories in sass,
+      resourceManaged in sass,
+      unmanagedSources in sass,
+      templateProperties in sass,
+      downloadDirectory in sass,
+      prettyPrint in sass,
+      sassVersion in sass,
+      useCommandLine in sass,
+      sassOutputStyle in sass) map {
+      (out, sourceDirs, targetDir, sourceFiles, templateProperties,
+       downloadDir, prettyPrint, sassVersion, useCommandLine, sassOutputStyle) =>
         time(out, "sourceGraphTask") {
           out.log.debug("sbt-sass template properties " + templateProperties)
 
@@ -63,7 +76,8 @@ object Plugin extends sbt.Plugin {
             downloadDir        = downloadDir,
             sassVersion        = sassVersion,
             prettyPrint        = prettyPrint,
-            useCommandLine     = useCommandLine
+            useCommandLine     = useCommandLine,
+            compilerOptions    = Map(":style" -> (":"+sassOutputStyle.name))
           )
 
           sourceFiles.foreach(graph += _)
@@ -72,19 +86,20 @@ object Plugin extends sbt.Plugin {
         }
     }
 
-  def watchSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
+  def watchSourcesTask =
     (streams, sourceGraph in sass) map {
       (out, graph) =>
         graph.sources.map(_.src) : Seq[File]
     }
 
-  def compileTask =
+  def compileTask = {
     (streams, unmanagedSources in sass, sourceGraph in sass) map {
       (out, sourceFiles, graph: Graph) =>
         time(out, "compileTask") {
-          graph.compileAll(sourceFiles)
+          graph.compileAll(sourceFiles.filterNot(_.getName.startsWith("_")))
         }
     }
+  }
 
   def cleanTask =
     (streams, sourceGraph in sass) map {
@@ -96,8 +111,9 @@ object Plugin extends sbt.Plugin {
     inConfig(conf)(Seq(
       prettyPrint                  :=  false,
       includeFilter in sass        :=  "*.sass" || "*.scss",
-      excludeFilter in sass        :=  (".*" - ".") || "_*" || HiddenFileFilter,
-      sassVersion in sass          :=  SassVersion.Sass3214,
+      excludeFilter in sass        :=  (".*" - ".") || HiddenFileFilter,
+      sassVersion in sass          :=  SassVersion.Sass332,
+      sassOutputStyle in sass      :=  'nested,
       useCommandLine in sass       :=  false,
       sourceDirectory in sass      <<= (sourceDirectory in conf),
       sourceDirectories in sass    <<= (sourceDirectory in (conf, sass)) { Seq(_) },

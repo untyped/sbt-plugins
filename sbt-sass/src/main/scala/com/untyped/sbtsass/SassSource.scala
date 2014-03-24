@@ -5,19 +5,56 @@ import scala.sys.process.Process
 import org.jruby.embed.{LocalVariableBehavior, LocalContextScope, ScriptingContainer}
 import org.jruby.exceptions.RaiseException
 import sbt.File
+import scala.util.parsing.combinator.RegexParsers
 
 object SassSource {
 
   val importNameRegex = """["']{1}([^"']+)["']{1}""".r
-  val importRegex = ("""^[ \t]*@import ("""+importNameRegex+"""[, ]*)+;.*$""").r
+  val onlinerImportRegex = """(^[ \t]*@import.*;.*$)""".r
+  val multilineImportRegex = """(^[ \t]*@import[^;]*$)""".r
+  val semicolonRegex = """(.*;)$""".r
 
   def parseImport(line: String): List[String] = {
-    if(importRegex.pattern.matcher(line).matches()) {
+    if(onlinerImportRegex.pattern.matcher(line).matches()) {
       (for {
         m <- importNameRegex.findAllIn(line).matchData
         e <- m.subgroups
       } yield {m.group(1)}).toList
     } else List.empty
+  }
+
+  object ImportParser extends RegexParsers {
+
+    trait Parsed
+    case class Import(value: String) extends Parsed
+    case object Ignore extends Parsed
+
+    // This override is needed to handle comments within an @import chain
+    protected override val whiteSpace = """(\s|//.*|(?m)/\*(\*(?!/)|[^*])*\*/)+""".r
+
+    def importStatement: Parser[String] = "^@import".r
+    def singleQuoteImport = "'" ~> """[^']+""".r <~ "'" ^^ Import
+    def doubleQuoteImport = "\"" ~> """[^"]+""".r <~ "\"" ^^ Import
+    def importPart: Parser[Import] = singleQuoteImport | doubleQuoteImport
+
+    lazy val ignore: Parser[List[Parsed]] = """\S+""".r ^^ (_ => Ignore :: Nil)
+    def importParts: Parser[List[Import]] = importStatement ~> rep1sep(importPart, ",") <~ ";"
+    def imports: Parser[List[Import]] = rep1(importParts ||| ignore) ^^ (i => {i.flatten.collect{case i: Import => i}})
+
+    def parseImports(fileContent: String, filePath: String) = {
+      val result = parseAll(imports, fileContent)
+      try {
+        result.get.map(_.value)
+      } catch {
+        case t: Throwable =>
+          throw new Exception("Had problems parsing imports from: %s \n%s".format(filePath, result.toString), t)
+      }
+    }
+  }
+
+  def parseImportsFromFile(src: File): List[String] = {
+    val fileContent = IO.readLines(src).map(_.trim).mkString("\n")
+    ImportParser.parseImports(fileContent, src.getAbsolutePath)
   }
 
 }
@@ -31,8 +68,13 @@ case class SassSource(graph: Graph, src: File) extends Source {
 
   def regularOrPartialImport(importName: String): Option[String] = {
     def fileExists(in: String) = new File(this.srcDirectory, in).exists()
-    def asRegularScss(in: String ) = "_" + in + "." + srcFileEnding
-    def asPartialScss(in: String)  = "_" + asRegularScss(in)
+    def asRegularScss(in: String ) = in + "." + srcFileEnding
+    def asPartialScss(in: String) = {
+      asRegularScss((in.split("/").toList.reverse match {
+        case head :: tail => ("_"+head) :: tail
+        case Nil => Nil
+      }).reverse.mkString("/"))
+    }
 
     if (fileExists(importName))
       Some(importName)
@@ -46,8 +88,7 @@ case class SassSource(graph: Graph, src: File) extends Source {
 
   lazy val parents: List[Source] = {
     for {
-      line <- IO.readLines(src).map(_.trim).toList
-      importName <- SassSource.parseImport(line)
+      importName <- SassSource.parseImportsFromFile(src)
       ropi <- regularOrPartialImport(importName)
     } yield {
         graph.getSource(ropi, this)
@@ -88,7 +129,7 @@ case class SassSource(graph: Graph, src: File) extends Source {
 
 
       val syntaxOptions = Map(":syntax" -> (":"+srcFileEnding))
-      val css = handleException(renderCssFromScssFile(src, syntaxOptions))
+      val css = handleException(renderCssFromScssFile(src, graph.compilerOptions ++: syntaxOptions))
       IO.write(des, css)
       Some(des)
     }

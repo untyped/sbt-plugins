@@ -69,7 +69,9 @@ To include, exclude (filter) sass files:
 
 ```scala
 (includeFilter in (Compile, SassKeys.sass)) := "*.include.scss"
+```
 
+```scala
 (excludeFilter in (Compile, SassKeys.sass)) := "*.exclude*"
 ```
 
@@ -79,9 +81,18 @@ To specify which version of the Sass CSS compiler to use:
 SassKeys.sassVersion in (Compile, SassKeys.sass) := SassVersion.Sass3214
 ```
 
+To set output style used when compiling Sass
+
+Valid output styles are ['nested(default), 'expanded, 'compact, 'compressed]
+
+```scala
+SassKeys.sassOutputStyle in (Compile, SassKeys.sass) := 'compressed
+```
+
 valid Sass versions include:
 
- - `SassVersion.Sass3214` (the default)
+ - `SassVersion.Sass3214`
+ - `SassVersion.Sass332` (the default)
 
 ## Usage
 
@@ -91,7 +102,7 @@ above to see how to include Sass CSS compilation as part of the regular `compile
 The default behaviour of the plugin is to scan your `src/main` directory and look files with the
 extension `.scss`.
 
-These files are compiled to CSS using Sass CSS v3.2.14 and placed in equivalent locations under
+These files are compiled to CSS using Sass CSS v3.3.2 and placed in equivalent locations under
 `target/scala-2.9.x/resource_managed` or `target/scala-2.10.x/resource_managed`.
 
 ### Templating
