@@ -63,7 +63,7 @@ Each plugin has its own set of configuration options described in its own README
 
 New features:
 
- - Added [sbt-sass]. Thanks to [Torbjørn Vatn] for this great contribution.
+ - Added [sbt-sass](sbt-sass/). Thanks to [Torbjørn Vatn] for this great contribution.
 
 ### Version 0.6 (current stable release; SBT 0.12, 0.13)
 
