@@ -85,6 +85,8 @@ case class LessSource(graph: Graph, src: File) extends Source {
     src.toString.contains(".template")
 
   def compile: Option[File] = {
+    import scala.sys.{props => SysProps}
+
     val des = this.des getOrElse (throw new Exception("Could not determine destination filename for " + src))
 
     graph.log.info("Compiling %s source %s to %s".format(graph.pluginName, src, des))
@@ -102,7 +104,12 @@ case class LessSource(graph: Graph, src: File) extends Source {
       out.println(less)
       out.close()
 
-      Process(Seq("lessc", temp.getCanonicalPath, des.getCanonicalPath)).! match {
+      val lessCommand = SysProps.get("os.name").flatMap { name =>
+          if (name.toLowerCase.startsWith("windows")) Some("lessc.cmd") else None
+        }.getOrElse("lessc")
+
+
+      Process(Seq(lessCommand, temp.getCanonicalPath, des.getCanonicalPath)).! match {
         case 0 => Some(des)
         case n => sys.error("Could not compile %s source %s".format(graph.pluginName, des))
       }

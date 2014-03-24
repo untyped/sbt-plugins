@@ -6,6 +6,7 @@ This repo contains the following SBT plugins:
 
  - [sbt-js](sbt-js/) - Javascript and Coffeescript compilation, minification, and templating;
  - [sbt-less](sbt-less/) - Less CSS compilation, minification, and templating;
+ - [sbt-sass](sbt-sass/) - Sass compilation, minification, and templating;
  - [sbt-mustache](sbt-mustache/) - Mustache templating for HTML files;
  - [sbt-runmode](sbt-runmode/) - specification of Lift run modes using custom jetty-web.xml files.
 
@@ -24,6 +25,8 @@ addSbtPlugin("com.untyped" % "sbt-js"       % <<VERSION>>)
 
 addSbtPlugin("com.untyped" % "sbt-less"     % <<VERSION>>)
 
+addSbtPlugin("com.untyped" % "sbt-sass"     % <<VERSION>>)
+
 addSbtPlugin("com.untyped" % "sbt-mustache" % <<VERSION>>)
 
 addSbtPlugin("com.untyped" % "sbt-runmode"  % <<VERSION>>)
@@ -37,6 +40,8 @@ Then, in your `build.sbt`, add the following:
 seq(jsSettings : _*)
 
 seq(lessSettings : _*)
+
+seq(sassSettings : _*)
 
 seq(mustacheSettings : _*)
 
@@ -53,10 +58,17 @@ Each plugin has its own set of configuration options described in its own README
 
  - [sbt-js](sbt-js/)
  - [sbt-less](sbt-less/)
+ - [sbt-sass](sbt-sass/)
  - [sbt-mustache](sbt-mustache/)
  - [sbt-runmode](sbt-runmode/)
 
 ## Changelog
+
+## Version 0.7 (current development release; SBT 0.12, 0.13)
+
+New features:
+
+ - Added [sbt-sass](sbt-sass/). Thanks to [Torbjørn Vatn] for this great contribution.
 
 ### Version 0.6 (current stable release; SBT 0.12, 0.13)
 
@@ -243,8 +255,8 @@ limitations under the License.
 
 ## Acknowledgements
 
-Many thanks to the following for their contributions: [Denis Bardadym], [Shikhar Bhushan],
-[mdedetrich], [Glade Diviney], [Alexandre Richonnier], and [Tim Nelson].
+Many thanks to the following for their contributions (alphabetical order): [Denis Bardadym], [Shikhar Bhushan],
+[mdedetrich], [Glade Diviney], [Crisson Jno-Charles], [Tim Nelson], [Alexandre Richonnier], and [Torbjørn Vatn].
 
 **sbt-js**
 
@@ -262,6 +274,16 @@ Heavily influenced by the [YUI Compressor SBT plugin] by Jon Hoffman.
 
 v0.1 used a tweaked version of the [Less for Java] wrapper by Asual.
 
+**sbt-sass**
+
+Written by [Torbjørn Vatn].
+
+Includes embedded copies of [Sass] 3.x, Copyright (c) 2006-2013 Hampton Catlin, Nathan Weizenbaum, and Chris Eppstein, distributed under the [MIT License].
+
+[MIT License]: http://sass-lang.com/documentation/file.MIT-LICENSE.html
+[Sass]: http://sass-lang.com/
+[Torbjørn Vatn]: https://github.com/torbjornvatn
+[Crisson Jno-Charles]: https://github.com/crisson
 [Alexandre Richonnier]: https://github.com/heralight
 [Build.scala]: https://github.com/untyped/sbt-plugins/blob/master/project/Build.scala
 [Coffee Script SBT plugin]: https://github.com/rubbish/coffee-script-sbt-plugin

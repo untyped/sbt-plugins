@@ -1,1 +1,1 @@
-addSbtPlugin("com.untyped" % "sbt-runmode" % "0.6")
+addSbtPlugin("com.untyped" % "sbt-runmode" % "0.7-M2")
