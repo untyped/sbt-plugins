@@ -64,13 +64,13 @@ Each plugin has its own set of configuration options described in its own README
 
 ## Changelog
 
-## Version 0.7 (current development release; SBT 0.12, 0.13)
+## Version 0.7 (current stable release; SBT 0.12, 0.13)
 
 New features:
 
  - Added [sbt-sass](sbt-sass/). Thanks to [Torbjørn Vatn] for this great contribution.
 
-### Version 0.6 (current stable release; SBT 0.12, 0.13)
+### Version 0.6 (SBT 0.12, 0.13)
 
 New features:
 
