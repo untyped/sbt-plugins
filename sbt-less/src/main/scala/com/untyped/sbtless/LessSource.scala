@@ -144,7 +144,10 @@ case class LessSource(graph: Graph, src: File) extends Source {
             val error   = e.getValue.asInstanceOf[Scriptable]
             val line    = ScriptableObject.getProperty(error, "line"   ).asInstanceOf[Double].intValue
             val column  = ScriptableObject.getProperty(error, "column" ).asInstanceOf[Double].intValue
-            val message = ScriptableObject.getProperty(error, "message").asInstanceOf[String]
+            val message = ScriptableObject.getProperty(error, "message") match {
+              case msg:String => msg
+              case msg:ConsString => msg.toString
+            }
             sys.error("%s error: %s [%s,%s]: %s".format(graph.pluginName, src.getName, line, column, message))
         }
       }
