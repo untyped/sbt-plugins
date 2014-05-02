@@ -14,6 +14,7 @@ $ exists target/scripted/resources/file6.js
 $ exists target/scripted/resources/file7.notemplate.js
 $ exists target/scripted/resources/file8.js
 $ exists target/scripted/resources/file9.js
+$ exists target/scripted/resources/file10.js
 
 # Check that the JS files have the correct content:
 > contents target/scripted/resources/file1.js            fixtures/file1.js
@@ -25,6 +26,7 @@ $ exists target/scripted/resources/file9.js
 > contents target/scripted/resources/file7.notemplate.js fixtures/file7.notemplate.js
 > contents target/scripted/resources/file8.js            fixtures/file8.js
 > contents target/scripted/resources/file9.js            fixtures/file9.js
+> contents target/scripted/resources/file10.js           fixtures/file10.js
 
 # Check that the JS files were updated by the last compile task:
 $ newer target/scripted/resources/file1.js            fixtures/last-compile-time
@@ -36,6 +38,7 @@ $ newer target/scripted/resources/file6.js            fixtures/last-compile-time
 $ newer target/scripted/resources/file7.notemplate.js fixtures/last-compile-time
 $ newer target/scripted/resources/file8.js            fixtures/last-compile-time
 $ newer target/scripted/resources/file9.js            fixtures/last-compile-time
+$ newer target/scripted/resources/file10.js           fixtures/last-compile-time
 
 # Touch some (but not all) of the source files:
 $ touch src/main/resources/file1.js
@@ -58,6 +61,7 @@ $ sleep 1000
 > contents target/scripted/resources/file7.notemplate.js fixtures/file7.notemplate.js
 > contents target/scripted/resources/file8.js            fixtures/file8.js
 > contents target/scripted/resources/file9.js            fixtures/file9.js
+> contents target/scripted/resources/file10.js           fixtures/file10.js
 
 # Check that only the touched files were updated:
 $ newer target/scripted/resources/file1.js      fixtures/last-compile-time
@@ -69,6 +73,7 @@ $ newer fixtures/last-compile-time                                       target/
 $ newer fixtures/last-compile-time                                       target/scripted/resources/file7.notemplate.js
 $ newer target/scripted/resources/file8.js      fixtures/last-compile-time
 $ newer target/scripted/resources/file9.js      fixtures/last-compile-time
+$ newer target/scripted/resources/file10.js     fixtures/last-compile-time
 
 # Clean everything:
 > clean

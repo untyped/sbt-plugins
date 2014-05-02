@@ -1,0 +1,8 @@
+# Compile all sources:
+> js
+
+# Check that the JS files exist:
+$ exists target/scripted/resources/file1.js
+
+# Check that the JS files have the correct content:
+> contents target/scripted/resources/file1.js            fixtures/file1.js

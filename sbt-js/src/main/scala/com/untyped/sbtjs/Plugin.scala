@@ -140,11 +140,11 @@ object Plugin extends sbt.Plugin {
       (out, variableRenamingPolicy, prettyPrint, strictMode, warningLevel, compilationLevel) =>
         val options = new ClosureOptions
 
-        options.variableRenaming = variableRenamingPolicy
-        options.prettyPrint = prettyPrint
-
         compilationLevel.setOptionsForCompilationLevel(options)
         warningLevel.setOptionsForWarningLevel(options)
+
+        options.variableRenaming = variableRenamingPolicy
+        options.prettyPrint = prettyPrint
 
         if(strictMode) {
           options.setLanguageIn(ClosureOptions.LanguageMode.ECMASCRIPT5_STRICT)
