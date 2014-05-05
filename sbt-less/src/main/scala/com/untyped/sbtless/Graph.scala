@@ -9,6 +9,7 @@ case class Graph(
   targetDir: File,
   templateProperties: Properties,
   downloadDir: File,
+  filenameSuffix: String,
   lessVersion: Plugin.LessVersion,
   prettyPrint: Boolean,
   useCommandLine: Boolean = false
@@ -24,7 +25,7 @@ case class Graph(
     }
 
   def srcFilenameToDesFilename(filename: String) =
-    filename.replaceAll("[.]less$", ".css")
+    filename.replaceAll("[.]less$", filenameSuffix+".css")
 
   val pluginName = "sbt-less"
 

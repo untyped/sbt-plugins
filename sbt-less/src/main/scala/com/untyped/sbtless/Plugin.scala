@@ -11,6 +11,7 @@ object Plugin extends sbt.Plugin {
     val sourceGraph         = TaskKey[Graph]("less-source-graph", "List of Less CSS sources.")
     val templateProperties  = SettingKey[Properties]("less-template-properties", "Properties to use in Less CSS templates")
     val downloadDirectory   = SettingKey[File]("less-download-directory", "Temporary directory to download Less CSS files to")
+    val filenameSuffix      = SettingKey[String]("less-filename-suffix", "Suffix to append to the output file names before '.css'")
     val prettyPrint         = SettingKey[Boolean]("less-pretty-print", "Whether to pretty print CSS (default false)")
     val lessVersion         = SettingKey[LessVersion]("less-version", "The version of the Less CSS compiler to use")
     val useCommandLine      = SettingKey[Boolean]("less-use-command-line", "Use the Less CSS command line script instead of Rhino")
@@ -57,8 +58,8 @@ object Plugin extends sbt.Plugin {
     }
 
   def sourceGraphTask = // : Def.Initialize[Task[Graph]] =
-    (streams, sourceDirectories in less, resourceManaged in less, unmanagedSources in less, templateProperties in less, downloadDirectory in less, prettyPrint in less, lessVersion in less, useCommandLine in less) map {
-      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, prettyPrint, lessVersion, useCommandLine) =>
+    (streams, sourceDirectories in less, resourceManaged in less, unmanagedSources in less, templateProperties in less, downloadDirectory in less, filenameSuffix in less, prettyPrint in less, lessVersion in less, useCommandLine in less) map {
+      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, filenameSuffix, prettyPrint, lessVersion, useCommandLine) =>
         time(out, "sourceGraphTask") {
           out.log.debug("sbt-less template properties " + templateProperties)
 
@@ -68,6 +69,7 @@ object Plugin extends sbt.Plugin {
             targetDir          = targetDir,
             templateProperties = templateProperties,
             downloadDir        = downloadDir,
+            filenameSuffix     = filenameSuffix,
             lessVersion        = lessVersion,
             prettyPrint        = prettyPrint,
             useCommandLine     = useCommandLine
@@ -112,6 +114,7 @@ object Plugin extends sbt.Plugin {
       resourceManaged in less      <<= (resourceManaged in conf),
       templateProperties           :=  new Properties,
       downloadDirectory            <<= (target in conf) { _ / "sbt-less" / "downloads" },
+      filenameSuffix               := "",
       sourceGraph                  <<= sourceGraphTask,
       sources in less              <<= watchSourcesTask,
       watchSources in less         <<= watchSourcesTask,
