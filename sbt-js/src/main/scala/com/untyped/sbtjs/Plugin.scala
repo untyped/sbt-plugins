@@ -15,7 +15,7 @@ object Plugin extends sbt.Plugin {
     val charset                = SettingKey[Charset]("js-charset", "Sets the character encoding used in Javascript files (default utf-8)")
     val templateProperties     = SettingKey[Properties]("js-template-properties", "Properties to use in Javascript templates")
     val downloadDirectory      = SettingKey[File]("js-download-directory", "Temporary directory to download Javascript files to")
-    val filenameSuffix         = SettingKey[String]("filename-suffix", "Suffix to append to the output file names before '.js'")
+    val filenameSuffix         = SettingKey[String]("js-filename-suffix", "Suffix to append to the output file names before '.js'")
     // Coffee Script options:
     val coffeeVersion          = SettingKey[CoffeeVersion]("coffee-version", "The version of the Coffeescript compiler to use")
     val coffeeBare             = SettingKey[Boolean]("js-coffee-bare", "Whether to omit the top-level function wrappers in coffee script (default true)")
