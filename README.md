@@ -260,7 +260,7 @@ limitations under the License.
 ## Acknowledgements
 
 Many thanks to the following for their contributions (alphabetical order): [Denis Bardadym], [Shikhar Bhushan],
-[mdedetrich], [Glade Diviney], [Crisson Jno-Charles], [Tim Nelson], [Alexandre Richonnier], and [Torbjørn Vatn].
+[mdedetrich], [Glade Diviney], [Thomas Dy], [Crisson Jno-Charles], [Tim Nelson], [Alexandre Richonnier], and [Torbjørn Vatn].
 
 **sbt-js**
 
@@ -295,6 +295,7 @@ Includes embedded copies of [Sass] 3.x, Copyright (c) 2006-2013 Hampton Catlin, 
 [Denis Bardadym]: https://github.com/btd
 [git flow]: http://nvie.com/posts/a-successful-git-branching-model/
 [Glade Diviney]: https://github.com/gladed
+[Thomas Dy]: http://github.com/thatsmydoing
 [ivy.untyped.com]: http://ivy.untyped.com/com.untyped
 [jCoffeeScript 1.1]: https://github.com/yeungda/jcoffeescript
 [Less for Java]: http://www.asual.com/lesscss/
