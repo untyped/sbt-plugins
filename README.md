@@ -207,9 +207,10 @@ Please make sure all tests pass before submitting a pull request. The build scri
 [sbt-cross-building] plugin to target various SBT and Scala versions, and the [sbt-scripted]
 plugin as a test runner.
 
-To compile and test the code for all targetted versions of SBT, do the following:
+To compile and test the code for all targeted versions of SBT, do the following:
 
 ```
+^publish-local
 ^compile
 ^scripted
 ```
@@ -218,11 +219,14 @@ To compile and test the code for a single version of SBT, do the following:
 
 ```
 ^^0.13
+publish-local
 compile
 scripted
 ```
 
 The the `sbt-cross-building` documentation for more information.
+
+**Note to Windows users**: [Get Linux](http://www.linuxmint.com/).  No seriously, these tests won't pass on Windows perhaps due to the line-ending characters, and they like to freeze up indefinitely.
 
 ### Release
 
