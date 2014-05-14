@@ -12,6 +12,8 @@ JsKeys.templateProperties in Compile := {
   props
 }
 
+JsKeys.filenameSuffix in Compile := ".out"
+
 InputKey[Unit]("contents") <<= inputTask { (argsTask: TaskKey[Seq[String]]) =>
   (argsTask, streams) map { (args, out) =>
     args match {
