@@ -12,6 +12,8 @@ SassKeys.templateProperties in Compile := {
   props
 }
 
+SassKeys.filenameSuffix in Compile := ".out"
+
 InputKey[Unit]("contents") <<= inputTask { (argsTask: TaskKey[Seq[String]]) =>
   (argsTask, streams) map { (args, out) =>
     args match {
