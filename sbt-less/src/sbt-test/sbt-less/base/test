@@ -5,26 +5,26 @@ $ sleep 1000
 > less
 
 # Check that the CSS files exist:
-$ exists target/scripted/resources/file1.css
-$ exists target/scripted/scala/file2.css
-$ exists target/scripted/resources/dir1/file3.css
-$ exists target/scripted/scala/dir2/file4.css
-$ exists target/scripted/resources/file5.notemplate.css
-$ exists target/scripted/resources/file6.css
+$ exists target/scripted/resources/file1.out.css
+$ exists target/scripted/scala/file2.out.css
+$ exists target/scripted/resources/dir1/file3.out.css
+$ exists target/scripted/scala/dir2/file4.out.css
+$ exists target/scripted/resources/file5.notemplate.out.css
+$ exists target/scripted/resources/file6.out.css
 
 # Check that the CSS files have the correct content:
-> contents target/scripted/resources/file1.css            fixtures/file1.css
-> contents target/scripted/scala/file2.css                fixtures/file2.css
-> contents target/scripted/resources/dir1/file3.css       fixtures/file3.css
-> contents target/scripted/scala/dir2/file4.css           fixtures/file4.css
-> contents target/scripted/resources/file6.css            fixtures/file6.css
+> contents target/scripted/resources/file1.out.css            fixtures/file1.css
+> contents target/scripted/scala/file2.out.css                fixtures/file2.css
+> contents target/scripted/resources/dir1/file3.out.css       fixtures/file3.css
+> contents target/scripted/scala/dir2/file4.out.css           fixtures/file4.css
+> contents target/scripted/resources/file6.out.css            fixtures/file6.css
 
 # Check that the CSS files were updated by the last compile task:
-$ newer target/scripted/resources/file1.css            fixtures/last-compile-time
-$ newer target/scripted/scala/file2.css                fixtures/last-compile-time
-$ newer target/scripted/resources/dir1/file3.css       fixtures/last-compile-time
-$ newer target/scripted/scala/dir2/file4.css           fixtures/last-compile-time
-$ newer target/scripted/resources/file6.css            fixtures/last-compile-time
+$ newer target/scripted/resources/file1.out.css            fixtures/last-compile-time
+$ newer target/scripted/scala/file2.out.css                fixtures/last-compile-time
+$ newer target/scripted/resources/dir1/file3.out.css       fixtures/last-compile-time
+$ newer target/scripted/scala/dir2/file4.out.css           fixtures/last-compile-time
+$ newer target/scripted/resources/file6.out.css            fixtures/last-compile-time
 
 # Touch some (but not all) of the source files:
 $ touch src/main/resources/file1.css
@@ -38,18 +38,18 @@ $ sleep 1000
 > less
 
 # Check that the files still have the correct content:
-> contents target/scripted/resources/file1.css            fixtures/file1.css
-> contents target/scripted/scala/file2.css                fixtures/file2.css
-> contents target/scripted/resources/dir1/file3.css       fixtures/file3.css
-> contents target/scripted/scala/dir2/file4.css           fixtures/file4.css
-> contents target/scripted/resources/file6.css            fixtures/file6.css
+> contents target/scripted/resources/file1.out.css            fixtures/file1.css
+> contents target/scripted/scala/file2.out.css                fixtures/file2.css
+> contents target/scripted/resources/dir1/file3.out.css       fixtures/file3.css
+> contents target/scripted/scala/dir2/file4.out.css           fixtures/file4.css
+> contents target/scripted/resources/file6.out.css            fixtures/file6.css
 
 # Check that only the touched files were updated:
-$ newer target/scripted/resources/file1.css      fixtures/last-compile-time
-$ newer fixtures/last-compile-time                                        target/scripted/scala/file2.css
-$ newer target/scripted/resources/dir1/file3.css fixtures/last-compile-time
-$ newer target/scripted/scala/dir2/file4.css     fixtures/last-compile-time
-$ newer target/scripted/resources/file6.css      fixtures/last-compile-time
+$ newer target/scripted/resources/file1.out.css      fixtures/last-compile-time
+$ newer fixtures/last-compile-time                                        target/scripted/scala/file2.out.css
+$ newer target/scripted/resources/dir1/file3.out.css fixtures/last-compile-time
+$ newer target/scripted/scala/dir2/file4.out.css     fixtures/last-compile-time
+$ newer target/scripted/resources/file6.out.css      fixtures/last-compile-time
 
 # Clean everything:
 > clean

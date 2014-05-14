@@ -12,6 +12,8 @@ LessKeys.templateProperties in Compile := {
   props
 }
 
+LessKeys.filenameSuffix in Compile := ".out"
+
 InputKey[Unit]("contents") <<= inputTask { (argsTask: TaskKey[Seq[String]]) =>
   (argsTask, streams) map { (args, out) =>
     args match {
