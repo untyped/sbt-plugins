@@ -66,7 +66,18 @@ Each plugin has its own set of configuration options described in its own README
 
 ## Version 0.8 (current development release; SBT 0.12, 0.13)
 
-No commits yet.
+New features:
+
+ - Added `filenameSuffix` configuration option to [sbt-js], [sbt-less], [sbt-mustache], and [sbt-sass].
+   Setting this option inserts a string before the final filename extension. For example, a setting of:
+
+       JsKeys.filenameSuffix in Compile := ".min"
+
+   yields filenames like:
+
+       "myfile.min.js"
+
+   Thanks to [Joe Barnes] for this great contribution.
 
 ## Version 0.7 (current stable release; SBT 0.12, 0.13)
 
@@ -199,7 +210,8 @@ You can grab command line addons to Git to assist with Git Flow. For example, on
 
 ### Building
 
-We strongly recommend you use the latest version of Paul Phillips' [SBT launcher] script to automatically select and install the correct version of SBT to build this project.
+We strongly recommend you use the latest version of Paul Phillips' [SBT launcher] script to
+automatically select and install the correct version of SBT to build this project.
 
 ### Tests
 
@@ -259,8 +271,9 @@ limitations under the License.
 
 ## Acknowledgements
 
-Many thanks to the following for their contributions (alphabetical order): [Denis Bardadym], [Shikhar Bhushan],
-[mdedetrich], [Glade Diviney], [Thomas Dy], [Crisson Jno-Charles], [Tim Nelson], [Alexandre Richonnier], and [Torbjørn Vatn].
+Many thanks to the following for their contributions (alphabetical order):
+[Denis Bardadym], [Joe Barnes], [Shikhar Bhushan], [mdedetrich], [Glade Diviney],
+[Thomas Dy], [Crisson Jno-Charles], [Tim Nelson], [Alexandre Richonnier], and [Torbjørn Vatn].
 
 **sbt-js**
 
@@ -284,28 +297,30 @@ Written by [Torbjørn Vatn].
 
 Includes embedded copies of [Sass] 3.x, Copyright (c) 2006-2013 Hampton Catlin, Nathan Weizenbaum, and Chris Eppstein, distributed under the [MIT License].
 
-[MIT License]: http://sass-lang.com/documentation/file.MIT-LICENSE.html
-[Sass]: http://sass-lang.com/
-[Torbjørn Vatn]: https://github.com/torbjornvatn
-[Crisson Jno-Charles]: https://github.com/crisson
 [Alexandre Richonnier]: https://github.com/heralight
-[Build.scala]: https://github.com/untyped/sbt-plugins/blob/master/project/Build.scala
-[Coffee Script SBT plugin]: https://github.com/rubbish/coffee-script-sbt-plugin
+[Crisson Jno-Charles]: https://github.com/crisson
 [Dave Gurnell]: http://boxandarrow.com
 [Denis Bardadym]: https://github.com/btd
-[git flow]: http://nvie.com/posts/a-successful-git-branching-model/
 [Glade Diviney]: https://github.com/gladed
+[Joe Barnes]: https://github.com/barnesjd
+[mdedetrich]: https://github.com/mdedetrich
+[Shikhar Bhushan]: https://github.com/shikhar
 [Thomas Dy]: http://github.com/thatsmydoing
+[Tim Nelson]: https://github.com/eltimn
+[Torbjørn Vatn]: https://github.com/torbjornvatn
+
+[Build.scala]: https://github.com/untyped/sbt-plugins/blob/master/project/Build.scala
+[Coffee Script SBT plugin]: https://github.com/rubbish/coffee-script-sbt-plugin
+[git flow]: http://nvie.com/posts/a-successful-git-branching-model/
 [ivy.untyped.com]: http://ivy.untyped.com/com.untyped
 [jCoffeeScript 1.1]: https://github.com/yeungda/jcoffeescript
 [Less for Java]: http://www.asual.com/lesscss/
 [less-sbt]: https://github.com/softprops/less-sbt
-[mdedetrich]: https://github.com/mdedetrich
+[MIT License]: http://sass-lang.com/documentation/file.MIT-LICENSE.html
+[Sass]: http://sass-lang.com/
 [SBT community plugins repo]: http://www.scala-sbt.org/
+[SBT launcher]: https://github.com/paulp/sbt-extras
 [sbt-cross-building]: https://github.com/jrudolph/sbt-cross-building
 [sbt-scripted]: https://github.com/sbt/sbt/tree/0.13/scripted
-[Shikhar Bhushan]: https://github.com/shikhar
-[Tim Nelson]: https://github.com/eltimn
 [Untyped]: http://untyped.com
 [YUI Compressor SBT plugin]: https://github.com/hoffrocket/sbt-yui
-[SBT launcher]: https://github.com/paulp/sbt-extras

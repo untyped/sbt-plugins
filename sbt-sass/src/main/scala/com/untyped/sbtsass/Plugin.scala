@@ -11,6 +11,7 @@ object Plugin extends sbt.Plugin {
     val sourceGraph         = TaskKey[Graph]("sass-source-graph", "List of Sass CSS sources.")
     val templateProperties  = SettingKey[Properties]("sass-template-properties", "Properties to use in Sass CSS templates")
     val downloadDirectory   = SettingKey[File]("sass-download-directory", "Temporary directory to download Sass CSS files to")
+    val filenameSuffix      = SettingKey[String]("sass-filename-suffix", "Suffix to append to the output file names before '.css'")
     val prettyPrint         = SettingKey[Boolean]("sass-pretty-print", "Whether to pretty print CSS (default false)")
     val sassVersion         = SettingKey[SassVersion]("sass-version", "The version of the Sass CSS compiler to use")
     val useCommandLine      = SettingKey[Boolean]("sass-use-command-line", "Use the Sass CSS command line script instead of Rhino")
@@ -59,12 +60,13 @@ object Plugin extends sbt.Plugin {
       unmanagedSources in sass,
       templateProperties in sass,
       downloadDirectory in sass,
+      filenameSuffix in sass,
       prettyPrint in sass,
       sassVersion in sass,
       useCommandLine in sass,
       sassOutputStyle in sass) map {
       (out, sourceDirs, targetDir, sourceFiles, templateProperties,
-       downloadDir, prettyPrint, sassVersion, useCommandLine, sassOutputStyle) =>
+       downloadDir, filenameSuffix, prettyPrint, sassVersion, useCommandLine, sassOutputStyle) =>
         time(out, "sourceGraphTask") {
           out.log.debug("sbt-sass template properties " + templateProperties)
 
@@ -74,6 +76,7 @@ object Plugin extends sbt.Plugin {
             targetDir          = targetDir,
             templateProperties = templateProperties,
             downloadDir        = downloadDir,
+            filenameSuffix     = filenameSuffix,
             sassVersion        = sassVersion,
             prettyPrint        = prettyPrint,
             useCommandLine     = useCommandLine,
@@ -121,6 +124,7 @@ object Plugin extends sbt.Plugin {
       resourceManaged in sass      <<= (resourceManaged in conf),
       templateProperties           :=  new Properties,
       downloadDirectory            <<= (target in conf) { _ / "sbt-sass" / "downloads" },
+      filenameSuffix               := "",
       sourceGraph                  <<= sourceGraphTask,
       sources in sass              <<= watchSourcesTask,
       watchSources in sass         <<= watchSourcesTask,

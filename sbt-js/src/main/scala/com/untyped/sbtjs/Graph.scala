@@ -14,6 +14,7 @@ case class Graph(
   targetDir: File,
   templateProperties: Properties,
   downloadDir: File,
+  filenameSuffix: String,
   coffeeVersion: Plugin.CoffeeVersion,
   coffeeOptions: List[CoffeeOption] = List(CoffeeOption.BARE),
   closureOptions: ClosureOptions
@@ -31,7 +32,7 @@ case class Graph(
     }
 
   def srcFilenameToDesFilename(filename: String) =
-    filename.replaceAll("[.](js|jsm|jsmanifest|coffee)$", ".js")
+    filename.replaceAll("[.](js|jsm|jsmanifest|coffee)$", filenameSuffix+".js")
 
   val pluginName = "sbt-js"
 

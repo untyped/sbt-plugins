@@ -15,6 +15,7 @@ object Plugin extends sbt.Plugin {
     val charset                = SettingKey[Charset]("js-charset", "Sets the character encoding used in Javascript files (default utf-8)")
     val templateProperties     = SettingKey[Properties]("js-template-properties", "Properties to use in Javascript templates")
     val downloadDirectory      = SettingKey[File]("js-download-directory", "Temporary directory to download Javascript files to")
+    val filenameSuffix         = SettingKey[String]("js-filename-suffix", "Suffix to append to the output file names before '.js'")
     // Coffee Script options:
     val coffeeVersion          = SettingKey[CoffeeVersion]("coffee-version", "The version of the Coffeescript compiler to use")
     val coffeeBare             = SettingKey[Boolean]("js-coffee-bare", "Whether to omit the top-level function wrappers in coffee script (default true)")
@@ -81,8 +82,8 @@ object Plugin extends sbt.Plugin {
     }
 
   def sourceGraphTask = // : Def.Initialize[Task[Graph]] =
-    (streams, sourceDirectories in js, resourceManaged in js, unmanagedSources in js, templateProperties, downloadDirectory, coffeeVersion, coffeeOptions, closureOptions) map {
-      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, coffeeVersion, coffeeOptions, closureOptions) =>
+    (streams, sourceDirectories in js, resourceManaged in js, unmanagedSources in js, templateProperties, downloadDirectory, filenameSuffix, coffeeVersion, coffeeOptions, closureOptions) map {
+      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, filenameSuffix, coffeeVersion, coffeeOptions, closureOptions) =>
         out.log.debug("sbt-js template properties " + templateProperties)
 
         time(out, "sourceGraphTask") {
@@ -92,6 +93,7 @@ object Plugin extends sbt.Plugin {
             targetDir          = targetDir,
             templateProperties = templateProperties,
             downloadDir        = downloadDir,
+            filenameSuffix     = filenameSuffix,
             coffeeVersion      = coffeeVersion,
             coffeeOptions      = coffeeOptions,
             closureOptions     = closureOptions
@@ -166,6 +168,7 @@ object Plugin extends sbt.Plugin {
       resourceManaged in js   <<= (resourceManaged in conf),
       templateProperties       := new Properties,
       downloadDirectory       <<= (target in conf) { _ / "sbt-js" / "downloads" },
+      filenameSuffix           := "",
       sourceGraph             <<= sourceGraphTask,
       sources in js           <<= watchSourcesTask,
       watchSources in js      <<= watchSourcesTask,

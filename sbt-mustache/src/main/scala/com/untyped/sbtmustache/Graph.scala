@@ -8,7 +8,8 @@ case class Graph(
   sourceDirs: Seq[File],
   targetDir: File,
   templateProperties: Properties,
-  downloadDir: File
+  downloadDir: File,
+  filenameSuffix: String
 ) extends com.untyped.sbtgraph.Graph {
 
   type S = com.untyped.sbtmustache.Source
@@ -18,8 +19,14 @@ case class Graph(
     Source(this, src.getCanonicalFile)
   }
 
-  def srcFilenameToDesFilename(filename: String) =
-    filename
+  def srcFilenameToDesFilename(filename: String) = {
+    val parts = filename.split(".").toList
+    if(parts.length > 1) {
+      parts.dropRight(1).mkString(".") + filenameSuffix + parts.last
+    } else {
+      filename
+    }
+  }
 
   val pluginName = "sbt-mustache"
 

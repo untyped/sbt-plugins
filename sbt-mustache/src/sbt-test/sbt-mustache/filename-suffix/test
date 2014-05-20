@@ -1,0 +1,40 @@
+# Mark the time and run the compile task:
+$ sleep 1000
+$ touch fixtures/last-compile-time
+$ sleep 1000
+> mustache
+
+# Check that the files exist:
+$ exists target/scripted/resources/file1.html
+$ exists target/scripted/resources/file2.md
+
+# Check that the files have the correct content:
+> contents target/scripted/resources/file1.html fixtures/file1.out.html
+> contents target/scripted/resources/file2.md   fixtures/file2.out.md
+
+# Check that the files were updated by the last compile task:
+$ newer target/scripted/resources/file1.html fixtures/last-compile-time
+$ newer target/scripted/resources/file2.md   fixtures/last-compile-time
+
+# Touch some (but not all) of the source files:
+$ touch src/main/resources/file1.html
+
+# Mark the time and run the compile task again:
+$ sleep 1000
+$ touch fixtures/last-compile-time
+$ sleep 1000
+> mustache
+
+# Check that the files still have the correct content:
+> contents target/scripted/resources/file1.html fixtures/file1.out.html
+> contents target/scripted/resources/file2.md   fixtures/file2.out.md
+
+# Check that only the touched files were updated:
+$ newer target/scripted/resources/file1.out.html fixtures/last-compile-time
+$ newer fixtures/last-compile-time target/scripted/resources/file2.out.md
+
+# Clean everything:
+> clean
+
+# Check the target and temporary downloads directories have been deleted:
+$ absent target/sbt-mustache/downloads

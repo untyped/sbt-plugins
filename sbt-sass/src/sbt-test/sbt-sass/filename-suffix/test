@@ -1,0 +1,35 @@
+# Mark the time and run the compile task:
+$ sleep 1000
+$ touch fixtures/last-compile-time
+$ sleep 1000
+> sass
+
+# Check that the CSS file exist:
+$ exists target/scripted/resources/file1.out.css
+
+# Check that the CSS files have the correct content:
+> contents target/scripted/resources/file1.out.css fixtures/file1.out.css
+
+## Check that the CSS files were updated by the last compile task:
+$ newer target/scripted/resources/file1.out.css fixtures/last-compile-time
+
+## Touch some (but not all) of the source files:
+$ touch target/scripted/resources/file1.out.css
+
+## Mark the time and run the compile task again:
+$ sleep 1000
+$ touch fixtures/last-compile-time
+$ sleep 1000
+> sass
+
+## Check that the files still have the correct content:
+> contents target/scripted/resources/file1.out.css fixtures/file1.out.css
+
+## Check that only the touched files were updated:
+$ newer target/scripted/resources/file1.out.css fixtures/last-compile-time
+
+## Clean everything:
+#> clean
+
+## Check the target and temporary downloads directories have been deleted:
+$ absent target/sbt-sass/downloads
