@@ -6,7 +6,7 @@ object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.8-M1"
+  val pluginsVersion = "0.8-PrintAst"
 
   // Libraries ----------------------------------
 

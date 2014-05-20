@@ -1,1 +1,1 @@
-addSbtPlugin("com.untyped" % "sbt-js" % "0.8-M1")
+addSbtPlugin("com.untyped" % "sbt-js" % "0.8-M2")
