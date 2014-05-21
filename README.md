@@ -1,6 +1,6 @@
 # Untyped SBT Plugins
 
-Copyright 2011-13 [Dave Gurnell] of [Untyped]. See below for licence and acknowledgements.
+Copyright 2011-14 [Dave Gurnell] of [Untyped]. See below for licence and acknowledgements.
 
 This repo contains the following SBT plugins:
 
@@ -259,7 +259,7 @@ After release:
 
 ## Licence
 
-Copyright 2011-12 [Dave Gurnell] of [Untyped]
+Copyright 2011-14 [Dave Gurnell] of [Untyped]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
