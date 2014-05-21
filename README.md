@@ -236,7 +236,7 @@ compile
 scripted
 ```
 
-The the `sbt-cross-building` documentation for more information.
+The the [sbt-cross-building] documentation for more information.
 
 **Note to Windows users**: Unfortunately the tests are sensitive to line endings and file encodings and won't pass on Windows. However, they have been verified as working on Linux and OS X.
 
