@@ -89,7 +89,8 @@ valid Less versions include:
 
  - `LessVersion.Less113`
  - `LessVersion.Less115`
- - `LessVersion.Less130` (the default)
+ - `LessVersion.Less130`
+ - `LessVersion.Less142` (the default)
 
 ## Usage
 
