@@ -50,8 +50,14 @@ trait Source extends com.untyped.sbtgraph.Source {
         warnings.foreach(err => graph.log.warn(err.toString))
       }
 
+      val mapDes = new File(des.getPath+".map")
+
       IO.createDirectory(new File(des.getParent))
-      IO.write(des, compiler.toSource)
+      IO.write(des, compiler.toSource+"\n"+"//@ sourceMappingURL="+mapDes.getName)
+
+      val mapWriter = new java.io.FileWriter(mapDes)
+      compiler.getSourceMap.appendTo(mapWriter, des.getName)
+      mapWriter.close()
 
       Some(des)
     }
