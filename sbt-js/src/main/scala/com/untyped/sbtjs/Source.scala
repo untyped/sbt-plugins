@@ -37,6 +37,7 @@ trait Source extends com.untyped.sbtgraph.Source {
       new SourceMap.LocationMapping(source.src.getParent, ".")
     }
     graph.closureOptions.setSourceMapLocationMappings(locationMappings)
+    graph.closureOptions.setSourceMapOutputPath(graph.targetDir.getAbsolutePath)
 
     val result =
       compiler.compile(
