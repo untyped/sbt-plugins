@@ -65,11 +65,11 @@ New features:
  - Added `filenameSuffix` configuration option to [sbt-js], [sbt-less], [sbt-mustache], and [sbt-sass].
    Setting this option inserts a string before the final filename extension. For example, a setting of:
 
-       JsKeys.filenameSuffix in Compile := ".min"
+        JsKeys.filenameSuffix in Compile := ".min"
 
    yields filenames like:
 
-       "myfile.min.js"
+        "myfile.min.js"
 
    Thanks to [Joe Barnes] for this great contribution.
 
