@@ -8,7 +8,6 @@ This repo contains the following SBT plugins:
  - [sbt-less](sbt-less/) - Less CSS compilation, minification, and templating;
  - [sbt-sass](sbt-sass/) - Sass compilation, minification, and templating;
  - [sbt-mustache](sbt-mustache/) - Mustache templating for HTML files;
- - [sbt-runmode](sbt-runmode/) - specification of Lift run modes using custom jetty-web.xml files.
 
 ## Installation
 
@@ -28,8 +27,6 @@ addSbtPlugin("com.untyped" % "sbt-less"     % <<VERSION>>)
 addSbtPlugin("com.untyped" % "sbt-sass"     % <<VERSION>>)
 
 addSbtPlugin("com.untyped" % "sbt-mustache" % <<VERSION>>)
-
-addSbtPlugin("com.untyped" % "sbt-runmode"  % <<VERSION>>)
 ```
 
 Then, in your `build.sbt`, add the following:
@@ -44,8 +41,6 @@ seq(lessSettings : _*)
 seq(sassSettings : _*)
 
 seq(mustacheSettings : _*)
-
-seq(runmodeSettings : _*)
 ```
 
 See the changelog below for the current stable and development version numbers and their compatibility
@@ -60,7 +55,6 @@ Each plugin has its own set of configuration options described in its own README
  - [sbt-less](sbt-less/)
  - [sbt-sass](sbt-sass/)
  - [sbt-mustache](sbt-mustache/)
- - [sbt-runmode](sbt-runmode/)
 
 ## Changelog
 
@@ -78,6 +72,10 @@ New features:
        "myfile.min.js"
 
    Thanks to [Joe Barnes] for this great contribution.
+
+Removed features:
+
+ - Retired `sbt-runmode` plugin.
 
 ## Version 0.7 (current stable release; SBT 0.12, 0.13)
 
