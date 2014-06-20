@@ -1,6 +1,6 @@
 # Untyped SBT Plugins
 
-Copyright 2011-13 [Dave Gurnell] of [Untyped]. See below for licence and acknowledgements.
+Copyright 2011-14 [Dave Gurnell] of [Untyped]. See below for licence and acknowledgements.
 
 This repo contains the following SBT plugins:
 
@@ -219,9 +219,10 @@ Please make sure all tests pass before submitting a pull request. The build scri
 [sbt-cross-building] plugin to target various SBT and Scala versions, and the [sbt-scripted]
 plugin as a test runner.
 
-To compile and test the code for all targetted versions of SBT, do the following:
+To compile and test the code for all targeted versions of SBT, do the following:
 
 ```
+^publish-local
 ^compile
 ^scripted
 ```
@@ -230,11 +231,14 @@ To compile and test the code for a single version of SBT, do the following:
 
 ```
 ^^0.13
+publish-local
 compile
 scripted
 ```
 
-The the `sbt-cross-building` documentation for more information.
+The the [sbt-cross-building] documentation for more information.
+
+**Note to Windows users**: Unfortunately the tests are sensitive to line endings and file encodings and won't pass on Windows. However, they have been verified as working on Linux and OS X.
 
 ### Release
 
@@ -255,7 +259,7 @@ After release:
 
 ## Licence
 
-Copyright 2011-12 [Dave Gurnell] of [Untyped]
+Copyright 2011-14 [Dave Gurnell] of [Untyped]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
