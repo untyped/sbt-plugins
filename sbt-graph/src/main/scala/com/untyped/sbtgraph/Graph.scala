@@ -89,7 +89,7 @@ trait Graph {
         ans match {
           case None =>
             val file = new File(dir, path)
-            if(file.exists) Some(file) else None
+            if(file.isFile) Some(file) else None
           case ans_ => ans_
         }
     }

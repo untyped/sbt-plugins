@@ -1,1 +1,1 @@
-addSbtPlugin("com.untyped" % "sbt-less" % "0.8-M2")
+addSbtPlugin("com.untyped" % "sbt-less" % "0.8-M3")

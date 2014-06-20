@@ -1,1 +1,1 @@
-addSbtPlugin("com.untyped" % "sbt-sass" % "0.8-M2")
+addSbtPlugin("com.untyped" % "sbt-sass" % "0.8-M3")
