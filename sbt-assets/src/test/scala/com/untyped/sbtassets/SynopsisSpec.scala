@@ -37,7 +37,7 @@ class SynopsisSpec extends BaseSpec {
 
     it("should produce a single minified output") {
       distMin.compile(log)
-      IO.read(distMin.assets.head.file) must equal ("""!function(){alert("a")}.call(this);!function(){alert("b")}.call(this);!function(){}.call(this);""")
+      IO.read(distMin.assets.head.file) must equal ("""(function(){alert("a")}).call(this);(function(){alert("b")}).call(this);(function(){}).call(this);""")
     }
 
     it("should clean managed files only") {

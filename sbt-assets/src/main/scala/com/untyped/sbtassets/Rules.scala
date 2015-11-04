@@ -136,7 +136,7 @@ trait Rules {
 
     def compileAssets(log: Logger, in: List[Asset], out: Asset) = {
       val mainAsset = in.find(_.path == mainPath).getOrElse(sys.error("Main asset not found: " + mainPath))
-      var command = List("-O2", mainAsset.file.getPath, out.file.getPath)
+      var command = List(mainAsset.file.getPath, out.file.getPath)
       if(!prettify) command = "--yui-compress" :: command
       command = "lessc" :: command
       log.debug(command.mkString(" "))
