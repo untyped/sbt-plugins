@@ -9,6 +9,7 @@ case class Graph(
   targetDir: File,
   templateProperties: Properties,
   downloadDir: File,
+  filenameSuffix: String,
   sassVersion: Plugin.SassVersion,
   prettyPrint: Boolean,
   useCommandLine: Boolean = false,
@@ -27,7 +28,7 @@ case class Graph(
   }
 
   def srcFilenameToDesFilename(filename: String) =
-    filename.replaceAll("[.]sass$|[.]scss$", ".css")
+    filename.replaceAll("[.]sass$|[.]scss$", filenameSuffix+".css")
 
   val pluginName = "sbt-sass"
 

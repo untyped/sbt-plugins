@@ -1,0 +1,46 @@
+# Mark the time and run the compile task:
+$ sleep 1000
+$ touch fixtures/last-compile-time
+$ sleep 1000
+> less
+
+# Check that the CSS files exist:
+$ exists target/scripted/resources/file1.out.css
+$ exists target/scripted/resources/file2.notemplate.out.css
+$ exists target/scripted/resources/file3.out.css
+
+# Check that the CSS files have the correct content:
+> contents target/scripted/resources/file1.out.css            fixtures/file1.out.css
+> contents target/scripted/resources/file2.notemplate.out.css fixtures/file2.notemplate.out.css
+> contents target/scripted/resources/file3.out.css            fixtures/file3.out.css
+
+# Check that the CSS files were updated by the last compile task:
+$ newer target/scripted/resources/file1.out.css               fixtures/last-compile-time
+$ newer target/scripted/resources/file2.notemplate.out.css    fixtures/last-compile-time
+$ newer target/scripted/resources/file3.out.css               fixtures/last-compile-time
+
+# Touch some (but not all) of the source files:
+$ touch src/main/resources/file1.less
+$ touch src/main/resources/file2.notemplate.less
+
+# Mark the time and run the compile task again:
+$ sleep 1000
+$ touch fixtures/last-compile-time
+$ sleep 1000
+> less
+
+# Check that the files still have the correct content:
+> contents target/scripted/resources/file1.out.css            fixtures/file1.out.css
+> contents target/scripted/resources/file2.notemplate.out.css fixtures/file2.notemplate.out.css
+> contents target/scripted/resources/file3.out.css            fixtures/file3.out.css
+
+# Check that only the touched files were updated:
+$ newer fixtures/last-compile-time target/scripted/resources/file1.out.css
+$ newer fixtures/last-compile-time target/scripted/resources/file2.notemplate.out.css
+$ newer target/scripted/resources/file3.out.css fixtures/last-compile-time
+
+# Clean everything:
+> clean
+
+# Check the target and temporary downloads directories have been deleted:
+$ absent target/sbt-less/downloads

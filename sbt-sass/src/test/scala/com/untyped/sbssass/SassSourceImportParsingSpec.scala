@@ -55,6 +55,7 @@ class SassSourceImportParsingSpec extends FunSpec with Matchers {
       targetDir          = null,
       templateProperties = null,
       downloadDir        = null,
+      filenameSuffix     = "",
       sassVersion        = null,
       prettyPrint        = false,
       useCommandLine     = false,

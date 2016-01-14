@@ -20,11 +20,11 @@ $ exists target/scripted/resources/file6.css
 > contents target/scripted/resources/file6.css            fixtures/file6.css
 
 # Check that the CSS files were updated by the last compile task:
-$ newer target/scripted/resources/file1.css            fixtures/last-compile-time
-$ newer target/scripted/scala/file2.css                fixtures/last-compile-time
-$ newer target/scripted/resources/dir1/file3.css       fixtures/last-compile-time
-$ newer target/scripted/scala/dir2/file4.css           fixtures/last-compile-time
-$ newer target/scripted/resources/file6.css            fixtures/last-compile-time
+$ newer target/scripted/resources/file1.css               fixtures/last-compile-time
+$ newer target/scripted/scala/file2.css                   fixtures/last-compile-time
+$ newer target/scripted/resources/dir1/file3.css          fixtures/last-compile-time
+$ newer target/scripted/scala/dir2/file4.css              fixtures/last-compile-time
+$ newer target/scripted/resources/file6.css               fixtures/last-compile-time
 
 # Touch some (but not all) of the source files:
 $ touch src/main/resources/file1.css
@@ -45,15 +45,14 @@ $ sleep 1000
 > contents target/scripted/resources/file6.css            fixtures/file6.css
 
 # Check that only the touched files were updated:
-$ newer target/scripted/resources/file1.css      fixtures/last-compile-time
-$ newer fixtures/last-compile-time                                        target/scripted/scala/file2.css
-$ newer target/scripted/resources/dir1/file3.css fixtures/last-compile-time
-$ newer target/scripted/scala/dir2/file4.css     fixtures/last-compile-time
-$ newer target/scripted/resources/file6.css      fixtures/last-compile-time
+$ newer target/scripted/resources/file1.css               fixtures/last-compile-time
+$ newer fixtures/last-compile-time                        target/scripted/scala/file2.css
+$ newer target/scripted/resources/dir1/file3.css          fixtures/last-compile-time
+$ newer target/scripted/scala/dir2/file4.css              fixtures/last-compile-time
+$ newer target/scripted/resources/file6.css               fixtures/last-compile-time
 
 # Clean everything:
 > clean
 
 # Check the target and temporary downloads directories have been deleted:
-$ absent target/scala-2.9.2/resource_managed
 $ absent target/sbt-less/downloads

@@ -42,5 +42,4 @@ $ newer target/scripted/resources/lib/file3.html fixtures/last-compile-time
 > clean
 
 # Check the target and temporary downloads directories have been deleted:
-$ absent target/scala-2.9.2/resource_managed
 $ absent target/sbt-mustache/downloads

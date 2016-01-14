@@ -47,6 +47,12 @@ To change the destination directory to `src/main/webapp` in an `xsbt-web-plugin`
 (resourceManaged in (Compile, LessKeys.less)) <<= (sourceDirectory in Compile)(_ / "webapp")
 ```
 
+To version your assets to properly handle browser caching (Lifters, see [this gist](https://gist.github.com/barnesjd/129a1a9f90305b798539)):
+
+```scala
+LessKeys.filenameSuffix in Compile <<= version ("-"+_)
+```
+
 To automatically add generated CSS files to the application JAR:
 
 ```scala
@@ -83,7 +89,8 @@ valid Less versions include:
 
  - `LessVersion.Less113`
  - `LessVersion.Less115`
- - `LessVersion.Less130` (the default)
+ - `LessVersion.Less130`
+ - `LessVersion.Less142` (the default)
 
 ## Usage
 

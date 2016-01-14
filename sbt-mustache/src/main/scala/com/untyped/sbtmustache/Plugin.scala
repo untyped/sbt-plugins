@@ -13,6 +13,7 @@ object Plugin extends sbt.Plugin {
     val charset                = SettingKey[Charset]("mustache-charset", "Sets the character encoding used in Mustache files (default utf-8)")
     val templateProperties     = SettingKey[Properties]("mustache-template-properties", "Properties to use in Mustache templates")
     val downloadDirectory      = SettingKey[File]("mustache-download-directory", "Temporary directory to download Mustache files to")
+    val filenameSuffix         = SettingKey[String]("mustache-filename-suffix", "Suffix to append to the output file names before the existing filename extension")
   }
 
   import MustacheKeys._
@@ -31,8 +32,8 @@ object Plugin extends sbt.Plugin {
     }
 
   def sourceGraphTask = // : Def.Initialize[Task[Graph]] =
-    (streams, sourceDirectories in mustache, resourceManaged in mustache, unmanagedSources in mustache, templateProperties, downloadDirectory) map {
-      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir) =>
+    (streams, sourceDirectories in mustache, resourceManaged in mustache, unmanagedSources in mustache, templateProperties, downloadDirectory, filenameSuffix) map {
+      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, filenameSuffix) =>
         out.log.debug("sbt-mustache template properties " + templateProperties)
 
         val graph = Graph(
@@ -40,7 +41,8 @@ object Plugin extends sbt.Plugin {
           sourceDirs         = sourceDirs,
           targetDir          = targetDir,
           templateProperties = templateProperties,
-          downloadDir        = downloadDir
+          downloadDir        = downloadDir,
+          filenameSuffix     = filenameSuffix
         )
 
         sourceFiles.foreach(graph +=)
@@ -77,6 +79,7 @@ object Plugin extends sbt.Plugin {
       resourceManaged in mustache   <<=  (resourceManaged in conf),
       templateProperties            :=   new Properties,
       downloadDirectory             <<=  (target in conf) { _ / "sbt-mustache" / "downloads" },
+      filenameSuffix                :=   "",
       sourceGraph                   <<=  sourceGraphTask,
       sources in mustache           <<=  watchSourcesTask,
       watchSources in mustache      <<=  watchSourcesTask,

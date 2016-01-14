@@ -1,23 +1,24 @@
 # Untyped SBT Plugins
 
-Copyright 2011-13 [Dave Gurnell] of [Untyped]. See below for licence and acknowledgements.
+Copyright 2011-14 [Dave Gurnell] of [Untyped]. See below for licence and acknowledgements.
 
 This repo contains the following SBT plugins:
 
- - [sbt-js](sbt-js/) - Javascript and Coffeescript compilation, minification, and templating;
- - [sbt-less](sbt-less/) - Less CSS compilation, minification, and templating;
- - [sbt-sass](sbt-sass/) - Sass compilation, minification, and templating;
- - [sbt-mustache](sbt-mustache/) - Mustache templating for HTML files;
- - [sbt-runmode](sbt-runmode/) - specification of Lift run modes using custom jetty-web.xml files.
+ - [sbt-js] - Javascript and Coffeescript compilation, minification, and templating;
+ - [sbt-less] - Less CSS compilation, minification, and templating;
+ - [sbt-sass] - Sass compilation, minification, and templating;
+ - [sbt-mustache] - Mustache templating for HTML files;
+
+[![Build Status](https://travis-ci.org/untyped/sbt-plugins.svg?branch=develop)](https://travis-ci.org/untyped/sbt-plugins)
 
 ## Installation
 
 Create a file called `project/plugins.sbt` in your SBT project and add the following:
 
 ```scala
-// This line is needed for development releases but not stable ones:
+// Add the Untyped Bintray resolver:
 
-resolvers += Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
+resolvers += "Untyped Bintray" at "https://dl.bintray.com/untyped/maven/"
 
 // Add whichever plugins you want to use:
 
@@ -28,8 +29,6 @@ addSbtPlugin("com.untyped" % "sbt-less"     % <<VERSION>>)
 addSbtPlugin("com.untyped" % "sbt-sass"     % <<VERSION>>)
 
 addSbtPlugin("com.untyped" % "sbt-mustache" % <<VERSION>>)
-
-addSbtPlugin("com.untyped" % "sbt-runmode"  % <<VERSION>>)
 ```
 
 Then, in your `build.sbt`, add the following:
@@ -44,8 +43,6 @@ seq(lessSettings : _*)
 seq(sassSettings : _*)
 
 seq(mustacheSettings : _*)
-
-seq(runmodeSettings : _*)
 ```
 
 See the changelog below for the current stable and development version numbers and their compatibility
@@ -60,11 +57,33 @@ Each plugin has its own set of configuration options described in its own README
  - [sbt-less](sbt-less/)
  - [sbt-sass](sbt-sass/)
  - [sbt-mustache](sbt-mustache/)
- - [sbt-runmode](sbt-runmode/)
 
 ## Changelog
 
-## Version 0.7 (current stable release; SBT 0.12, 0.13)
+## Version 0.9 (current development release; SBT 0.13)
+
+Just started. No releases yet!
+
+## Version 0.8 (current stable release; SBT 0.13)
+
+New features:
+
+ - Added `filenameSuffix` configuration option to [sbt-js], [sbt-less], [sbt-mustache], and [sbt-sass].
+   Setting this option inserts a string before the final filename extension. For example, a setting of:
+
+        JsKeys.filenameSuffix in Compile := ".min"
+
+   yields filenames like:
+
+        "myfile.min.js"
+
+   Thanks to [Joe Barnes] for this great contribution.
+
+Removed features:
+
+ - Retired `sbt-runmode` plugin.
+
+### Version 0.7 (SBT 0.12, 0.13)
 
 New features:
 
@@ -195,7 +214,8 @@ You can grab command line addons to Git to assist with Git Flow. For example, on
 
 ### Building
 
-We strongly recommend you use the latest version of Paul Phillips' [SBT launcher] script to automatically select and install the correct version of SBT to build this project.
+We strongly recommend you use the latest version of Paul Phillips' [SBT launcher] script to
+automatically select and install the correct version of SBT to build this project.
 
 ### Tests
 
@@ -203,9 +223,10 @@ Please make sure all tests pass before submitting a pull request. The build scri
 [sbt-cross-building] plugin to target various SBT and Scala versions, and the [sbt-scripted]
 plugin as a test runner.
 
-To compile and test the code for all targetted versions of SBT, do the following:
+To compile and test the code for all targeted versions of SBT, do the following:
 
 ```
+^publish-local
 ^compile
 ^scripted
 ```
@@ -214,11 +235,14 @@ To compile and test the code for a single version of SBT, do the following:
 
 ```
 ^^0.13
+publish-local
 compile
 scripted
 ```
 
-The the `sbt-cross-building` documentation for more information.
+The the [sbt-cross-building] documentation for more information.
+
+**Note to Windows users**: Unfortunately the tests are sensitive to line endings and file encodings and won't pass on Windows. However, they have been verified as working on Linux and OS X.
 
 ### Release
 
@@ -239,7 +263,7 @@ After release:
 
 ## Licence
 
-Copyright 2011-12 [Dave Gurnell] of [Untyped]
+Copyright 2011-14 [Dave Gurnell] of [Untyped]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -255,8 +279,9 @@ limitations under the License.
 
 ## Acknowledgements
 
-Many thanks to the following for their contributions (alphabetical order): [Denis Bardadym], [Shikhar Bhushan],
-[mdedetrich], [Glade Diviney], [Crisson Jno-Charles], [Tim Nelson], [Alexandre Richonnier], and [Torbjørn Vatn].
+Many thanks to the following for their contributions (alphabetical order):
+[Denis Bardadym], [Joe Barnes], [Shikhar Bhushan], [mdedetrich], [Glade Diviney],
+[Thomas Dy], [Crisson Jno-Charles], [Tim Nelson], [Alexandre Richonnier], and [Torbjørn Vatn].
 
 **sbt-js**
 
@@ -280,27 +305,35 @@ Written by [Torbjørn Vatn].
 
 Includes embedded copies of [Sass] 3.x, Copyright (c) 2006-2013 Hampton Catlin, Nathan Weizenbaum, and Chris Eppstein, distributed under the [MIT License].
 
-[MIT License]: http://sass-lang.com/documentation/file.MIT-LICENSE.html
-[Sass]: http://sass-lang.com/
-[Torbjørn Vatn]: https://github.com/torbjornvatn
-[Crisson Jno-Charles]: https://github.com/crisson
+[sbt-js]: sbt-js/
+[sbt-less]: sbt-less/
+[sbt-sass]: sbt-sass/
+[sbt-mustache]: sbt-mustache/
+
 [Alexandre Richonnier]: https://github.com/heralight
-[Build.scala]: https://github.com/untyped/sbt-plugins/blob/master/project/Build.scala
-[Coffee Script SBT plugin]: https://github.com/rubbish/coffee-script-sbt-plugin
+[Crisson Jno-Charles]: https://github.com/crisson
 [Dave Gurnell]: http://boxandarrow.com
 [Denis Bardadym]: https://github.com/btd
-[git flow]: http://nvie.com/posts/a-successful-git-branching-model/
 [Glade Diviney]: https://github.com/gladed
+[Joe Barnes]: https://github.com/joescii
+[mdedetrich]: https://github.com/mdedetrich
+[Shikhar Bhushan]: https://github.com/shikhar
+[Thomas Dy]: http://github.com/thatsmydoing
+[Tim Nelson]: https://github.com/eltimn
+[Torbjørn Vatn]: https://github.com/torbjornvatn
+
+[Build.scala]: https://github.com/untyped/sbt-plugins/blob/master/project/Build.scala
+[Coffee Script SBT plugin]: https://github.com/rubbish/coffee-script-sbt-plugin
+[git flow]: http://nvie.com/posts/a-successful-git-branching-model/
 [ivy.untyped.com]: http://ivy.untyped.com/com.untyped
 [jCoffeeScript 1.1]: https://github.com/yeungda/jcoffeescript
 [Less for Java]: http://www.asual.com/lesscss/
 [less-sbt]: https://github.com/softprops/less-sbt
-[mdedetrich]: https://github.com/mdedetrich
+[MIT License]: http://sass-lang.com/documentation/file.MIT-LICENSE.html
+[Sass]: http://sass-lang.com/
 [SBT community plugins repo]: http://www.scala-sbt.org/
+[SBT launcher]: https://github.com/paulp/sbt-extras
 [sbt-cross-building]: https://github.com/jrudolph/sbt-cross-building
 [sbt-scripted]: https://github.com/sbt/sbt/tree/0.13/scripted
-[Shikhar Bhushan]: https://github.com/shikhar
-[Tim Nelson]: https://github.com/eltimn
 [Untyped]: http://untyped.com
 [YUI Compressor SBT plugin]: https://github.com/hoffrocket/sbt-yui
-[SBT launcher]: https://github.com/paulp/sbt-extras

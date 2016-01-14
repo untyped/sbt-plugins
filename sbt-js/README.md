@@ -49,6 +49,12 @@ To change the destination directory to `src/main/webapp` in an `xsbt-web-plugin`
 (resourceManaged in (Compile, JsKeys.js)) <<= (sourceDirectory in Compile)(_ / "webapp")
 ```
 
+To version your assets to properly handle browser caching (Lifters, see [this gist](https://gist.github.com/joescii/eaf47390e450d588cf2b)):
+
+```scala
+JsKeys.filenameSuffix in Compile <<= version ("-"+_)
+```
+
 To automatically add generated Javascript files to the application JAR:
 
 ```scala

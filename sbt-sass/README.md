@@ -47,6 +47,12 @@ To change the destination directory to `src/main/webapp` in an `xsbt-web-plugin`
 (resourceManaged in (Compile, SassKeys.sass)) <<= (sourceDirectory in Compile)(_ / "webapp")
 ```
 
+To version your assets to properly handle browser caching (Lifters, see [this gist](https://gist.github.com/barnesjd/129a1a9f90305b798539)):
+
+```scala
+SassKeys.filenameSuffix in Compile <<= version ("-"+_)
+```
+
 To automatically add generated CSS files to the application JAR:
 
 ```scala
