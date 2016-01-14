@@ -6,7 +6,7 @@ object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.8-M3"
+  val pluginsVersion = "0.8-M4"
 
   // Libraries ----------------------------------
 
@@ -74,9 +74,8 @@ object Build extends Build {
       scriptedBufferLog              := false,
       scalacOptions                  += "-deprecation",
       scalacOptions                  += "-unchecked",
-      scriptedLaunchOpts := { scriptedLaunchOpts.value ++
-        Seq("-Xmx1024M", "-XX:MaxPermSize=256M", "-Dplugin.version=" + version.value)
-      }
+      scriptedLaunchOpts            ++= Seq("-Xmx1024M", s"-Dplugin.version=${version.value}"),
+      scripted                      <<= scripted dependsOn publishLocal
     )
 
   // Projects -----------------------------------
