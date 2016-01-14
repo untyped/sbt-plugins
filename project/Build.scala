@@ -77,8 +77,7 @@ object Build extends Build {
     sbtJs,
     sbtLess,
     sbtSass,
-    sbtMustache,
-    sbtRunmode
+    sbtMustache
   )
 
   lazy val sbtGraph = Project(
@@ -137,20 +136,5 @@ object Build extends Build {
       unmanagedSourceDirectories in Compile <++= (unmanagedSourceDirectories in (sbtGraph, Compile))
     )
   )
-
-  lazy val sbtRunmode = Project(
-    id = "sbt-runmode",
-    base = file("sbt-runmode"),
-    settings = defaultSettings ++ Seq(
-      // This is a Jetty/Orbit thing:
-      // http://stackoverflow.com/questions/9889674/sbt-jetty-and-servlet-3-0
-      classpathTypes                          ~= (_ + "orbit"),
-      libraryDependencies                    <+= (sbtVersion in sbtPlugin)(webPlugin),
-      libraryDependencies                    <+= (sbtVersion in sbtPlugin)(scalatest),
-      // This is a Jetty/Orbit thing:
-      // http://stackoverflow.com/questions/9889674/sbt-jetty-and-servlet-3-0
-      libraryDependencies                     += jettyOrbit
-    )
-  ).dependsOn(sbtLess, sbtJs)
 
 }
