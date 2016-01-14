@@ -58,7 +58,7 @@ trait Graph {
       case Some((fileDir, filePath)) =>
         // We've managed to split `file` into a dir and a path,
         // we should always be able to recombine them:
-        findSourceFile(filePath).getOrElse(sys.error("could not unshadow " + file))
+        findSourceFile(filePath).getOrElse(sys.error(s"Could not find ${file} on the ${pluginName} path"))
 
       // The file is outside sourceDirs - nothing can shadow it:
       case None =>
