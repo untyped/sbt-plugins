@@ -36,70 +36,89 @@ object Plugin extends sbt.Plugin {
 
   def time[T](out: TaskStreams, msg: String)(func: => T): T = {
     val startTime = java.lang.System.currentTimeMillis
-    val result = func
-    val endTime = java.lang.System.currentTimeMillis
+    val result    = func
+    val endTime   = java.lang.System.currentTimeMillis
+
     out.log.debug("TIME sbt-less " + msg + ": " + (endTime - startTime) + "ms")
+
     result
   }
 
-  def unmanagedSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
-    (streams, sourceDirectories in less, includeFilter in less, excludeFilter in less) map {
-      (out, sourceDirs, includeFilter, excludeFilter) =>
-        time(out, "unmanagedSourcesTask") {
-          out.log.debug("sourceDirectories: " + sourceDirs)
-          out.log.debug("includeFilter: " + includeFilter)
-          out.log.debug("excludeFilter: " + excludeFilter)
+  def unmanagedSourcesTask = Def.task {
+    val _out           = (streams).value
+    val _sourceDirs    = (sourceDirectories in less).value
+    val _includeFilter = (includeFilter in less).value
+    val _excludeFilter = (excludeFilter in less).value
 
-          sourceDirs.foldLeft(Seq[File]()) {
-            (accum, sourceDir) =>
-              accum ++ com.untyped.sbtgraph.Descendents(sourceDir, includeFilter, excludeFilter).get
-          }
-        }
+    time(_out, "unmanagedSourcesTask") {
+      _out.log.debug("sourceDirectories: " + _sourceDirs)
+      _out.log.debug("includeFilter: " + _includeFilter)
+      _out.log.debug("excludeFilter: " + _excludeFilter)
+
+      _sourceDirs.foldLeft(Seq[File]()) { (accum, sourceDir) =>
+        import com.untyped.sbtgraph.Descendents
+
+        accum ++ Descendents(sourceDir, _includeFilter, _excludeFilter).get
+      }
     }
+  }
 
-  def sourceGraphTask = // : Def.Initialize[Task[Graph]] =
-    (streams, sourceDirectories in less, resourceManaged in less, unmanagedSources in less, templateProperties in less, downloadDirectory in less, filenameSuffix in less, prettyPrint in less, lessVersion in less, useCommandLine in less) map {
-      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, filenameSuffix, prettyPrint, lessVersion, useCommandLine) =>
-        time(out, "sourceGraphTask") {
-          out.log.debug("sbt-less template properties " + templateProperties)
+  def sourceGraphTask = Def.task {
+    val _out                = (streams).value
+    val _sourceDirs         = (sourceDirectories in less).value
+    val _targetDir          = (resourceManaged in less).value
+    val _sourceFiles        = (unmanagedSources in less).value
+    val _templateProperties = (templateProperties in less).value
+    val _downloadDir        = (downloadDirectory in less).value
+    val _filenameSuffix     = (filenameSuffix in less).value
+    val _prettyPrint        = (prettyPrint in less).value
+    val _lessVersion        = (lessVersion in less).value
+    val _useCommandLine     = (useCommandLine in less).value
 
-          val graph = Graph(
-            log                = out.log,
-            sourceDirs         = sourceDirs,
-            targetDir          = targetDir,
-            templateProperties = templateProperties,
-            downloadDir        = downloadDir,
-            filenameSuffix     = filenameSuffix,
-            lessVersion        = lessVersion,
-            prettyPrint        = prettyPrint,
-            useCommandLine     = useCommandLine
-          )
+    time(_out, "sourceGraphTask") {
+      _out.log.debug("sbt-less template properties " + _templateProperties)
 
-          sourceFiles.foreach(graph += _)
+      val graph = Graph(
+        log                = _out.log,
+        sourceDirs         = _sourceDirs,
+        targetDir          = _targetDir,
+        templateProperties = _templateProperties,
+        downloadDir        = _downloadDir,
+        filenameSuffix     = _filenameSuffix,
+        lessVersion        = _lessVersion,
+        prettyPrint        = _prettyPrint,
+        useCommandLine     = _useCommandLine
+      )
 
-          graph
-        }
+      _sourceFiles.foreach(graph += _)
+
+      graph
     }
+  }
 
-  def watchSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
-    (streams, sourceGraph in less) map {
-      (out, graph) =>
-        graph.sources.map(_.src) : Seq[File]
-    }
+  def watchSourcesTask = Def.task {
+    val _out   = (streams).value
+    val _graph = (sourceGraph in less).value
 
-  def compileTask =
-    (streams, unmanagedSources in less, sourceGraph in less) map {
-      (out, sourceFiles, graph: Graph) =>
-        time(out, "compileTask") {
-          graph.compileAll(sourceFiles)
-        }
-    }
+    _graph.sources.map(_.src) : Seq[File]
+  }
 
-  def cleanTask =
-    (streams, sourceGraph in less) map {
-      (out, graph) =>
-        graph.sources.foreach(_.clean())
+  def compileTask = Def.task {
+    val _out         = (streams).value
+    val _sourceFiles = (unmanagedSources in less).value
+    val _graph       = (sourceGraph in less).value
+
+    time(_out, "compileTask") {
+      _graph.compileAll(_sourceFiles)
     }
+  }
+
+  def cleanTask = Def.task {
+    val _out   = (streams).value
+    val _graph = (sourceGraph in less).value
+
+    _graph.sources.foreach(_.clean())
+  }
 
   def lessSettingsIn(conf: Configuration): Seq[Setting[_]] = {
     inConfig(conf)(Seq(
