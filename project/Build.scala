@@ -1,12 +1,14 @@
 import sbt._
 import sbt.Keys._
 import net.virtualvoid.sbt.cross._
+import bintray.BintrayPlugin
+import bintray.BintrayKeys._
 
 object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.8-M4"
+  val pluginsVersion = "0.8"
 
   // Libraries ----------------------------------
 
@@ -19,14 +21,12 @@ object Build extends Build {
 
   def scalatest(sbtVersion: String) =
     sbtVersion match {
-      case v if v startsWith "0.12" => "org.scalatest" %% "scalatest" % "1.9.1" % "test"
-      case v if v startsWith "0.13" => "org.scalatest" %% "scalatest" % "2.0" % "test"
+      case v if v startsWith "0.13" => "org.scalatest" %% "scalatest" % "2.0"   % "test"
       case v => throw new Exception("Build.scala: don't know what version of scalatest to use for SBT " + v)
     }
 
   def webPlugin(sbtVersion: String) =
     sbtVersion match {
-      case v if v startsWith "0.12" => Defaults.sbtPluginExtra("com.earldouglas" % "xsbt-web-plugin" % "0.4.2", "0.12", "2.9.2")
       case v if v startsWith "0.13" => Defaults.sbtPluginExtra("com.earldouglas" % "xsbt-web-plugin" % "0.4.2", "0.13", "2.10")
       case v => throw new Exception("Build.scala: don't know what version of xsbt-web-plugin to use for SBT " + v)
     }
@@ -35,22 +35,6 @@ object Build extends Build {
   // http://stackoverflow.com/questions/9889674/sbt-jetty-and-servlet-3-0
   def jettyOrbit =
     "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" artifacts Artifact("javax.servlet", "jar", "jar")
-
-  def snapshotPublishTo =
-    for {
-      host    <- Option(System.getenv("DEFAULT_IVY_REPO_HOST"))
-      path    <- Option(System.getenv("DEFAULT_IVY_REPO_PATH"))
-      user    <- Option(System.getenv("DEFAULT_IVY_REPO_USER"))
-      keyfile <- Option(System.getenv("DEFAULT_IVY_REPO_KEYFILE"))
-    } yield Resolver.sftp("UntypedPublish", host, path)(Resolver.ivyStylePatterns).as(user, file(keyfile))
-
-  def releasePublishTo =
-    Some(Resolver.url(
-      "sbt-plugin-releases-publish",
-      new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases")
-    )(Resolver.ivyStylePatterns))
-    // Once we drop SBT 0.12 support, this can change to the following:
-    // Some(sbtPluginRepo("releases"))
 
   // Settings -----------------------------------
 
@@ -61,21 +45,26 @@ object Build extends Build {
     Project.defaultSettings ++
     CrossPlugin.crossBuildingSettings ++
     CrossBuilding.scriptedSettings ++
+    BintrayPlugin.bintrayPublishSettings ++
     Seq(
-      fork                           := true,
-      fork in scripted               := true,
-      sbtPlugin                      := true,
-      organization                   := "com.untyped",
-      version                        := pluginsVersion,
-      CrossBuilding.crossSbtVersions := Seq("0.12", "0.13"),
-      resolvers                      += untyped,
-      publishTo                     <<= version { v => if (isSnapshot(v)) snapshotPublishTo else releasePublishTo },
-      publishMavenStyle              := false,
-      scriptedBufferLog              := false,
-      scalacOptions                  += "-deprecation",
-      scalacOptions                  += "-unchecked",
-      scriptedLaunchOpts            ++= Seq("-Xmx1024M", s"-Dplugin.version=${version.value}"),
-      scripted                      <<= scripted dependsOn publishLocal
+      fork                            := true,
+      fork in scripted                := true,
+      sbtPlugin                       := true,
+      organization                    := "com.untyped",
+      version                         := pluginsVersion,
+      CrossBuilding.crossSbtVersions  := Seq("0.12", "0.13"),
+      resolvers                       += untyped,
+      publishMavenStyle               := true,
+      scriptedBufferLog               := false,
+      scalacOptions                   += "-deprecation",
+      scalacOptions                   += "-unchecked",
+      scriptedLaunchOpts             ++= Seq("-Xmx1024M", s"-Dplugin.version=${version.value}"),
+      scripted                       <<= scripted dependsOn publishLocal,
+      // Bintray:
+      licenses                        += ("Apache-2.0", url("http://apache.org/licenses/LICENSE-2.0")),
+      bintrayPackageLabels            := Seq("scala", "sbt", "build", "web"),
+      bintrayOrganization             := Some("untyped"),
+      bintrayRepository               := "maven"
     )
 
   // Projects -----------------------------------
@@ -83,7 +72,7 @@ object Build extends Build {
   lazy val root = Project(
     id = "root",
     base = file("."),
-    settings = defaultSettings ++ Seq(publish := ())
+    settings = defaultSettings ++ Seq(publish := (), bintrayReleaseOnPublish := false)
   ) aggregate (
     sbtJs,
     sbtLess,

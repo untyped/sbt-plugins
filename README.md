@@ -4,10 +4,10 @@ Copyright 2011-14 [Dave Gurnell] of [Untyped]. See below for licence and acknowl
 
 This repo contains the following SBT plugins:
 
- - [sbt-js](sbt-js/) - Javascript and Coffeescript compilation, minification, and templating;
- - [sbt-less](sbt-less/) - Less CSS compilation, minification, and templating;
- - [sbt-sass](sbt-sass/) - Sass compilation, minification, and templating;
- - [sbt-mustache](sbt-mustache/) - Mustache templating for HTML files;
+ - [sbt-js] - Javascript and Coffeescript compilation, minification, and templating;
+ - [sbt-less] - Less CSS compilation, minification, and templating;
+ - [sbt-sass] - Sass compilation, minification, and templating;
+ - [sbt-mustache] - Mustache templating for HTML files;
 
 [![Build Status](https://travis-ci.org/untyped/sbt-plugins.svg?branch=develop)](https://travis-ci.org/untyped/sbt-plugins)
 
@@ -16,9 +16,9 @@ This repo contains the following SBT plugins:
 Create a file called `project/plugins.sbt` in your SBT project and add the following:
 
 ```scala
-// This line is needed for development releases but not stable ones:
+// Add the Untyped Bintray resolver:
 
-resolvers += Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
+resolvers += "Untyped Bintray" at "https://dl.bintray.com/untyped/maven/"
 
 // Add whichever plugins you want to use:
 
@@ -60,7 +60,11 @@ Each plugin has its own set of configuration options described in its own README
 
 ## Changelog
 
-## Version 0.8 (current development release; SBT 0.12, 0.13)
+## Version 0.9 (current development release; SBT 0.13)
+
+Just started. No releases yet!
+
+## Version 0.8 (current stable release; SBT 0.13)
 
 New features:
 
@@ -79,7 +83,7 @@ Removed features:
 
  - Retired `sbt-runmode` plugin.
 
-## Version 0.7 (current stable release; SBT 0.12, 0.13)
+### Version 0.7 (SBT 0.12, 0.13)
 
 New features:
 
@@ -300,6 +304,11 @@ v0.1 used a tweaked version of the [Less for Java] wrapper by Asual.
 Written by [Torbjørn Vatn].
 
 Includes embedded copies of [Sass] 3.x, Copyright (c) 2006-2013 Hampton Catlin, Nathan Weizenbaum, and Chris Eppstein, distributed under the [MIT License].
+
+[sbt-js]: sbt-js/
+[sbt-less]: sbt-less/
+[sbt-sass]: sbt-sass/
+[sbt-mustache]: sbt-mustache/
 
 [Alexandre Richonnier]: https://github.com/heralight
 [Crisson Jno-Charles]: https://github.com/crisson
