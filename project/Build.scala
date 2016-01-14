@@ -8,7 +8,7 @@ object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.8"
+  val pluginsVersion = "0.9-SNAPSHOT"
 
   // Libraries ----------------------------------
 
