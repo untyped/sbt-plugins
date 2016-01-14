@@ -9,6 +9,8 @@ This repo contains the following SBT plugins:
  - [sbt-sass](sbt-sass/) - Sass compilation, minification, and templating;
  - [sbt-mustache](sbt-mustache/) - Mustache templating for HTML files;
 
+[![Build Status](https://travis-ci.org/untyped/sbt-plugins.svg?branch=develop)](https://travis-ci.org/untyped/sbt-plugins)
+
 ## Installation
 
 Create a file called `project/plugins.sbt` in your SBT project and add the following:
