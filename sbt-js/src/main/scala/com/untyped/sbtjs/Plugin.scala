@@ -66,96 +66,111 @@ object Plugin extends sbt.Plugin {
     result
   }
 
-  def unmanagedSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
-    (streams, sourceDirectories in js, includeFilter in js, excludeFilter in js) map {
-      (out, sourceDirs, includeFilter, excludeFilter) =>
-        time(out, "unmanagedSourcesTask") {
-          out.log.debug("sourceDirectories: " + sourceDirs)
-          out.log.debug("includeFilter: " + includeFilter)
-          out.log.debug("excludeFilter: " + excludeFilter)
+  def unmanagedSourcesTask = Def.task {
+    val _out           = (streams).value
+    val _sourceDirs    = (sourceDirectories in js).value
+    val _includeFilter = (includeFilter in js).value
+    val _excludeFilter = (excludeFilter in js).value
 
-          sourceDirs.foldLeft(Seq[File]()) {
-            (accum, sourceDir) =>
-              accum ++ com.untyped.sbtgraph.Descendents(sourceDir, includeFilter, excludeFilter).get
-          }
-        }
+    time(_out, "unmanagedSourcesTask") {
+      _out.log.debug("sourceDirectories: " + _sourceDirs)
+      _out.log.debug("includeFilter: " + _includeFilter)
+      _out.log.debug("excludeFilter: " + _excludeFilter)
+
+      _sourceDirs.foldLeft(Seq[File]()) { (accum, sourceDir) =>
+        import com.untyped.sbtgraph.Descendents
+
+        accum ++ com.untyped.sbtgraph.Descendents(sourceDir, _includeFilter, _excludeFilter).get
+      }
+    }
+  }
+
+  def sourceGraphTask = Def.task {
+    val _out                = (streams).value
+    val _sourceDirs         = (sourceDirectories in js).value
+    val _targetDir          = (resourceManaged in js).value
+    val _sourceFiles        = (unmanagedSources in js).value
+    val _templateProperties = (templateProperties).value
+    val _downloadDir        = (downloadDirectory).value
+    val _filenameSuffix     = (filenameSuffix).value
+    val _coffeeVersion      = (coffeeVersion).value
+    val _coffeeOptions      = (coffeeOptions).value
+    val _closureOptions     = (closureOptions).value
+
+    _out.log.debug("sbt-js template properties " + _templateProperties)
+
+    time(_out, "sourceGraphTask") {
+      val graph = Graph(
+        log                = _out.log,
+        sourceDirs         = _sourceDirs,
+        targetDir          = _targetDir,
+        templateProperties = _templateProperties,
+        downloadDir        = _downloadDir,
+        filenameSuffix     = _filenameSuffix,
+        coffeeVersion      = _coffeeVersion,
+        coffeeOptions      = _coffeeOptions,
+        closureOptions     = _closureOptions
+      )
+
+      _sourceFiles.foreach(graph += _)
+
+      graph
+    }
+  }
+
+  def watchSourcesTask = Def.task {
+    val _out = (streams).value
+    val _graph = (sourceGraph in js).value
+
+    _graph.sources.map(_.src) : Seq[File]
+  }
+
+  def compileTask = Def.task {
+    val _out         = (streams).value
+    val _sourceFiles = (unmanagedSources in js).value
+    val _graph       = (sourceGraph in js).value
+
+    time(_out, "compileTask") {
+      _graph.compileAll(_sourceFiles)
+    }
+  }
+
+  def cleanTask = Def.task {
+    val _out   = (streams).value
+    val _graph = (sourceGraph in js).value
+
+    _graph.sources.foreach(_.clean())
+  }
+
+  def coffeeOptionsSetting = Def.setting {
+    val _bare = (coffeeBare in js).value
+
+    if(_bare) List(CoffeeOption.BARE) else Nil
+  }
+
+  def closureOptionsSetting = Def.setting {
+    val _variableRenamingPolicy = (variableRenamingPolicy in js).value
+    val _prettyPrint            = (prettyPrint in js).value
+    val _strictMode             = (strictMode in js).value
+    val _warningLevel           = (warningLevel in js).value
+    val _compilationLevel       = (compilationLevel in js).value
+
+    val options = new ClosureOptions
+
+    _compilationLevel.setOptionsForCompilationLevel(options)
+    _warningLevel.setOptionsForWarningLevel(options)
+
+    options.variableRenaming = _variableRenamingPolicy
+    options.prettyPrint      = _prettyPrint
+
+    if(_strictMode) {
+      options.setLanguageIn(ClosureOptions.LanguageMode.ECMASCRIPT5_STRICT)
+    } else {
+      options.setLanguageIn(ClosureOptions.LanguageMode.ECMASCRIPT5)
     }
 
-  def sourceGraphTask = // : Def.Initialize[Task[Graph]] =
-    (streams, sourceDirectories in js, resourceManaged in js, unmanagedSources in js, templateProperties, downloadDirectory, filenameSuffix, coffeeVersion, coffeeOptions, closureOptions) map {
-      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, filenameSuffix, coffeeVersion, coffeeOptions, closureOptions) =>
-        out.log.debug("sbt-js template properties " + templateProperties)
-
-        time(out, "sourceGraphTask") {
-          val graph = Graph(
-            log                = out.log,
-            sourceDirs         = sourceDirs,
-            targetDir          = targetDir,
-            templateProperties = templateProperties,
-            downloadDir        = downloadDir,
-            filenameSuffix     = filenameSuffix,
-            coffeeVersion      = coffeeVersion,
-            coffeeOptions      = coffeeOptions,
-            closureOptions     = closureOptions
-          )
-
-          sourceFiles.foreach(graph += _)
-
-          graph
-        }
-    }
-
-  def watchSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
-    (streams, sourceGraph in js) map {
-      (out, graph) =>
-        graph.sources.map(_.src) : Seq[File]
-    }
-
-  def compileTask =
-    (streams, unmanagedSources in js, sourceGraph in js) map {
-      (out, sourceFiles, graph: Graph) =>
-        time(out, "compileTask") {
-          graph.compileAll(sourceFiles)
-        }
-    }
-
-  def cleanTask =
-    (streams, sourceGraph in js) map {
-      (out, graph) =>
-        graph.sources.foreach(_.clean())
-    }
-
-  def coffeeOptionsSetting = // : Def.Initialize[List[CoffeeOption]] =
-    (streams, coffeeBare in js) apply {
-      (out, bare) =>
-        if(bare) List(CoffeeOption.BARE) else Nil
-    }
-
-  def closureOptionsSetting = // : Def.Initialize[ClosureOptions] =
-    (streams,
-      variableRenamingPolicy in js,
-      prettyPrint in js,
-      strictMode in js,
-      warningLevel in js,
-      compilationLevel in js
-    ) apply {
-      (out, variableRenamingPolicy, prettyPrint, strictMode, warningLevel, compilationLevel) =>
-        val options = new ClosureOptions
-
-        compilationLevel.setOptionsForCompilationLevel(options)
-        warningLevel.setOptionsForWarningLevel(options)
-
-        options.variableRenaming = variableRenamingPolicy
-        options.prettyPrint = prettyPrint
-
-        if(strictMode) {
-          options.setLanguageIn(ClosureOptions.LanguageMode.ECMASCRIPT5_STRICT)
-        } else {
-          options.setLanguageIn(ClosureOptions.LanguageMode.ECMASCRIPT5)
-        }
-
-        options
-    }
+    options
+  }
 
   def jsSettingsIn(conf: Configuration): Seq[Setting[_]] =
     inConfig(conf)(Seq(
