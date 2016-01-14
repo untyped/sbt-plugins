@@ -32,83 +32,90 @@ object Plugin extends sbt.Plugin {
 
   def time[T](out: TaskStreams, msg: String)(func: => T): T = {
     val startTime = java.lang.System.currentTimeMillis
-    val result = func
-    val endTime = java.lang.System.currentTimeMillis
+    val result    = func
+    val endTime   = java.lang.System.currentTimeMillis
+
     out.log.debug("TIME sbt-sass " + msg + ": " + (endTime - startTime) + "ms")
     result
   }
 
-  def unmanagedSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
-    (streams, sourceDirectories in sass, includeFilter in sass, excludeFilter in sass) map {
-      (out, sourceDirs, includeFilter, excludeFilter) =>
-        time(out, "unmanagedSourcesTask") {
-          out.log.debug("sourceDirectories: " + sourceDirs)
-          out.log.debug("includeFilter: " + includeFilter)
-          out.log.debug("excludeFilter: " + excludeFilter)
+  def unmanagedSourcesTask = Def.task {
+    val _out           = (streams).value
+    val _sourceDirs    = (sourceDirectories in sass).value
+    val _includeFilter = (includeFilter in sass).value
+    val _excludeFilter = (excludeFilter in sass).value
 
-          sourceDirs.foldLeft(Seq[File]()) {
-            (accum, sourceDir) =>
-              accum ++ com.untyped.sbtgraph.Descendents(sourceDir, includeFilter, excludeFilter).get
-          }
-        }
-    }
+    time(_out, "unmanagedSourcesTask") {
+      _out.log.debug("sourceDirectories: " + _sourceDirs)
+      _out.log.debug("includeFilter: " + _includeFilter)
+      _out.log.debug("excludeFilter: " + _excludeFilter)
 
-  def sourceGraphTask = // : Def.Initialize[Task[Graph]] =
-    (streams,
-      sourceDirectories in sass,
-      resourceManaged in sass,
-      unmanagedSources in sass,
-      templateProperties in sass,
-      downloadDirectory in sass,
-      filenameSuffix in sass,
-      prettyPrint in sass,
-      sassVersion in sass,
-      useCommandLine in sass,
-      sassOutputStyle in sass) map {
-      (out, sourceDirs, targetDir, sourceFiles, templateProperties,
-       downloadDir, filenameSuffix, prettyPrint, sassVersion, useCommandLine, sassOutputStyle) =>
-        time(out, "sourceGraphTask") {
-          out.log.debug("sbt-sass template properties " + templateProperties)
+      _sourceDirs.foldLeft(Seq[File]()) { (accum, sourceDir) =>
+        import com.untyped.sbtgraph.Descendents
 
-          val graph = Graph(
-            log                = out.log,
-            sourceDirs         = sourceDirs,
-            targetDir          = targetDir,
-            templateProperties = templateProperties,
-            downloadDir        = downloadDir,
-            filenameSuffix     = filenameSuffix,
-            sassVersion        = sassVersion,
-            prettyPrint        = prettyPrint,
-            useCommandLine     = useCommandLine,
-            compilerOptions    = Map(":style" -> (":"+sassOutputStyle.name))
-          )
-
-          sourceFiles.foreach(graph += _)
-
-          graph
-        }
-    }
-
-  def watchSourcesTask =
-    (streams, sourceGraph in sass) map {
-      (out, graph) =>
-        graph.sources.map(_.src) : Seq[File]
-    }
-
-  def compileTask = {
-    (streams, unmanagedSources in sass, sourceGraph in sass) map {
-      (out, sourceFiles, graph: Graph) =>
-        time(out, "compileTask") {
-          graph.compileAll(sourceFiles.filterNot(_.getName.startsWith("_")))
-        }
+        accum ++ Descendents(sourceDir, _includeFilter, _excludeFilter).get
+      }
     }
   }
 
-  def cleanTask =
-    (streams, sourceGraph in sass) map {
-      (out, graph) =>
-        graph.sources.foreach(_.clean())
+  def sourceGraphTask = Def.task {
+    val _out                = (streams).value
+    val _sourceDirs         = (sourceDirectories in sass).value
+    val _targetDir          = (resourceManaged in sass).value
+    val _sourceFiles        = (unmanagedSources in sass).value
+    val _templateProperties = (templateProperties in sass).value
+    val _downloadDir        = (downloadDirectory in sass).value
+    val _filenameSuffix     = (filenameSuffix in sass).value
+    val _prettyPrint        = (prettyPrint in sass).value
+    val _sassVersion        = (sassVersion in sass).value
+    val _useCommandLine     = (useCommandLine in sass).value
+    val _sassOutputStyle    = (sassOutputStyle in sass).value
+
+    time(_out, "sourceGraphTask") {
+      _out.log.debug("sbt-sass template properties " + _templateProperties)
+
+      val graph = Graph(
+        log                = _out.log,
+        sourceDirs         = _sourceDirs,
+        targetDir          = _targetDir,
+        templateProperties = _templateProperties,
+        downloadDir        = _downloadDir,
+        filenameSuffix     = _filenameSuffix,
+        sassVersion        = _sassVersion,
+        prettyPrint        = _prettyPrint,
+        useCommandLine     = _useCommandLine,
+        compilerOptions    = Map(":style" -> (":" + _sassOutputStyle.name))
+      )
+
+      _sourceFiles.foreach(graph += _)
+
+      graph
     }
+  }
+
+  def watchSourcesTask = Def.task {
+    val _out   = (streams).value
+    val _graph = (sourceGraph in sass).value
+
+    _graph.sources.map(_.src) : Seq[File]
+  }
+
+  def compileTask = Def.task {
+    val _out         = (streams).value
+    val _sourceFiles = (unmanagedSources in sass).value
+    val _graph       = (sourceGraph in sass).value
+
+    time(_out, "compileTask") {
+      _graph.compileAll(_sourceFiles.filterNot(_.getName.startsWith("_")))
+    }
+  }
+
+  def cleanTask = Def.task {
+    val _out   = (streams).value
+    val _graph = (sourceGraph in sass).value
+
+    _graph.sources.foreach(_.clean())
+  }
 
   def sassSettingsIn(conf: Configuration): Seq[Setting[_]] = {
     inConfig(conf)(Seq(
