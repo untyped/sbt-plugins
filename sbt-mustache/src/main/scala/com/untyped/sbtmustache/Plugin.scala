@@ -18,55 +18,69 @@ object Plugin extends sbt.Plugin {
 
   import MustacheKeys._
 
-  def unmanagedSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
-    (streams, sourceDirectories in mustache, includeFilter in mustache, excludeFilter in mustache) map {
-      (out, sourceDirs, includeFilter, excludeFilter) =>
-        out.log.debug("sourceDirectories: " + sourceDirs)
-        out.log.debug("includeFilter: " + includeFilter)
-        out.log.debug("excludeFilter: " + excludeFilter)
+  def unmanagedSourcesTask = Def.task {
+    val _out           = (streams).value
+    val _sourceDirs    = (sourceDirectories in mustache).value
+    val _includeFilter = (includeFilter in mustache).value
+    val _excludeFilter = (excludeFilter in mustache).value
 
-        sourceDirs.foldLeft(Seq[File]()) {
-          (accum, sourceDir) =>
-            accum ++ com.untyped.sbtgraph.Descendents(sourceDir, includeFilter, excludeFilter).get
-        }
+    _out.log.debug("sourceDirectories: " + _sourceDirs)
+    _out.log.debug("includeFilter: " + _includeFilter)
+    _out.log.debug("excludeFilter: " + _excludeFilter)
+
+    _sourceDirs.foldLeft(Seq[File]()) { (accum, sourceDir) =>
+      import com.untyped.sbtgraph.Descendents
+
+      accum ++ Descendents(sourceDir, _includeFilter, _excludeFilter).get
     }
+  }
 
-  def sourceGraphTask = // : Def.Initialize[Task[Graph]] =
-    (streams, sourceDirectories in mustache, resourceManaged in mustache, unmanagedSources in mustache, templateProperties, downloadDirectory, filenameSuffix) map {
-      (out, sourceDirs, targetDir, sourceFiles, templateProperties, downloadDir, filenameSuffix) =>
-        out.log.debug("sbt-mustache template properties " + templateProperties)
+  def sourceGraphTask = Def.task {
+    val _out                = (streams).value
+    val _sourceDirs         = (sourceDirectories in mustache).value
+    val _targetDir          = (resourceManaged in mustache).value
+    val _sourceFiles        = (unmanagedSources in mustache).value
+    val _templateProperties = (templateProperties).value
+    val _downloadDir        = (downloadDirectory).value
+    val _filenameSuffix     = (filenameSuffix).value
 
-        val graph = Graph(
-          log                = out.log,
-          sourceDirs         = sourceDirs,
-          targetDir          = targetDir,
-          templateProperties = templateProperties,
-          downloadDir        = downloadDir,
-          filenameSuffix     = filenameSuffix
-        )
+    _out.log.debug("sbt-mustache template properties " + _templateProperties)
 
-        sourceFiles.foreach(graph +=)
+    val graph = Graph(
+      log                = _out.log,
+      sourceDirs         = _sourceDirs,
+      targetDir          = _targetDir,
+      templateProperties = _templateProperties,
+      downloadDir        = _downloadDir,
+      filenameSuffix     = _filenameSuffix
+    )
 
-        graph
-    }
+    _sourceFiles.foreach(graph +=)
 
-  def watchSourcesTask = // : Def.Initialize[Task[Seq[File]]] =
-    (streams, sourceGraph in mustache) map {
-      (out, graph) =>
-        graph.sources.map(_.src) : Seq[File]
-    }
+    graph
+  }
 
-  def compileTask =
-    (streams, unmanagedSources in mustache, sourceGraph in mustache) map {
-      (out, sourceFiles, graph: Graph) =>
-        graph.compileAll(sourceFiles)
-    }
+  def watchSourcesTask = Def.task {
+    val _out   = (streams).value
+    val _graph = (sourceGraph in mustache).value
 
-  def cleanTask =
-    (streams, sourceGraph in mustache) map {
-      (out, graph) =>
-        graph.sources.foreach(_.clean())
-    }
+    _graph.sources.map(_.src) : Seq[File]
+  }
+
+  def compileTask = Def.task {
+    val _out         = (streams).value
+    val _sourceFiles = (unmanagedSources in mustache).value
+    val _graph       = (sourceGraph in mustache).value
+
+    _graph.compileAll(_sourceFiles)
+  }
+
+  def cleanTask = Def.task {
+    val _out   = (streams).value
+    val _graph = (sourceGraph in mustache).value
+
+    _graph.sources.foreach(_.clean())
+  }
 
   def mustacheSettingsIn(conf: Configuration): Seq[Setting[_]] =
     inConfig(conf)(Seq(
