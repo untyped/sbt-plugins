@@ -2,7 +2,8 @@ package com.untyped.sbtjs
 
 import com.google.javascript.jscomp.{
   SourceFile => ClosureSource,
-  Compiler => ClosureCompiler
+  Compiler => ClosureCompiler,
+  SourceMap
 }
 import sbt._
 import scala.collection.JavaConversions._
@@ -30,6 +31,14 @@ trait Source extends com.untyped.sbtgraph.Source {
     graph.log.debug("  sources:")
     mySources.foreach(x => graph.log.debug("    " + x))
 
+    val allAncestors = graph.sources.flatMap(graph.ancestors).diff(graph.sources)
+    val rootSources = graph.sources.diff(allAncestors)
+    val locationMappings = rootSources.map { source =>
+      new SourceMap.LocationMapping(source.src.getParent, ".")
+    }
+    graph.closureOptions.setSourceMapLocationMappings(locationMappings)
+    graph.closureOptions.setSourceMapOutputPath(graph.targetDir.getAbsolutePath)
+
     val result =
       compiler.compile(
         myExterns,
@@ -50,8 +59,14 @@ trait Source extends com.untyped.sbtgraph.Source {
         warnings.foreach(err => graph.log.warn(err.toString))
       }
 
+      val mapDes = new File(des.getPath+".map")
+
       IO.createDirectory(new File(des.getParent))
-      IO.write(des, compiler.toSource)
+      IO.write(des, compiler.toSource+"\n"+"//@ sourceMappingURL="+mapDes.getName)
+
+      val mapWriter = new java.io.FileWriter(mapDes)
+      compiler.getSourceMap.appendTo(mapWriter, des.getName)
+      mapWriter.close()
 
       Some(des)
     }
