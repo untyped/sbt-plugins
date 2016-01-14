@@ -133,7 +133,7 @@ trait Graph {
 
     sources.filter(_.requiresRecompilation) match {
       case Nil =>
-        log.info("No %s sources requiring compilation".format(pluginName))
+        log.debug("No %s sources requiring compilation".format(pluginName))
 
       case toCompile =>
         val compiled = toCompile.flatMap(_.compile)
