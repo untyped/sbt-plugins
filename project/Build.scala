@@ -14,7 +14,7 @@ object Build extends Build {
 
   val untyped   = Resolver.url("Untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
 
-  val closure   = "com.google.javascript" % "closure-compiler"   % "v20131014"
+  val closure   = "com.google.javascript" % "closure-compiler"   % "v20151216"
   val mustache  = "com.samskivert"        % "jmustache"          % "1.8"
   val rhino     = "org.mozilla"           % "rhino"              % "1.7R4"
   val jruby     = "org.jruby"             % "jruby-complete"     % "1.7.10"
