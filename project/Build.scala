@@ -12,8 +12,6 @@ object Build extends Build {
 
   // Libraries ----------------------------------
 
-  val untyped   = Resolver.url("Untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
-
   val closure   = "com.google.javascript" % "closure-compiler"   % "v20151216"
   val mustache  = "com.samskivert"        % "jmustache"          % "1.8"
   val rhino     = "org.mozilla"           % "rhino"              % "1.7R4"
@@ -25,21 +23,7 @@ object Build extends Build {
       case v => throw new Exception("Build.scala: don't know what version of scalatest to use for SBT " + v)
     }
 
-  def webPlugin(sbtVersion: String) =
-    sbtVersion match {
-      case v if v startsWith "0.13" => Defaults.sbtPluginExtra("com.earldouglas" % "xsbt-web-plugin" % "0.4.2", "0.13", "2.10")
-      case v => throw new Exception("Build.scala: don't know what version of xsbt-web-plugin to use for SBT " + v)
-    }
-
-  // This is a Jetty/Orbit thing:
-  // http://stackoverflow.com/questions/9889674/sbt-jetty-and-servlet-3-0
-  def jettyOrbit =
-    "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" artifacts Artifact("javax.servlet", "jar", "jar")
-
   // Settings -----------------------------------
-
-  def isSnapshot(version: String) =
-    version.contains("-SNAPSHOT") || version.contains("-RC") || version.contains("-M")
 
   def defaultSettings =
     Project.defaultSettings ++
@@ -50,14 +34,11 @@ object Build extends Build {
       fork                            := true,
       fork in scripted                := true,
       sbtPlugin                       := true,
-      organization                    := "com.untyped",
-      version                         := pluginsVersion,
-      CrossBuilding.crossSbtVersions  := Seq("0.12", "0.13"),
-      resolvers                       += untyped,
       publishMavenStyle               := true,
+      organization       in ThisBuild := "com.untyped",
+      version            in ThisBuild := pluginsVersion,
       scriptedBufferLog               := false,
-      scalacOptions                   += "-deprecation",
-      scalacOptions                   += "-unchecked",
+      scalacOptions                  ++= Seq("-deprecation", "-unchecked"),
       scriptedLaunchOpts             ++= Seq("-Xmx1024M", s"-Dplugin.version=${version.value}"),
       scripted                       <<= scripted dependsOn publishLocal,
       // Bintray:
@@ -94,9 +75,10 @@ object Build extends Build {
   )
 
   lazy val sbtLess = Project(
-    id = "sbt-less",
+    id   = "sbt-less",
     base = file("sbt-less"),
     settings = defaultSettings ++ Seq(
+      name                                    := "sbt-less",
       libraryDependencies                    ++= Seq(rhino, mustache),
       libraryDependencies                    <+= (sbtVersion in sbtPlugin)(scalatest),
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-less:
@@ -108,6 +90,7 @@ object Build extends Build {
     id = "sbt-sass",
     base = file("sbt-sass"),
     settings = defaultSettings ++ Seq(
+      name                                    := "sbt-sass",
       libraryDependencies                    ++= Seq(jruby, mustache),
       libraryDependencies                    <+= (sbtVersion in sbtPlugin)(scalatest),
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-less:
@@ -119,6 +102,7 @@ object Build extends Build {
     id = "sbt-js",
     base = file("sbt-js"),
     settings = defaultSettings ++ Seq(
+      name                                    := "sbt-js",
       libraryDependencies                    ++= Seq(closure, rhino, mustache),
       libraryDependencies                    <+= (sbtVersion in sbtPlugin)(scalatest),
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-js:
@@ -130,6 +114,7 @@ object Build extends Build {
     id = "sbt-mustache",
     base = file("sbt-mustache"),
     settings = defaultSettings ++ Seq(
+      name                                    := "sbt-mustache",
       libraryDependencies                    ++= Seq(rhino, mustache),
       libraryDependencies                    <+= (sbtVersion in sbtPlugin)(scalatest),
       // Make sure the classes for sbt-graph get packaged in the artifacts for sbt-mustache:
