@@ -10,6 +10,7 @@ This repo contains the following SBT plugins:
  - [sbt-mustache] - Mustache templating for HTML files;
 
 [![Build Status](https://travis-ci.org/untyped/sbt-plugins.svg?branch=develop)](https://travis-ci.org/untyped/sbt-plugins)
+[![Join the chat at https://gitter.im/untyped/sbt-plugins](https://badges.gitter.im/untyped/sbt-plugins.svg)](https://gitter.im/untyped/sbt-plugins?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Installation
 
