@@ -1,5 +1,7 @@
 # Untyped SBT Plugins
 
+[![Join the chat at https://gitter.im/untyped/sbt-plugins](https://badges.gitter.im/untyped/sbt-plugins.svg)](https://gitter.im/untyped/sbt-plugins?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Copyright 2011-14 [Dave Gurnell] of [Untyped]. See below for licence and acknowledgements.
 
 This repo contains the following SBT plugins:
