@@ -8,7 +8,7 @@ object Build extends Build {
 
   import ScriptedPlugin._
 
-  val pluginsVersion = "0.9-SNAPSHOT"
+  val pluginsVersion = "0.9-M1"
 
   // Libraries ----------------------------------
 
@@ -34,7 +34,7 @@ object Build extends Build {
       fork                            := true,
       fork in scripted                := true,
       sbtPlugin                       := true,
-      publishMavenStyle               := true,
+      publishMavenStyle               := false,
       organization       in ThisBuild := "com.untyped",
       version            in ThisBuild := pluginsVersion,
       scriptedBufferLog               := false,
@@ -45,7 +45,7 @@ object Build extends Build {
       licenses                        += ("Apache-2.0", url("http://apache.org/licenses/LICENSE-2.0")),
       bintrayPackageLabels            := Seq("scala", "sbt", "build", "web"),
       bintrayOrganization             := Some("untyped"),
-      bintrayRepository               := "maven"
+      bintrayRepository               := "ivy"
     )
 
   // Projects -----------------------------------

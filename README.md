@@ -18,7 +18,13 @@ Create a file called `project/plugins.sbt` in your SBT project and add the follo
 ```scala
 // Add the Untyped Bintray resolver:
 
-resolvers += "Untyped Bintray" at "https://dl.bintray.com/untyped/maven/"
+resolvers += Resolver.bintrayIvyRepo("untyped", "ivy")
+
+// Earlier versions of SBT 0.13 don't have Resolver.bintrayIvyRepo(),
+// in which case you can use this snippet instead:
+
+// resolvers += Resolver.url(s"bintray-untyped-ivy",
+//   new URL("https://dl.bintray.com/untyped/ivy/"))(Resolver.ivyStylePatterns)
 
 // Add whichever plugins you want to use:
 
