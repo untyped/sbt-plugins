@@ -1,0 +1,1951 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"plugin",
+				"pluginVersion"
+			],
+			[
+				"Thames21LitterSurvey",
+				"Thames21LitterSurveyType"
+			],
+			[
+				"litter",
+				"litterSurveyType"
+			],
+			[
+				"EcostatusHigh",
+				"EcostatusHighLevelAssessmentSupportingScores"
+			],
+			[
+				"keyPoint",
+				"keyPointParagraphs"
+			],
+			[
+				"HighLevelAssessment",
+				"EcostatusHighLevelAssessmentKeyPoint"
+			],
+			[
+				"habitat",
+				"habitatAndBiodiversity"
+			],
+			[
+				"overall",
+				"overallAssessment"
+			],
+			[
+				"hab",
+				"habitatAndBiodiversity"
+			],
+			[
+				"High",
+				"EcostatusHighLevelAssessment"
+			],
+			[
+				"Execution",
+				"ExecutionContext	(Survey.scala)"
+			],
+			[
+				"document",
+				"documentDownloadUrl"
+			],
+			[
+				"Download",
+				"DownloadDocument	(SurveyController.scala)"
+			],
+			[
+				"Sealed",
+				"SealedTraitEnum"
+			],
+			[
+				"Docum",
+				"DocumentDownloadContentType"
+			],
+			[
+				"Doc",
+				"DocumentDownloadContentType"
+			],
+			[
+				"Do",
+				"DocumentDownloadContentType"
+			],
+			[
+				"Document",
+				"DocumentDownloadType	(Ecostatus.scala)"
+			],
+			[
+				"Survey",
+				"SurveyDocumentDownloadId"
+			],
+			[
+				"SurveyDoc",
+				"SurveyDocumentDownload"
+			],
+			[
+				"Polystyrene",
+				"PolystyreneCover"
+			],
+			[
+				"unidentifiedPlastic",
+				"unidentifiedPlasticSmall	(Thames21.scala)"
+			],
+			[
+				"applic",
+				"applicableQuantities"
+			],
+			[
+				"Thames21",
+				"Thames21LitterQuantity"
+			],
+			[
+				"presence",
+				"presenceCollected"
+			],
+			[
+				"crtS",
+				"crtSurveyorTypeahead"
+			],
+			[
+				"survey",
+				"surveyor"
+			],
+			[
+				"sur",
+				"surveyor"
+			],
+			[
+				"thi",
+				"thirdSurveyor"
+			],
+			[
+				"drop",
+				"dropdownOpen	(typeahead.coffee)"
+			],
+			[
+				"org",
+				"organization"
+			],
+			[
+				"dissol",
+				"dissolvedOxygen	(WrtUpstreamThinking.scala)"
+			],
+			[
+				"diss",
+				"dissolvedOxygen"
+			],
+			[
+				"wrtWater",
+				"wrtTamarCsiWaterColor"
+			],
+			[
+				"waterCol",
+				"waterColorDescription	(wrt-tamar-csi-form.tpl.html)"
+			],
+			[
+				"hydrogo",
+				"hydrologicalConditions"
+			],
+			[
+				"waterFlow",
+				"waterFlowDescription"
+			],
+			[
+				"hy",
+				"hydrologicalConditions	(wrt-tamar-csi-form.tpl.html)"
+			],
+			[
+				"ecos",
+				"ecosystemConditions	(wrt-tamar-csi-form.tpl.html)"
+			],
+			[
+				"aquati",
+				"aquaticLife	(wrt-tamar-csi-form.tpl.html)"
+			],
+			[
+				"bankVeg",
+				"bankVegetationDescription	(wrt-tamar-csi-form.tpl.html)"
+			],
+			[
+				"wrtPo",
+				"wrtTamarCsiPollutionSource"
+			],
+			[
+				"waterU",
+				"waterUsesDescription	(WrtTamarCsi.scala)"
+			],
+			[
+				"pollu",
+				"pollutionSources	(wrt-tamar-csi-form.tpl.html)"
+			],
+			[
+				"wrtTamarCsiN",
+				"wrtTamarCsiNitrateOptions	(wrt-tamar-csi.coffee)"
+			],
+			[
+				"alga",
+				"algaeCoverage	(WrtTamarCsi.scala)"
+			],
+			[
+				"wrtTamarCsiAl",
+				"wrtTamarCsiAlgaeCoverageOptions	(wrt-tamar-csi.coffee)"
+			],
+			[
+				"surfa",
+				"surfaceFeatures	(WrtTamarCsi.scala)"
+			],
+			[
+				"WRTTAMARCsiWater",
+				"WrtTamarCsiWaterFlow	(WrtTamarCsi.scala)"
+			],
+			[
+				"aqua",
+				"aquaticLifeDescription	(WrtTamarCsi.scala)"
+			],
+			[
+				"wrtTa",
+				"wrtTamarCsiAquaticLife	(wrt-tamar-csi.coffee)"
+			],
+			[
+				"bankVe",
+				"bankVegetationDescription	(WrtTamarCsi.scala)"
+			],
+			[
+				"pol",
+				"pollutionSourcesDescription"
+			],
+			[
+				"wrtTamar",
+				"wrtTamarCsiForm"
+			],
+			[
+				"wrtTamarCsiPoll",
+				"wrtTamarCsiPollutionSourceOptions	(wrt-tamar-csi.coffee)"
+			],
+			[
+				"wrtTam",
+				"wrtTamarCsiForm"
+			],
+			[
+				"number",
+				"numberOfParticipants	(WrtTamarCsi.scala)"
+			],
+			[
+				"wrtTama",
+				"wrtTamarCsiForm"
+			],
+			[
+				"total",
+				"totalDissolvedSolids	(WrtUpstreamThinking.scala)"
+			],
+			[
+				"WrtTamarCsiWa",
+				"WrtTamarCsiWaterFlow"
+			],
+			[
+				"WrtTamarCsiWater",
+				"WrtTamarCsiWaterUse"
+			],
+			[
+				"WrtTamarCsiA",
+				"WrtTamarCsiAquaticLife"
+			],
+			[
+				"WrtTamarCsiW",
+				"WrtTamarCsiWaterUse"
+			],
+			[
+				"bank",
+				"bankVegetation"
+			],
+			[
+				"WrtTamarCsi",
+				"WrtTamarCsiWaterQuality"
+			],
+			[
+				"WrtTamar",
+				"WrtTamarCsiEcosystemConditions"
+			],
+			[
+				"WrtTama",
+				"WrtTamarCsiWaterQuality"
+			],
+			[
+				"try",
+				"tryptophan"
+			],
+			[
+				"Wrt",
+				"WrtUpstreamThinking"
+			],
+			[
+				"nav",
+				"navbarOptions"
+			],
+			[
+				"global",
+				"globalConfig"
+			],
+			[
+				"brows",
+				"browserifyConfig"
+			],
+			[
+				"bro",
+				"browserifyConfig"
+			],
+			[
+				"handle",
+				"handleErrors"
+			],
+			[
+				"active",
+				"activeOrganizations	(navbar.coffee)"
+			],
+			[
+				"brand",
+				"brandClicked	(navbar.tpl.html)"
+			],
+			[
+				"require",
+				"requireCredentials"
+			],
+			[
+				"show",
+				"showContactDetails	(auth.coffee)"
+			],
+			[
+				"do",
+				"doWorkshopSignup"
+			],
+			[
+				"ignore",
+				"ignoreHandlers	(http.coffee)"
+			],
+			[
+				"default",
+				"defaultHandlers	(http.coffee)"
+			],
+			[
+				"temporary",
+				"temporaryPassword"
+			],
+			[
+				"temporar",
+				"temporaryEmail"
+			],
+			[
+				"complete",
+				"completeLogin"
+			],
+			[
+				"reveal",
+				"revealPassword"
+			],
+			[
+				"revealPasswor",
+				"revealPasswordClicked	(signup-editor.tpl.html)"
+			],
+			[
+				"workshop",
+				"workshopSignupClicked	(signup-page.tpl.html)"
+			],
+			[
+				"allow",
+				"allowAnonymousSignup	(auth.coffee)"
+			],
+			[
+				"Internal",
+				"InternalErrorException"
+			],
+			[
+				"signupS",
+				"signupCodeService"
+			],
+			[
+				"signup",
+				"signupCodeCache"
+			],
+			[
+				"Signup",
+				"SignupCodeService"
+			],
+			[
+				"crtSignup",
+				"crtSignupCodeCreatePage"
+			],
+			[
+				"tw",
+				"twentyFourHours"
+			],
+			[
+				"Sign",
+				"SignupCode"
+			],
+			[
+				"Send",
+				"SendGrid"
+			],
+			[
+				"send",
+				"sendgrid"
+			],
+			[
+				"large",
+				"largeRubbishCount"
+			],
+			[
+				"up",
+				"upstream"
+			],
+			[
+				"area",
+				"areaCovered	(thames21-badged-group-event-form.tpl.html)"
+			],
+			[
+				"nonE",
+				"nonEmptyArray	(validate.coffee)"
+			],
+			[
+				"recyc",
+				"recyclingBagsCollected	(thames21-badged-group-event-form.tpl.html)"
+			],
+			[
+				"rubb",
+				"rubbishBagsCollected	(thames21-badged-group-event-form.tpl.html)"
+			],
+			[
+				"rubbi",
+				"rubbishCollectedBy"
+			],
+			[
+				"rec",
+				"recyclingBagsCollected"
+			],
+			[
+				"label",
+				"label	<label>"
+			],
+			[
+				"badged",
+				"badgedGroupEvents"
+			],
+			[
+				"Thames21B",
+				"Thames21BadgedGroupEventLocation"
+			],
+			[
+				"Thames21Badged",
+				"Thames21BadgedGroupEventLocation"
+			],
+			[
+				"Thames21Ba",
+				"Thames21BadgedGroupEventActivity"
+			],
+			[
+				"down",
+				"downstreamLocation"
+			],
+			[
+				"Sur",
+				"SurveyStatus"
+			],
+			[
+				"triggers",
+				"triggersSurveyCompleteEmail"
+			],
+			[
+				"Create",
+				"CreateDummySurveyCreatedNotifications"
+			],
+			[
+				"No",
+				"NotificationType"
+			],
+			[
+				"Not",
+				"NotificationService"
+			],
+			[
+				"Noti",
+				"Notification"
+			],
+			[
+				"NOti",
+				"NotificationType"
+			],
+			[
+				"tri",
+				"triggersSurveyApprovedEmail"
+			],
+			[
+				"Ser",
+				"ServiceRef"
+			],
+			[
+				"SurveySatt",
+				"SurveyStatusUpdated"
+			],
+			[
+				"Notii",
+				"NotificationType"
+			],
+			[
+				"Reset",
+				"ResetPassword"
+			],
+			[
+				"Notifi",
+				"NotificationType"
+			],
+			[
+				"cat",
+				"catchment"
+			],
+			[
+				"sub",
+				"subdomain"
+			],
+			[
+				"user",
+				"userService"
+			],
+			[
+				"cred",
+				"credentials"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 400.0,
+		"last_filter": "align",
+		"selected_items":
+		[
+			[
+				"align",
+				"AlignTab"
+			],
+			[
+				"preview",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"lower",
+				"Convert Case: Lower Case"
+			],
+			[
+				"upper",
+				"Convert Case: Upper Case"
+			],
+			[
+				"ensime",
+				"Ensime: Startup"
+			],
+			[
+				"diff",
+				"Set Syntax: Diff"
+			],
+			[
+				"uniq",
+				"Permute Lines: Unique"
+			],
+			[
+				"sort",
+				"Sort Lines"
+			],
+			[
+				"sql",
+				"Set Syntax: SQL"
+			],
+			[
+				"mark",
+				"Set Syntax: Markdown"
+			],
+			[
+				"wrap",
+				"Word Wrap: Toggle"
+			],
+			[
+				"java",
+				"Set Syntax: JavaScript (Babel)"
+			],
+			[
+				"algin",
+				"AlignTab"
+			],
+			[
+				"install",
+				"Colorsublime: Install Theme"
+			],
+			[
+				"color",
+				"Colorsublime: Install Theme"
+			],
+			[
+				"colo",
+				"Colorsublime: Install Theme"
+			],
+			[
+				"colosub",
+				"Colorsublime: Install Theme"
+			],
+			[
+				"beau",
+				"Javascript Beautify"
+			],
+			[
+				"mini",
+				"View: Toggle Minimap"
+			],
+			[
+				"yaml",
+				"Set Syntax: YAML"
+			],
+			[
+				"ruby",
+				"Set Syntax: Ruby"
+			],
+			[
+				"nginx",
+				"Set Syntax: nginx"
+			],
+			[
+				"ngin",
+				"Set Syntax: nginx"
+			],
+			[
+				"minimap",
+				"View: Toggle Minimap"
+			],
+			[
+				"clojure",
+				"Set Syntax: Clojure"
+			],
+			[
+				"lisp",
+				"Set Syntax: Lisp"
+			],
+			[
+				"hocon",
+				"Set Syntax: HOCON"
+			],
+			[
+				"prewview",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"prewvie",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"ali",
+				"AlignTab"
+			],
+			[
+				"ower",
+				"Convert Case: Lower Case"
+			],
+			[
+				"cama",
+				"Camaleón: Next Preset"
+			],
+			[
+				"dif",
+				"FileDiffs: Menu"
+			],
+			[
+				"tab2",
+				"Indentation: Tab Width: 2"
+			],
+			[
+				"html",
+				"Set Syntax: HTML"
+			],
+			[
+				"json",
+				"Pretty JSON: Format (Pretty Print) JSON"
+			],
+			[
+				"lowe",
+				"Convert Case: Lower Case"
+			],
+			[
+				"javascript",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"format",
+				"Pretty JSON: Format (Pretty Print) JSON"
+			],
+			[
+				"minim",
+				"View: Toggle Minimap"
+			],
+			[
+				"less",
+				"Set Syntax: LESS"
+			],
+			[
+				"coffee",
+				"Set Syntax: CoffeeScript"
+			],
+			[
+				"print",
+				"Pretty JSON: Format (Pretty Print) JSON"
+			],
+			[
+				"scala",
+				"Set Syntax: Scala"
+			],
+			[
+				"tabs",
+				"Indentation: Convert to Tabs"
+			],
+			[
+				"rot",
+				"Rot13 Selection"
+			],
+			[
+				"tab",
+				"Indentation: Tab Width: 2"
+			],
+			[
+				"case",
+				"Convert Case: Title Case"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"package",
+				"Package Control: List Packages"
+			],
+			[
+				"javasc",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"upp",
+				"Convert Case: Upper Case"
+			],
+			[
+				"view",
+				"View: Toggle Gutter"
+			],
+			[
+				"replace",
+				"Replace"
+			],
+			[
+				"alian",
+				"Set Syntax: MultiMarkdown"
+			],
+			[
+				"reveal",
+				"Side Bar: Reveal File"
+			]
+		],
+		"width": 529.0
+	},
+	"console":
+	{
+		"height": 603.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/dave/dev/projects/sbt-plugins",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/sbt-test",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/sbt-test/sbt-js",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/sbt-test/sbt-js/base",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/sbt-test/sbt-js/base/project",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/sbt-test/sbt-js/coffee-script",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/sbt-test/sbt-js/coffee-script/fixtures",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/sbt-test/sbt-js/coffee-script/project",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-less/src",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-less/src/sbt-test",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-less/src/sbt-test/sbt-less",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass/src",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass/src/main",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass/src/main/scala",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass/src/main/scala/com",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass/src/main/scala/com/untyped",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass/src/main/scala/com/untyped/sbtsass",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass/src/sbt-test",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass/src/sbt-test/sbt-sass",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass/src/sbt-test/sbt-sass/base",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass/src/sbt-test/sbt-sass/base/project"
+	],
+	"file_history":
+	[
+		"/Users/dave/dev/projects/sbt-plugins/sbt-less/src/main/scala/com/untyped/sbtless/LessSource.scala",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-mustache/src/main/scala/com/untyped/sbtmustache/Plugin.scala",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-less/src/main/scala/com/untyped/sbtless/Plugin.scala",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/main/scala/com/untyped/sbtjs/Plugin.scala",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass/src/main/scala/com/untyped/sbtsass/Plugin.scala",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass/src/main/scala/com/untyped/sbtsass/Graph.scala",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass/src/main/scala/com/untyped/sbtsass/SassSource.scala",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-graph/src/main/scala/com/untyped/sbtgraph/Graph.scala",
+		"/Users/dave/dev/projects/sbt-plugins/.git/COMMIT_EDITMSG",
+		"/Users/dave/dev/projects/sbt-plugins/.git/MERGE_MSG",
+		"/Users/dave/dev/projects/sbt-plugins/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/README.md",
+		"/Users/dave/dev/projects/sbt-plugins/project/Build.scala",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-less/src/sbt-test/sbt-less/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/.travis.yml",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/sbt-test/sbt-js/filename-suffix/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/sbt-test/sbt-js/variable-renaming/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-less/src/sbt-test/sbt-less/base/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-less/src/sbt-test/sbt-less/compile-error/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-less/src/sbt-test/sbt-less/filename-suffix/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-less/src/sbt-test/sbt-less/include-exclude/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-less/src/sbt-test/sbt-less/less-1.1.3/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-less/src/sbt-test/sbt-less/less-1.3.0/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-less/src/sbt-test/sbt-less/less-1.3.3/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-less/src/sbt-test/sbt-less/source-dirs/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-mustache/src/sbt-test/sbt-mustache/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-mustache/src/sbt-test/sbt-mustache/base/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-mustache/src/sbt-test/sbt-mustache/filename-suffix/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-mustache/src/sbt-test/sbt-mustache/source-dirs/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass/src/sbt-test/sbt-sass/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/sbt-test/sbt-js/base/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/sbt-test/sbt-js/coffee-script/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/sbt-test/sbt-js/compile-error/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/sbt-test/sbt-js/include-exclude/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/sbt-test/sbt-js/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/sbt-test/sbt-js/source-dirs/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass/src/sbt-test/sbt-sass/base/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-sass/src/sbt-test/sbt-sass/filename-suffix/project/plugins.sbt",
+		"/Users/dave/dev/projects/sbt-plugins/sbt-js/src/sbt-test/sbt-js/coffee-script/project/build.properties",
+		"/Users/dave/dev/projects/sbt-plugins/project/build.properties",
+		"/Users/dave/dev/projects/cartographer/.git/TAG_EDITMSG",
+		"/Users/dave/dev/projects/cartographer/.git/MERGE_MSG",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/Permissions.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/controllers/SurveyController.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/core/ValidationException.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/core/ResultException.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/core/SearchResults.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/service/AuthService.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/json/JsErrorImplicits.scala",
+		"/Users/dave/dev/projects/cartographer/api/conf/routes",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/SortOrder.scala",
+		"/Users/dave/dev/projects/cartographer/api/test/cartographer/core/RoleSpec.scala",
+		"/Users/dave/dev/projects/cartographer/ui/gulp/tasks/less.js",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/plugin/survey/thames21-litter-form.tpl.html",
+		"/Users/dave/dev/projects/cartographer/deploy/migrations/scripts/2015-12-18-16-15-00-thames21-litter-survey-type.js",
+		"/Users/dave/dev/projects/cartographer/deploy/migrations/scripts/2016-01-08-14-40-00-thames21-litter-survey-duration.js",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey/Thames21LitterSurvey.scala",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/plugin/survey/thames21-litter.coffee",
+		"/Users/dave/dev/projects/cartographer/deploy/migrations/migrations.js",
+		"/Users/dave/dev/projects/cartographer/api/untyped/src/main/scala/com/untyped/validation/Validators.scala",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/plugin/survey/thames21-water-quality-form.tpl.html",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey/Ecostatus.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/SurveyPhotographs.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/SurveyFormats.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/SurveyValidators.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/SurveyQueryParams.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/SurveyNames.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/SurveyFactory.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey/Urs.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/SurveyMeta.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/map/UrsIndex.scala",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/plugin/survey/ecostatus-hla-key-points.tpl.html",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/map/EcostatusIndex.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/map/EcostatusClassification.scala",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/common/ui/document-download-link.coffee",
+		"/Users/dave/temp/test.html",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/SurveyDocumentDownloads.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/download/document/DocumentDownload.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/controllers/ControllerHelpers.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/MapAttribute.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/Survey.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/service/SurveyService.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/controllers/Bindables.scala",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/common/ui/download-dropdown.tpl.html",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/app/survey/survey.coffee",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/app/user/list-page.tpl.html",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/app/survey/list-page.tpl.html",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/common/ui/modal.coffee",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/app/notification/notification.coffee",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/app/user/user.coffee",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/plugin/survey/ecostatus-list-item.tpl.html",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/plugin/survey/ecostatus-form.tpl.html",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/app/map/map-link.coffee",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/common/api/survey.coffee",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/app/main.coffee",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/app/notification/list-page.tpl.html",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/common/api/user.coffee",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/common/api/notification.coffee",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/common/ui/download-dropdown.coffee",
+		"/Users/dave/dev/projects/cartographer/cartographer-all.sublime-project",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/common/ui/modal.tpl.html",
+		"/Users/dave/dev/projects/cartographer-help/src/pages/survey/list.md",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/common/ui/list.coffee",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/download/spreadsheet/WorkbookDownloadFormat.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/core/Credentials.scala",
+		"/Users/dave/dev/projects/cartographer/api/build.sbt",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/download/document/DocumentDownloadContentType.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/enum/../../core/SealedTraitEnum.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/core/../model/enum/SealedTraitEnum.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/enum/EnumImplicits.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/map/UrsClassification.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey/RoyalParksCameraTrappingSurvey.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey/RoyalParksFootprintTunnelSurvey.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey/RoyalParksRadiotrackingSurvey.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey/RoyalParksSpotlightingSurvey.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey/Thames21BadgedGroupEvent.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey/Thames21GreenWallModuleSurvey.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey/Thames21InvasiveSpeciesSurvey.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey/Thames21RapidAppraisalSurvey.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey/Thames21VegetationSurvey.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey/Thames21WaterQualitySurvey.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey/WrtTamarCsi.scala",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey/WrtUpstreamThinking.scala",
+		"/Users/dave/dev/projects/cartographer/api/untyped/src/main/scala/com/untyped/location/Wgs84.scala",
+		"/Users/dave/dev/projects/cartographer/api/untyped/src/main/scala/com/untyped/location/Ngr.scala",
+		"/Users/dave/dev/projects/cartographer/ui/src/main/app/user/role-editor.tpl.html",
+		"/Users/dave/dev/projects/cartographer/api/app/cartographer/model/SurveySpreadsheetDownloads.scala",
+		"/Users/dave/dev/projects/cartographer/api/test/cartographer/model/survey/Thames21WaterQualitySurveySpec.scala"
+	],
+	"find":
+	{
+		"height": 38.0
+	},
+	"find_in_files":
+	{
+		"height": 108.0,
+		"where_history":
+		[
+			"",
+			"*.html",
+			"",
+			"*.scala",
+			"",
+			"*.html,*.coffee",
+			"*.html",
+			"",
+			"*.html",
+			"",
+			"*.coffee",
+			"",
+			"-*.generated.js",
+			"",
+			"*.scala,*.coffee,*.html,*.less",
+			"*.scala,*.coffee,*.html",
+			"",
+			"*.html,*.coffee",
+			"*.html",
+			"",
+			"*.coffee",
+			"*.html",
+			"",
+			"/Users/dave/dev/projects/cartographer/ui/gulp",
+			"",
+			"*.coffee,*.less",
+			"*.coffee",
+			"",
+			"*.coffee",
+			"*.html",
+			"*.coffee",
+			"*.js",
+			"*.coffee",
+			"*.less",
+			"*.js",
+			"",
+			"*.coffee",
+			"*.coffee,-old-build/*",
+			"*.coffee",
+			"",
+			"*.less",
+			"",
+			"/Users/dave/dev/projects/clearing/deploy",
+			"",
+			"*.scala",
+			"*.coffee",
+			"",
+			"*.html",
+			"*.scala",
+			"",
+			"/Users/dave/dev/projects/cartographer/deploy",
+			"/Users/dave/dev/projects/cartographer/ui,-dist/*",
+			"/Users/dave/dev/projects/cartographer/ui",
+			"/Users/dave/dev/projects/cartographer/deploy",
+			"*.yml",
+			"*.coffee",
+			"/Users/dave/dev/projects/cartographer/ui",
+			"/Users/dave/dev/projects/cartographer/deploy",
+			"",
+			"/Users/dave/dev/projects/cartographer/api",
+			"",
+			"*.yml",
+			"",
+			"*.coffee",
+			"*.html",
+			"",
+			"*.scala",
+			"",
+			"*.scala",
+			"",
+			"*.less",
+			"",
+			"*.html",
+			"*.scala",
+			"*.coffee",
+			"",
+			"*.coffee,*.html",
+			"*.scala",
+			"",
+			"*.scala",
+			"*.html",
+			"*.scala",
+			"*.coffee",
+			"*.scala",
+			"",
+			"*.scala",
+			"*.scala,/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey",
+			"*.scala",
+			"*.scala,/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey",
+			"*.scala",
+			"*.scala,/Users/dave/dev/projects/cartographer/api/app/cartographer/model/survey",
+			"*.scala",
+			"",
+			"SurveyMeta[Survey]",
+			"*.scala",
+			"*.coffee",
+			"*.scala",
+			"*.coffee,*.html",
+			"*.coffee",
+			"",
+			"*.html",
+			"*.coffee",
+			"",
+			"*.html",
+			"*.coffee",
+			"",
+			"*.coffee",
+			"",
+			"*.html",
+			"",
+			"*.html",
+			"*.coffee",
+			"",
+			"/Users/dave/dev/projects/cartographer/ui/src/crt-plugin",
+			"/Users/dave/dev/projects/cartographer/ui/src/crt-app/form",
+			"",
+			"/Users/dave/dev/projects/cartographer/ui/src/crt-app/form",
+			"",
+			"/Users/dave/dev/projects/cartographer/ui/src/crt-app/form",
+			"",
+			"/Users/dave/dev/projects/cartographer/ui/src/crt-app/form",
+			"",
+			"/Users/dave/dev/projects/cartographer/ui/src/crt-app/form",
+			"",
+			"*.coffee,*.html",
+			"*.coffee",
+			"",
+			"/Users/dave/dev/projects/cartographer/ui/src/crt-plugin/survey,*.html"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"unshadow",
+			"not unshadow",
+			"Could not unshadow",
+			"less",
+			", ",
+			",",
+			", ",
+			"_sourceDir",
+			"sassVersion",
+			"prettyPrint",
+			"filenameSuffix",
+			"Properties",
+			"Filter",
+			"includeFilter",
+			", ",
+			"sbt-plugins",
+			"% \"0.8-M3\"",
+			"% \"0.8-M",
+			"% \"0.13-M8\"",
+			"% \"0.13-M8",
+			"% \"0.13-",
+			"System.getProperty",
+			"% System",
+			"plugin.version",
+			"System.getProperty",
+			"build.properties",
+			"0.8-M3",
+			"MaxPermSize",
+			"def canUpdateUser",
+			"def canChangeIdentity",
+			"def canDeleteSurvey",
+			"ValidationError",
+			"(JsPath, Seq[ValidationError])",
+			"errorJson",
+			"Implicits",
+			"SearchResults",
+			"SortOrder",
+			"SearchOrder",
+			"class SearchOrder",
+			"leanup Duration",
+			"leanup duration",
+			"Cleanup ",
+			"Cleanup",
+			"litterSurveyDuration",
+			"\n      <div crt-form-group>\n        <label>Survey type</label>\n\n        <div crt-select-buttons\n             ng-model=\"survey.litterSurveyType\"\n              options=\"litterSurveyTypeOptions\"\n               layout=\"span6\"></div>\n\n        <div crt-form-errors></div>\n\n        <p crt-guidance class=\"help-block\">\n          Was the survey performed at a litter hotspot or on a standard foreshore segment?\n        </p>\n      </div>\n\n      <div crt-form-group>\n        <label>Site name</label>\n\n        <input ng-model=\"survey.siteName\" type=\"text\" class=\"form-control\">\n        <div crt-form-errors></div>\n\n        <p crt-guidance class=\"help-block\">\n          Informal name of the survey site.\n          Required for hotspot surveys.\n        </p>\n      </div>\n\n      <div crt-form-group>\n        <label>Foreshore</label>\n\n        <input crt-local-typeahead=\"foreshoreOptions\"\n               show-id=\"true\"\n              ng-model=\"survey.foreshore\"\n                 class=\"form-control\">\n\n        <div crt-form-errors></div>\n\n        <p crt-guidance class=\"help-block\">\n          Enter a Thames21 foreshore code.\n        </p>\n      </div>",
+			"cleanupDuration",
+			"def required",
+			"Add item",
+			"litterSurveyType",
+			"\"hotspot\"",
+			"\"foreshore\"",
+			"'foreshore'",
+			"'hotspot'",
+			"litterSurveyType",
+			"def optional",
+			"litterSurveyType",
+			"if(values.isEmpty) None ",
+			"DomSub",
+			"(6)",
+			"DocumentDownloadW",
+			"valueParagraph",
+			"enumParagraph",
+			"ans",
+			"survey",
+			"docId",
+			"Read",
+			"crtDocumentDownloadLink",
+			"SurveyDocumentDownloadId",
+			"downloadId",
+			"download",
+			"download-dropdown",
+			"crt-download-dropdown",
+			"crtDownloadDropdown",
+			"-download",
+			"download",
+			"downloadUrl",
+			"transclude",
+			"crtMapLink",
+			"download",
+			"crt-download-dropdown",
+			"Uuid",
+			"canView",
+			"canDownload",
+			"Content-Disposition",
+			"DownloadDocument",
+			"def toResult",
+			"ResultImplicits",
+			"ResultFormat",
+			"docId",
+			"DownloadDocument",
+			"DocumentDownloadId",
+			"new SurveyDocumentDownloads(",
+			"new SurveyDocumentDownlodas",
+			"generalReportDownload",
+			"val documentDownloads = Nil",
+			"documentDownloads",
+			")\n",
+			"TemporaryFile",
+			"controllers.",
+			");",
+			";",
+			"Roles for",
+			"columns.createWorksheet(names.longName",
+			"Workbook(names.longName",
+			"val spreadsheetDownloads = new SurveySpreadsheetDownloads",
+			"val spreadsheetDownloads",
+			"SurveySpreadsheetDownloads",
+			".downloads.",
+			"def downloads = new SurveyDownloads",
+			"def downloads =",
+			"SurveyDownloads",
+			"def downloads = new SurveyDownloads",
+			"runs",
+			"Worksheet",
+			"import cartographer.download._",
+			"class Worksheet",
+			"Range",
+			"WorkbookFormat",
+			"Sheet",
+			"DownloadFormat",
+			"Download",
+			"org.apache.poi",
+			"librato",
+			"extends Thames21LitterItem",
+			"window.jQuery",
+			"sendNotification",
+			"ForgotPassword",
+			"forgotPassword"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"% pluginVersion",
+			"litterSurveyDuration",
+			"SurveyDocumentId",
+			"crt-spreadsheet-download-dropdown",
+			"crtSpreadsheetDownloadDropdown",
+			"spreadsheetDownloadUrl",
+			"val documentDownloads = new SurveyDocumentDownloads(Nil)",
+			"columns.createWorksheet(names.shortName",
+			"val documentDownloads = Nil\n\n  val spreadsheetDownloads = new SurveySpreadsheetDownloads",
+			"val spreadsheetDownloads = new SurveySpreadsheetDownloads",
+			"object spreadsheetDownloads extends SurveySpreadsheetDownloads",
+			"import cartographer.download.spreadsheet._",
+			"WorkbookFormat",
+			"crtYesNoUnknown",
+			"$1.values",
+			"$1.valueIds",
+			"ursApe",
+			"UrsApe",
+			"0-4",
+			"beta.cartographer.io",
+			"mailgun_enable",
+			"monit_enable",
+			"Organization.demo",
+			"authSignup",
+			"authWelcome",
+			"AuthWelcome",
+			"AuthSignup",
+			"soloWelcome",
+			"soloSignup",
+			"SoloSignup",
+			"SoloWelcome",
+			"request.jsonWithSubdomain",
+			"Service.actor !",
+			"Service.actor ??",
+			"ServiceRef[$1]",
+			"Database.withInternalTag",
+			"FutureAwaits",
+			"WithApplication",
+			"",
+			".toResult",
+			"",
+			"ev: tags.Internal",
+			"new SimpleSurveyPhotographs[$1] {}",
+			"new DefaultSurveyMapLayer[$1] {}",
+			"def layers = new",
+			"def downloads = new",
+			"def photographs = new",
+			"def formats = new",
+			"def validators = new",
+			"def queryParams = new SurveyQueryParams",
+			"def location = new",
+			"def factory = new",
+			"def names = new",
+			"DefaultSurveyMapLayer[",
+			"SingleSurveyMapLayer[",
+			"EmptySurveyMapLayers[",
+			"def dataUpdateValidator(implicit credentials: Credentials) =",
+			"def updateValidator(implicit credentials: Credentials)",
+			"def dataValidator(implicit credentials: Credentials)",
+			"def createData(implicit credentials: Credentials)",
+			"_type",
+			"initialColumns(credentials) hAppend",
+			"SimpleSurveyPhotographs",
+			"dataSearchTerms",
+			"def workbook(credentials: Credentials, surveys: Seq[Survey[$1]]) =",
+			"def create(implicit credentials: Credentials)",
+			"def createData(implicit credentials: Credentials)",
+			"object $1 extends SurveyMeta[$1] {",
+			"def location(survey: MySurvey)",
+			"type MySurvey = ",
+			"SurveyMeta { type MySurvey = ",
+			"meta.MySurvey",
+			"object $1 extends SurveyMeta[$1] {",
+			"object $1 extends SurveyMeta[$1] ",
+			"",
+			"(SurveyStatus.",
+			"SurveyStatus",
+			"Surveyor",
+			"SurveyStatus",
+			"standardColumns",
+			"type SurveyData = ",
+			"",
+			"photographs(survey)",
+			"type SurveyData = ",
+			"SurveyMeta[_]",
+			"SurveyMeta[Survey]",
+			"type Self = ",
+			"RoyalParksCameraTrapping",
+			"mapOptions.mapTiles",
+			"habitatString",
+			"thames21ThamesWaterQuality",
+			"module.exports = angular.module('cartographer.common.",
+			"module.exports = angular.module('cartographer.app.",
+			"io.underscore.validation",
+			"thames21ThamesWaterQuality",
+			"$1 extends SurveyMeta[$1] ",
+			"$1 extends SurveyMeya[$1] ",
+			"ursFeatureLayer",
+			"chartsEnabled",
+			"layerSelectEnabled",
+			"fa fa-plus",
+			"fa fa-user",
+			"attributeLayer",
+			"crtLegacyMarkerColors",
+			"inspector.data",
+			"inspector/data",
+			"crtDataInspector",
+			"crt-data-inspector",
+			"Legend",
+			"mapLegend.labels",
+			"crt-",
+			"crtOrganization",
+			"crt-common/common",
+			"crt-common/util/",
+			"crt-common",
+			" extends SurveyData ",
+			"template: require $1./",
+			"template: require $1.",
+			"template: require \"$1.tpl.html\"",
+			"template: require '$1.tpl.html'",
+			"module.exports.$1 '$2', $DI $3",
+			"module.exports.$1 '$2' $DI, $3",
+			"module.exports.$1 $DI -",
+			"module.exports.$1 $DI (",
+			"module.exports.animation",
+			"module.exports.filter",
+			"module.exports.run",
+			"module.exports.factory"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 395.0
+	},
+	"pinned_build_system": "Packages/User/HighlightScala.sublime-build",
+	"project": "sbt-plugins.sublime-project",
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"lesssource",
+				"sbt-less/src/main/scala/com/untyped/sbtless/LessSource.scala"
+			],
+			[
+				"sasssource",
+				"sbt-sass/src/main/scala/com/untyped/sbtsass/SassSource.scala"
+			],
+			[
+				"sassgraph",
+				"sbt-sass/src/main/scala/com/untyped/sbtsass/Graph.scala"
+			],
+			[
+				"mustacheplugin",
+				"sbt-mustache/src/main/scala/com/untyped/sbtmustache/Plugin.scala"
+			],
+			[
+				"sbtlessplugin",
+				"sbt-less/src/main/scala/com/untyped/sbtless/Plugin.scala"
+			],
+			[
+				"jspluginscala",
+				"sbt-js/src/main/scala/com/untyped/sbtjs/Plugin.scala"
+			],
+			[
+				"sbtsasspl",
+				"sbt-sass/src/main/scala/com/untyped/sbtsass/Plugin.scala"
+			],
+			[
+				"sbtgraph",
+				"sbt-graph/src/main/scala/com/untyped/sbtgraph/Graph.scala"
+			],
+			[
+				"lessplugins",
+				"sbt-less/src/sbt-test/sbt-less/plugins.sbt"
+			],
+			[
+				"buildscala",
+				"project/Build.scala"
+			],
+			[
+				"plugins",
+				"project/plugins.sbt"
+			],
+			[
+				"readme",
+				"README.md"
+			],
+			[
+				"buildprop",
+				"project/build.properties"
+			],
+			[
+				"trav",
+				".travis.yml"
+			],
+			[
+				"build",
+				"project/Build.scala"
+			],
+			[
+				"redis",
+				"api/app/cartographer/core/Redis.scala"
+			],
+			[
+				"usercontroller",
+				"api/app/controllers/UserController.scala"
+			],
+			[
+				"role",
+				"api/app/cartographer/core/Role.scala"
+			],
+			[
+				"crede",
+				"api/app/cartographer/core/Credentials.scala"
+			],
+			[
+				"authcontroll",
+				"api/app/controllers/AuthController.scala"
+			],
+			[
+				"survey",
+				"api/app/controllers/SurveyController.scala"
+			],
+			[
+				"result",
+				"api/app/cartographer/core/ResultException.scala"
+			],
+			[
+				"jserror",
+				"api/app/cartographer/json/JsErrorImplicits.scala"
+			],
+			[
+				"valexception",
+				"api/app/cartographer/core/ValidationException.scala"
+			],
+			[
+				"errorimpl",
+				"api/app/cartographer/json/JsErrorImplicits.scala"
+			],
+			[
+				"authservice",
+				"api/app/cartographer/service/AuthService.scala"
+			],
+			[
+				"rolespec",
+				"api/test/cartographer/core/RoleSpec.scala"
+			],
+			[
+				"routes",
+				"api/conf/routes"
+			],
+			[
+				"lessjs",
+				"ui/gulp/tasks/less.js"
+			],
+			[
+				"migrations",
+				"deploy/migrations/migrations.js"
+			],
+			[
+				"littersurveyscala",
+				"api/app/cartographer/model/survey/Thames21LitterSurvey.scala"
+			],
+			[
+				"validators",
+				"api/untyped/src/main/scala/com/untyped/validation/Validators.scala"
+			],
+			[
+				"thames21litterscala",
+				"api/app/cartographer/model/survey/Thames21LitterSurvey.scala"
+			],
+			[
+				"thames21litter",
+				"ui/src/main/plugin/survey/thames21-litter.coffee"
+			],
+			[
+				"waterquality",
+				"ui/src/main/plugin/survey/thames21-water-quality-form.tpl.html"
+			],
+			[
+				"litterhtml",
+				"ui/src/main/plugin/survey/thames21-litter-form.tpl.html"
+			],
+			[
+				"waterqualityform",
+				"ui/src/main/plugin/survey/thames21-water-quality-form.tpl.html"
+			],
+			[
+				"ecostatus",
+				"api/app/cartographer/model/survey/Ecostatus.scala"
+			],
+			[
+				"ursscala",
+				"api/app/cartographer/model/survey/Urs.scala"
+			],
+			[
+				"keypointhtml",
+				"ui/src/main/plugin/survey/ecostatus-hla-key-points.tpl.html"
+			],
+			[
+				"ursindex",
+				"api/app/cartographer/model/map/UrsIndex.scala"
+			],
+			[
+				"surveyphoto",
+				"api/app/cartographer/model/SurveyPhotographs.scala"
+			],
+			[
+				"surveyformats",
+				"api/app/cartographer/model/SurveyFormats.scala"
+			],
+			[
+				"surveyvalidators",
+				"api/app/cartographer/model/SurveyValidators.scala"
+			],
+			[
+				"surveyqueryparams",
+				"api/app/cartographer/model/SurveyQueryParams.scala"
+			],
+			[
+				"surveyfactory",
+				"api/app/cartographer/model/SurveyFactory.scala"
+			],
+			[
+				"surveynames",
+				"api/app/cartographer/model/SurveyNames.scala"
+			],
+			[
+				"surveymeta",
+				"api/app/cartographer/model/SurveyMeta.scala"
+			],
+			[
+				"documen",
+				"api/app/cartographer/download/document/DocumentDownload.scala"
+			],
+			[
+				"downlaodlink",
+				"ui/src/main/common/ui/document-download-link.coffee"
+			],
+			[
+				"mapattrib",
+				"api/app/cartographer/model/MapAttribute.scala"
+			],
+			[
+				"mapattribute",
+				"api/app/cartographer/model/MapAttribute.scala"
+			],
+			[
+				"ecostatusindex",
+				"api/app/cartographer/model/map/EcostatusIndex.scala"
+			],
+			[
+				"ecostatusclass",
+				"api/app/cartographer/model/map/EcostatusClassification.scala"
+			],
+			[
+				"surveydoc",
+				"api/app/cartographer/model/SurveyDocumentDownloads.scala"
+			],
+			[
+				"surveyservice",
+				"api/app/cartographer/service/SurveyService.scala"
+			],
+			[
+				"surveycontroller",
+				"api/app/controllers/SurveyController.scala"
+			],
+			[
+				"surveydownload",
+				"api/app/cartographer/model/SurveyDocumentDownloads.scala"
+			],
+			[
+				"docdownload",
+				"ui/src/main/common/ui/document-download-link.coffee"
+			],
+			[
+				"downlaod",
+				"ui/src/main/common/ui/download-dropdown.coffee"
+			],
+			[
+				"surveycoffee",
+				"ui/src/main/common/api/survey.coffee"
+			],
+			[
+				"modaltpm",
+				"ui/src/main/common/ui/modal.tpl.html"
+			],
+			[
+				"appcoffee",
+				"ui/src/main/app/main.coffee"
+			],
+			[
+				"listpage",
+				"ui/src/main/app/survey/list-page.tpl.html"
+			],
+			[
+				"list",
+				"help/src/pages/survey/list.md"
+			],
+			[
+				"listcoffee",
+				"ui/src/main/common/ui/list.coffee"
+			],
+			[
+				"downloaddrop",
+				"ui/src/main/common/ui/download-dropdown.tpl.html"
+			],
+			[
+				"downloadcoffee",
+				"ui/src/main/common/ui/download-dropdown.coffee"
+			],
+			[
+				"maplink",
+				"ui/src/main/app/map/map-link.coffee"
+			],
+			[
+				"ecostatusform",
+				"ui/src/main/plugin/survey/ecostatus-form.tpl.html"
+			],
+			[
+				"ecostatuslistitem",
+				"ui/src/main/plugin/survey/ecostatus-list-item.tpl.html"
+			],
+			[
+				"bindable",
+				"api/app/controllers/Bindables.scala"
+			],
+			[
+				"route",
+				"api/conf/routes"
+			],
+			[
+				"credentials",
+				"api/app/cartographer/core/Credentials.scala"
+			],
+			[
+				"downloaddocu",
+				"api/app/cartographer/download/document/DocumentDownload.scala"
+			],
+			[
+				"buildsbt",
+				"api/build.sbt"
+			],
+			[
+				"surveyscala",
+				"api/app/cartographer/model/Survey.scala"
+			],
+			[
+				"ursclassi",
+				"api/app/cartographer/model/map/UrsClassification.scala"
+			],
+			[
+				"enumimplicit",
+				"api/app/cartographer/model/enum/EnumImplicits.scala"
+			],
+			[
+				"sealed",
+				"api/app/cartographer/model/enum/SealedTraitEnum.scala"
+			],
+			[
+				"ngr",
+				"api/untyped/src/main/scala/com/untyped/location/Ngr.scala"
+			],
+			[
+				"wgs84",
+				"api/untyped/src/main/scala/com/untyped/location/Wgs84.scala"
+			],
+			[
+				"waterquali",
+				"api/app/cartographer/model/survey/Thames21WaterQualitySurvey.scala"
+			],
+			[
+				"thames21littercoffee",
+				"ui/src/main/plugin/survey/thames21-litter.coffee"
+			],
+			[
+				"worksheet",
+				"api/app/cartographer/download/spreadsheet/Worksheet.scala"
+			],
+			[
+				"littersurvey",
+				"api/app/cartographer/model/survey/Thames21LitterSurvey.scala"
+			],
+			[
+				"downloaf",
+				"api/app/cartographer/download/DownloadFormat.scala"
+			],
+			[
+				"thames21",
+				"api/app/cartographer/model/enum/Thames21.scala"
+			],
+			[
+				"sitecoffee",
+				"site/src/js/site.coffee"
+			],
+			[
+				"jquery",
+				"ui/src/main/vendor/typeahead.js/test/vendor/jquery-1.9.1.js"
+			],
+			[
+				"main",
+				"ui/src/main/app/main.coffee"
+			],
+			[
+				"sitejs",
+				"help/src/js/site.js"
+			],
+			[
+				"authcoffee",
+				"ui/src/main/common/api/auth.coffee"
+			],
+			[
+				"emailscala",
+				"api/untyped/src/main/scala/com/untyped/util/Email.scala"
+			],
+			[
+				"uuidscala",
+				"api/untyped/src/main/scala/com/untyped/util/Uuid.scala"
+			],
+			[
+				"builds",
+				"api/build.sbt"
+			],
+			[
+				"bcrypt",
+				"api/untyped/src/test/scala/com/untyped/util/BCryptSpec.scala"
+			],
+			[
+				"passwordscala",
+				"api/untyped/src/main/scala/com/untyped/util/Password.scala"
+			],
+			[
+				"password",
+				"api/app/cartographer/model/email/ForgotPasswordEmail.scala"
+			],
+			[
+				"rolescala",
+				"api/app/cartographer/core/Role.scala"
+			],
+			[
+				"credentia",
+				"api/app/cartographer/core/Credentials.scala"
+			],
+			[
+				"user",
+				"api/app/cartographer/model/User.scala"
+			],
+			[
+				"codecoffee",
+				"ui/src/main/common/api/code.coffee"
+			],
+			[
+				"ecostatussitemap",
+				"ui/src/main/plugin/survey/ecostatus-site-map.tpl.html"
+			],
+			[
+				"tamarc",
+				"ui/src/main/plugin/survey/wrt-tamar-csi.coffee"
+			],
+			[
+				"yesnoun",
+				"ui/src/main/plugin/code/yes-no-unknown.generated.js"
+			],
+			[
+				"thamesinvasi",
+				"ui/src/main/plugin/code/thames21-invasive-species.generated.js"
+			],
+			[
+				"thames21generated",
+				"ui/src/main/plugin/code/thames21.generated.js"
+			],
+			[
+				"enumthames",
+				"api/app/cartographer/model/enum/Thames21.scala"
+			],
+			[
+				"nuisance",
+				"ui/src/main/plugin/code/urs-nuisance-species.generated.js"
+			],
+			[
+				"ursnui",
+				"ui/src/main/plugin/code/urs-nuisance-species.generated.js"
+			],
+			[
+				"ursnuisance",
+				"ui/src/main/plugin/code/urs-nuisance-species.generated.js"
+			],
+			[
+				"royalparksgen",
+				"ui/src/main/plugin/code/royalParks.generated.js"
+			],
+			[
+				"enumscala",
+				"api/app/cartographer/generate/Enum.scala"
+			],
+			[
+				"mainscala",
+				"api/app/cartographer/generate/Main.scala"
+			],
+			[
+				"ursape",
+				"ui/src/main/plugin/code/urs-ape.generated.js"
+			],
+			[
+				"litterform",
+				"ui/src/main/plugin/survey/thames21-litter-form.tpl.html"
+			],
+			[
+				"plastic",
+				"deploy/migrations/scripts/2015-11-16-16-30-00-thames21-litter-plastic.js"
+			],
+			[
+				"thames",
+				"api/app/cartographer/model/enum/Thames21.scala"
+			],
+			[
+				"sealedtrait",
+				"api/app/cartographer/model/enum/SealedTraitEnum.scala"
+			],
+			[
+				"olystyrene",
+				"deploy/migrations/scripts/2015-12-18-15-00-00-thames21-litter-polystyrene-cover.js"
+			],
+			[
+				"polycover",
+				"deploy/migrations/scripts/2015-12-18-15-00-00-thames21-litter-polystyrene-cover.js"
+			],
+			[
+				"migrations201512",
+				"deploy/migrations/inactive-scripts/2015-11-27-16-00-00-thames21-litter-polystyrene-cover.js"
+			],
+			[
+				"enumthames21",
+				"api/app/cartographer/model/enum/Thames21.scala"
+			],
+			[
+				"screenless",
+				"ui/src/main/app/screen.less"
+			],
+			[
+				"thames21scala",
+				"api/app/cartographer/model/enum/Thames21.scala"
+			],
+			[
+				"validate",
+				"ui/src/main/common/common/validate.coffee"
+			],
+			[
+				"littercoffee",
+				"ui/src/main/plugin/survey/thames21-litter.coffee"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 339.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
